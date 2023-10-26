@@ -1,0 +1,68 @@
+/**
+ *    Copyright 2023 Sven Loesekann
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+       http://www.apache.org/licenses/LICENSE-2.0
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+ */
+ plugins {
+	id 'java'
+}
+ 
+group = 'ch.xxx'
+version = '0.0.1-SNAPSHOT'
+
+task cleanAngular {
+	if(project.hasProperty('withAngular')) {	
+		logger.info('Task cleanAngular')	
+		delete('src/angular/node_modules')
+	}
+}
+
+task buildAngular {
+	if(project.hasProperty('withAngular')) {		
+		exec {
+			logger.info('Task buildAngular - npm install')		
+			workingDir 'src/angular'
+			if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
+				commandLine('npm.cmd', 'install')
+			} else {
+				commandLine('npm', 'install')
+			}
+		}
+		exec {
+			logger.info('Task buildAngular - npm run build')
+			workingDir 'src/angular'
+			if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
+				commandLine('npm.cmd', 'run', 'build')
+			} else {
+				commandLine('npm', 'run', 'build')
+			}		
+		}
+	}
+}
+
+task testAngular {
+	if(project.hasProperty('withAngular')) {		
+		exec {
+			workingDir 'src/angular'
+			if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
+				logger.info('Task buildAngular - npm run test')		
+				commandLine('npm.cmd', 'run', 'test')
+			} else {
+				if(project.hasProperty("useChromium")) {
+					logger.info('Task buildAngular - npm run test-chromium') 
+					commandLine('npm', 'run', 'test-chromium')
+				} else {
+					logger.info('Task buildAngular - npm run test')
+					commandLine('npm', 'run', 'test')
+				}
+			}
+		}
+	}
+}
