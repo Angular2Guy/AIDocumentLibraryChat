@@ -40,6 +40,10 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 }
 
+bootJar {
+   archiveFileName = 'aidocumentlibrarychat.jar'
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
