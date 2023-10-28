@@ -20,6 +20,12 @@
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
+      "i18n": {
+        "locales": {
+          "de": "i18n/messages.de.json"
+        },
+        "sourceLocale": "en"
+      },
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
