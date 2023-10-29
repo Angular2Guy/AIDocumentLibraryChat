@@ -13,7 +13,7 @@ public class Document {
     @GeneratedValue(strategy=GenerationType.SEQUENCE)
     private Long id;
     private String documentName;
-    private DocumentType DocumentType;
+    private DocumentType documentType;
     @Lob    
     private byte[] documentContent;
 
@@ -34,11 +34,11 @@ public class Document {
     }
 
     public DocumentType getDocumentType() {
-        return DocumentType;
+        return documentType;
     }
 
-    public void setDocumentType(DocumentType DocumentType) {
-        this.DocumentType = DocumentType;
+    public void setDocumentType(DocumentType documentType) {
+        this.documentType = documentType;
     }
 
     public byte[] getDocumentContent() {

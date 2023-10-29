@@ -14,8 +14,22 @@
 	<changeSet author="angular2guy" id="1">
         <sql>CREATE EXTENSION vector;</sql>
     </changeSet>
-    <!--
-        <createSequence sequenceName="document_SEQ" incrementBy="50"
+	<changeSet author="angular2guy" id="2">
+		<createTable tableName="document">
+			<column name="id" type="bigint">
+				<constaints primaryKey="true"/> 
+			</column>
+			<column name="document_name" type="varchar(255)">
+				<constaints notNullConstraintName="document_document_name" nullable="false"/>
+			</column>
+			<column name="document_type" type="varchar(25)">
+				<constaints notNullConstraintName="document_document_type" nullable="false"/>
+			</column>
+			<column name="document_content" type="blob"/>
+		</createTable>
+	</changeSet>
+	<changeSet autor="angular2guy" id="3">
+		<createSequence sequenceName="document_SEQ" incrementBy="50"
 			startValue="1000" />
-    -->
+	</changeSet>
 </databaseChangeLog>
