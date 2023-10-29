@@ -56,6 +56,7 @@ public class PGvector extends PGobject implements PGBinaryObject, Serializable, 
     /**
      * Sets the value from a text representation of a vector
      */
+    @Override
     public void setValue(String s) throws SQLException {
         if (s == null) {
             vec = null;
@@ -71,6 +72,7 @@ public class PGvector extends PGobject implements PGBinaryObject, Serializable, 
     /**
      * Returns the text representation of a vector
      */
+    @Override
     public String getValue() {
         if (vec == null) {
             return null;
@@ -82,6 +84,7 @@ public class PGvector extends PGobject implements PGBinaryObject, Serializable, 
     /**
      * Returns the number of bytes for the binary representation
      */
+    @Override
     public int lengthInBytes() {
         return vec == null ? 0 : 4 + vec.length * 4;
     }
@@ -89,6 +92,7 @@ public class PGvector extends PGobject implements PGBinaryObject, Serializable, 
     /**
      * Sets the value from a binary representation of a vector
      */
+    @Override
     public void setByteValue(byte[] value, int offset) throws SQLException {
         int dim = ByteConverter.int2(value, offset);
 
@@ -106,6 +110,7 @@ public class PGvector extends PGobject implements PGBinaryObject, Serializable, 
     /**
      * Writes the binary representation of a vector
      */
+    @Override
     public void toBytes(byte[] bytes, int offset) {
         if (vec == null) {
             return;
