@@ -2,10 +2,15 @@ package ch.xxx.aidoclibchat.domain.model.entity;
 
 import ch.xxx.aidoclibchat.domain.common.DocumentType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 
 @Entity
 public class Document {
+    @Id
+    @GeneratedValue(strategy=GenerationType.SEQUENCE)
     private Long id;
     private String documentName;
     private DocumentType DocumentType;
