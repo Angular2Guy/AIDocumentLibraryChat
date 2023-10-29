@@ -1,3 +1,3 @@
 package ch.xxx.aidoclibchat.domain.common;
 
-public enum FileType { PDF }
+public enum DocumentType { PDF }

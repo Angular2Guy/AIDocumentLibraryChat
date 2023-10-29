@@ -8,10 +8,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 @RestController
-@RequestMapping("rest/file")
-public class FileController {
+@RequestMapping("rest/document")
+public class DocumentController {
     @PostMapping
-    public long handleFileUpload(@RequestParam("file") MultipartFile file) {        
-        return file.getSize();
+    public long handleDocumentUpload(@RequestParam("document") MultipartFile document) {        
+        return document.getSize();
     }
 }
