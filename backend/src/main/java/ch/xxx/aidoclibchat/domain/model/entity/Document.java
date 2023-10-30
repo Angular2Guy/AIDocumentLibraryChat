@@ -2,6 +2,8 @@ package ch.xxx.aidoclibchat.domain.model.entity;
 
 import ch.xxx.aidoclibchat.domain.common.DocumentType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,6 +15,7 @@ public class Document {
     @GeneratedValue(strategy=GenerationType.SEQUENCE)
     private Long id;
     private String documentName;
+    @Enumerated(EnumType.STRING)
     private DocumentType documentType;
     @Lob    
     private byte[] documentContent;
