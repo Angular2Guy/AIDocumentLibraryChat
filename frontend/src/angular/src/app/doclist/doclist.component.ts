@@ -10,13 +10,16 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Routes } from '@angular/router';
-import { AppComponent } from './app.component';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
-export const routes: Routes = [
-  {
-    path: "doclist",
-    loadChildren: () => import("./doclist").then((mod) => mod.DOCLIST),
-  },
-  { path: "**", component: AppComponent },
-];
+@Component({
+  selector: 'app-doclist',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './doclist.component.html',
+  styleUrls: ['./doclist.component.scss']
+})
+export class DoclistComponent {
+
+}

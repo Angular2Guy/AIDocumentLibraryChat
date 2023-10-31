@@ -1,3 +1,4 @@
+
 /**
  *    Copyright 2023 Sven Loesekann
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -10,13 +11,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Routes } from '@angular/router';
-import { AppComponent } from './app.component';
+import { Routes } from "@angular/router";
+import { DoclistComponent } from "./doclist.component";
 
-export const routes: Routes = [
+export const DOCLIST: Routes = [
   {
-    path: "doclist",
-    loadChildren: () => import("./doclist").then((mod) => mod.DOCLIST),
+    path: "",
+    component: DoclistComponent,    
   },
-  { path: "**", component: AppComponent },
+  { path: "**", redirectTo: "" },
 ];
