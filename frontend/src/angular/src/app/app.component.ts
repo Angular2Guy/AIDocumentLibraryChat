@@ -22,5 +22,5 @@ import { RouterOutlet } from '@angular/router';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'AIDocumentLibraryChat';
+  protected title = 'AIDocumentLibraryChat';
 }
