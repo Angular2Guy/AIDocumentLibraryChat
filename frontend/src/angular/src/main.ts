@@ -10,6 +10,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
+/// <reference types="@angular/localize" />
 import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
 import { AppComponent } from './app/app.component';
