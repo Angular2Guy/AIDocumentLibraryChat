@@ -12,14 +12,23 @@
  */
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {MatToolbarModule} from '@angular/material/toolbar'; 
+import {MatButtonModule} from '@angular/material/button'; 
 
 @Component({
   selector: 'app-doclist',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,MatToolbarModule,MatButtonModule],
   templateUrl: './doclist.component.html',
   styleUrls: ['./doclist.component.scss']
 })
 export class DoclistComponent {
 
+	protected import(): void {
+		console.log('import');
+	}
+
+	protected logout(): void {
+		console.log('logout');
+	}
 }
