@@ -11,37 +11,9 @@
    limitations under the License.
  */
 
-.toolbar-content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  width: 100%;
-}
-
-.example-fill-remaining-space {
-  // This fills the remaining space, by using flexbox.
-  // Every toolbar row uses a flexbox row layout.
-  flex: 1 1 auto;
-}
-
-.contact-list {
-  width: 300px;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-
-.table {
-	width: 100%;
-}
-
-@media (max-width: 900px), (max-height: 480px) {
-  .custom-toolbar {
-    height: fit-content;
-    overflow: hidden;
-  }
-  .icon-bar {
-    justify-content: space-between;
-    width: 60%;
-  }
+export interface DocumentFile {
+	id: number;
+	documentName: string;
+	documentType: string;
+	documentContent?: string;
 }

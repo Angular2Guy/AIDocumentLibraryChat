@@ -14,16 +14,20 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {MatToolbarModule} from '@angular/material/toolbar'; 
 import {MatButtonModule} from '@angular/material/button'; 
+import {MatTableModule} from '@angular/material/table'; 
+import { DocumentFile } from '../model/DocumentFile';
 
 @Component({
   selector: 'app-doclist',
   standalone: true,
-  imports: [CommonModule,MatToolbarModule,MatButtonModule],
+  imports: [CommonModule,MatToolbarModule,MatButtonModule,MatTableModule],
   templateUrl: './doclist.component.html',
   styleUrls: ['./doclist.component.scss']
 })
 export class DoclistComponent {
-
+	protected displayedColumns: string[] = ['documentId', 'documentName', 'documentType'];
+	protected documents: DocumentFile[] = [];
+	
 	protected import(): void {
 		console.log('import');
 	}
