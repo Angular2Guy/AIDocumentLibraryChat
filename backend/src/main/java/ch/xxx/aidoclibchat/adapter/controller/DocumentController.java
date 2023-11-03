@@ -15,7 +15,9 @@ package ch.xxx.aidoclibchat.adapter.controller;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,26 +28,35 @@ import ch.xxx.aidoclibchat.domain.model.dto.DocumentDto;
 import ch.xxx.aidoclibchat.usecase.mapping.DocumentMapper;
 import ch.xxx.aidoclibchat.usecase.service.DocumentService;
 
-
 @RestController
 @RequestMapping("rest/document")
 public class DocumentController {
-    private final DocumentMapper documentMapper;
-    private final DocumentService documentService;
+	private final DocumentMapper documentMapper;
+	private final DocumentService documentService;
 
-    public DocumentController(DocumentMapper documentMapper, DocumentService documentService) {
-        this.documentMapper = documentMapper;
-        this.documentService = documentService;
-    }
+	public DocumentController(DocumentMapper documentMapper, DocumentService documentService) {
+		this.documentMapper = documentMapper;
+		this.documentService = documentService;
+	}
 
-    @PostMapping("/upload")
-    public long handleDocumentUpload(@RequestParam("document") MultipartFile document) {        
-        var docSize = this.documentService.storeDocument(this.documentMapper.toEntity(document));
-        return docSize;
-    }
-    
-    @GetMapping("/documentList")
-    public List<DocumentDto> getDocumentList() {
-    	return this.documentService.getDocumentList().stream().flatMap(myDocument -> Stream.of(this.documentMapper.toDto(myDocument))).toList();
-    }
+	@PostMapping("/upload")
+	public long handleDocumentUpload(@RequestParam("document") MultipartFile document) {
+		var docSize = this.documentService.storeDocument(this.documentMapper.toEntity(document));
+		return docSize;
+	}
+
+	@GetMapping("/list")
+	public List<DocumentDto> getDocumentList() {
+		return this.documentService.getDocumentList().stream()
+				.flatMap(myDocument -> Stream.of(this.documentMapper.toDto(myDocument))).flatMap(myDocument -> {
+					myDocument.setDocumentContent(null);
+					return Stream.of(myDocument);
+				}).toList();
+	}
+
+	@GetMapping("/id/{id}")
+	public ResponseEntity<DocumentDto> getDocument(@PathVariable("id") Long id) {
+		return ResponseEntity.ofNullable(this.documentService.getDocumentById(id).stream()
+				.map(myDocument -> this.documentMapper.toDto(myDocument)).findFirst().orElse(null));
+	}
 }

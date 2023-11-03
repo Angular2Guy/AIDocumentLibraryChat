@@ -38,4 +38,8 @@ public class DocumentService {
     public List<Document> getDocumentList() {
     	return this.documentRepository.findAll();
     }
+    
+    public Optional<Document> getDocumentById(Long id) {
+    	return this.documentRepository.findById(id);
+    }
 }
