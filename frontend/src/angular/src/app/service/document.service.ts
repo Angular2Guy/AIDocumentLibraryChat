@@ -28,4 +28,8 @@ export class DocumentService {
   public getDocumentById(id: number): Observable<Document> {
 	  return this.httpClient.get<Document>(`/rest/document/id/${id}`);
   }
+  
+  public postDocumentForm(formData: FormData): Observable<string> {
+	  return this.httpClient.post<string>('/rest/document/upload', formData);
+  }
 }

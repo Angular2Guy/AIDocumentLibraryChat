@@ -37,7 +37,6 @@ export class DoclistComponent {
 	protected import(): void {
 		const dialogRef = this.dialog.open(DocImportComponent, {data: {} as DocImportData});
 		dialogRef.afterClosed().subscribe(result => console.log(result));
-		console.log('import');
 	}
 
 	protected logout(): void {

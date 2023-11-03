@@ -10,13 +10,16 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Component, Inject } from '@angular/core';
+import { Component, DestroyRef, Inject, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialog, MatDialogModule } from '@angular/material/dialog';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatButtonModule} from '@angular/material/button';
 import {FormsModule} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
+import { DocumentService } from '../service/document.service';
+import { tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 export interface DocImportData {
 	
@@ -30,7 +33,26 @@ export interface DocImportData {
   styleUrls: ['./doc-import.component.scss']
 })
 export class DocImportComponent {
-	constructor(public dialogRef: MatDialogRef<DocImportComponent>, @Inject(MAT_DIALOG_DATA) public data: DocImportComponent) { }
+	protected file: File | null  = null;
+	protected uploading = false;
+	private destroyRef = inject(DestroyRef); 
+	
+	constructor(public dialogRef: MatDialogRef<DocImportComponent>, @Inject(MAT_DIALOG_DATA) public data: DocImportComponent, private documentService: DocumentService) { }
+	
+	protected onFileInputChange($event: Event): void {
+		const files = !$event.target ? null : ($event.target as HTMLInputElement).files;
+		this.file = !!files && files.length > 0 ? files[0] : null;				
+	}
+	
+	protected upload(): void {
+		console.log(this.file);
+		if(!!this.file) {
+		  const formData = new FormData();
+          formData.append('file', this.file as Blob, this.file.name as string);
+          this.documentService.postDocumentForm(formData).pipe(tap(() => {this.uploading = true;}), takeUntilDestroyed(this.destroyRef))
+            .subscribe(result => {this.uploading = false; console.log(result);});
+        }
+	}
 	
 	protected cancel(): void {
 		this.dialogRef.close();
