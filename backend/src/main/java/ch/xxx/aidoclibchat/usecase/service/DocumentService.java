@@ -12,6 +12,7 @@
  */
 package ch.xxx.aidoclibchat.usecase.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -32,5 +33,9 @@ public class DocumentService {
     public Long storeDocument(Document document) {
         var myDocument = this.documentRepository.save(document);
         return Optional.ofNullable(myDocument.getDocumentContent()).stream().map(myContent -> Integer.valueOf(myContent.length).longValue()).findFirst().orElse(0L);
+    }
+    
+    public List<Document> getDocumentList() {
+    	return this.documentRepository.findAll();
     }
 }

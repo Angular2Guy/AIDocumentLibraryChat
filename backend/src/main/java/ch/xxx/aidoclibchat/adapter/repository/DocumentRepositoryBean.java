@@ -12,8 +12,11 @@
  */
 package ch.xxx.aidoclibchat.adapter.repository;
 
+import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import ch.xxx.aidoclibchat.domain.model.entity.Document;
@@ -36,5 +39,9 @@ public class DocumentRepositoryBean implements DocumentRepository {
     public Document save(Document document) {
         return this.JpaDocumentRepository.save(document);
     }
-
+    
+    @Override
+    public List<Document> findAll() {
+    	return this.JpaDocumentRepository.findAll(PageRequest.of(0, 100, Sort.by("documentName"))).toList();
+    }
 }

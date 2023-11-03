@@ -12,12 +12,17 @@
  */
 package ch.xxx.aidoclibchat.adapter.controller;
 
+import java.util.List;
+import java.util.stream.Stream;
+
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import ch.xxx.aidoclibchat.domain.model.dto.DocumentDto;
 import ch.xxx.aidoclibchat.usecase.mapping.DocumentMapper;
 import ch.xxx.aidoclibchat.usecase.service.DocumentService;
 
@@ -33,9 +38,14 @@ public class DocumentController {
         this.documentService = documentService;
     }
 
-    @PostMapping
+    @PostMapping("/upload")
     public long handleDocumentUpload(@RequestParam("document") MultipartFile document) {        
         var docSize = this.documentService.storeDocument(this.documentMapper.toEntity(document));
         return docSize;
+    }
+    
+    @GetMapping("/documentList")
+    public List<DocumentDto> getDocumentList() {
+    	return this.documentService.getDocumentList().stream().flatMap(myDocument -> Stream.of(this.documentMapper.toDto(myDocument))).toList();
     }
 }

@@ -12,9 +12,11 @@
  */
 package ch.xxx.aidoclibchat.domain.model.entity;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface DocumentRepository { 
     Optional<Document> findById(Long id);
     Document save(Document document);
+    List<Document> findAll();
 }
