@@ -17,11 +17,14 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatTableModule} from '@angular/material/table'; 
 import { HttpClientModule } from '@angular/common/http';
 import { DocumentFile } from '../model/DocumentFile';
+import {MatDialog, MatDialogRef, MatDialogModule} from '@angular/material/dialog';
+import { DocImportComponent } from '../doc-import/doc-import.component';
+import { DocImportData } from '../doc-import/doc-import.component';
 
 @Component({
   selector: 'app-doclist',
   standalone: true,
-  imports: [CommonModule,MatToolbarModule,MatButtonModule,MatTableModule,HttpClientModule],
+  imports: [CommonModule,MatToolbarModule,MatButtonModule,MatTableModule,HttpClientModule,MatDialogModule],
   templateUrl: './doclist.component.html',
   styleUrls: ['./doclist.component.scss']
 })
@@ -29,7 +32,11 @@ export class DoclistComponent {
 	protected displayedColumns: string[] = ['documentId', 'documentName', 'documentType'];
 	protected documents: DocumentFile[] = [];
 	
+	constructor(public dialog: MatDialog) { }
+	
 	protected import(): void {
+		const dialogRef = this.dialog.open(DocImportComponent, {data: {} as DocImportData});
+		dialogRef.afterClosed().subscribe(result => console.log(result));
 		console.log('import');
 	}
 
