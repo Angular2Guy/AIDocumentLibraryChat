@@ -13,6 +13,10 @@
 import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialog, MatDialogModule } from '@angular/material/dialog';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatButtonModule} from '@angular/material/button';
+import {FormsModule} from '@angular/forms';
+import {MatInputModule} from '@angular/material/input';
 
 export interface DocImportData {
 	
@@ -21,10 +25,14 @@ export interface DocImportData {
 @Component({
   selector: 'app-docimport',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,MatFormFieldModule, MatDialogModule,MatButtonModule, MatInputModule, FormsModule],
   templateUrl: './doc-import.component.html',
   styleUrls: ['./doc-import.component.scss']
 })
 export class DocImportComponent {
 	constructor(public dialogRef: MatDialogRef<DocImportComponent>, @Inject(MAT_DIALOG_DATA) public data: DocImportComponent) { }
+	
+	protected cancel(): void {
+		this.dialogRef.close();
+	}
 }
