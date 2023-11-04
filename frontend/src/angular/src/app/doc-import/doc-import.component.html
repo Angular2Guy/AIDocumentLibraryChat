@@ -10,11 +10,10 @@
       <li>Name: {{file.name}}</li>
       <li>Type: {{file.type}}</li>
       <li>Size: {{file.size}} bytes</li>
-    </ul>
-    <button mat-button (click)="upload()" i18n="@@docimportUpload">Upload</button>
+    </ul>    
   </div>
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="cancel()" i18n="@@cancel">Cancel</button>
-  <button mat-button [mat-dialog-close]="data" cdkFocusInitial i18n="@@close">Close</button>
+  <button mat-flat-button color="primary" [disabled]="!file" (click)="upload()" i18n="@@docimportUpload">Upload</button>
 </div>

@@ -50,7 +50,7 @@ export class DocImportComponent {
 		  const formData = new FormData();
           formData.append('file', this.file as Blob, this.file.name as string);
           this.documentService.postDocumentForm(formData).pipe(tap(() => {this.uploading = true;}), takeUntilDestroyed(this.destroyRef))
-            .subscribe(result => {this.uploading = false; console.log(result);});
+            .subscribe(result => {this.uploading = false; console.log(result); this.dialogRef.close();});
         }
 	}
 	

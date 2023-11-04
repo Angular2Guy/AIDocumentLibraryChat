@@ -40,7 +40,7 @@ public class DocumentController {
 	}
 
 	@PostMapping("/upload")
-	public long handleDocumentUpload(@RequestParam("document") MultipartFile document) {
+	public long handleDocumentUpload(@RequestParam("file") MultipartFile document) {
 		var docSize = this.documentService.storeDocument(this.documentMapper.toEntity(document));
 		return docSize;
 	}

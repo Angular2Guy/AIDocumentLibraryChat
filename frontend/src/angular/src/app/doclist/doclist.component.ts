@@ -37,12 +37,16 @@ export class DoclistComponent implements OnInit {
 	constructor(private dialog: MatDialog, private documentService: DocumentService) { }
     
     public ngOnInit(): void {
-        this.documentService.getDocumentList().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(result => this.documents = result);
+        this.updateDocuments();
     }
+	
+	private updateDocuments(): void {
+		this.documentService.getDocumentList().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(result => this.documents = result);
+	}
 	
 	protected import(): void {
 		const dialogRef = this.dialog.open(DocImportComponent, {data: {} as DocImportData});
-		dialogRef.afterClosed().subscribe(result => console.log(result));
+		dialogRef.afterClosed().subscribe(result => this.updateDocuments());
 	}
 
 	protected logout(): void {
