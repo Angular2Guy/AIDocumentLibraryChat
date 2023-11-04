@@ -37,7 +37,7 @@ export class DocImportComponent {
 	protected uploading = false;
 	private destroyRef = inject(DestroyRef); 
 	
-	constructor(public dialogRef: MatDialogRef<DocImportComponent>, @Inject(MAT_DIALOG_DATA) public data: DocImportComponent, private documentService: DocumentService) { }
+	constructor(private dialogRef: MatDialogRef<DocImportComponent>, @Inject(MAT_DIALOG_DATA) public data: DocImportComponent, private documentService: DocumentService) { }
 	
 	protected onFileInputChange($event: Event): void {
 		const files = !$event.target ? null : ($event.target as HTMLInputElement).files;

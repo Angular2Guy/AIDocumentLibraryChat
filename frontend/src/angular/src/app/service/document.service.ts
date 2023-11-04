@@ -13,6 +13,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { DocumentFile } from '../model/DocumentFile';
 
 @Injectable({
   providedIn: 'root'
@@ -21,12 +22,12 @@ export class DocumentService {
 
   constructor(private httpClient: HttpClient) { }
   
-  public getDocumentList(): Observable<Document[]> {
-	  return this.httpClient.get<Document[]>('/rest/document/list');
+  public getDocumentList(): Observable<DocumentFile[]> {
+	  return this.httpClient.get<DocumentFile[]>('/rest/document/list');
   }   
   
-  public getDocumentById(id: number): Observable<Document> {
-	  return this.httpClient.get<Document>(`/rest/document/id/${id}`);
+  public getDocumentById(id: number): Observable<DocumentFile> {
+	  return this.httpClient.get<DocumentFile>(`/rest/document/id/${id}`);
   }
   
   public postDocumentForm(formData: FormData): Observable<string> {

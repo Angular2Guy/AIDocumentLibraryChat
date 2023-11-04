@@ -10,7 +10,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Component } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {MatToolbarModule} from '@angular/material/toolbar'; 
 import {MatButtonModule} from '@angular/material/button'; 
@@ -19,6 +19,8 @@ import { DocumentFile } from '../model/DocumentFile';
 import {MatDialog, MatDialogRef, MatDialogModule} from '@angular/material/dialog';
 import { DocImportComponent } from '../doc-import/doc-import.component';
 import { DocImportData } from '../doc-import/doc-import.component';
+import { DocumentService } from '../service/document.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-doclist',
@@ -27,11 +29,16 @@ import { DocImportData } from '../doc-import/doc-import.component';
   templateUrl: './doclist.component.html',
   styleUrls: ['./doclist.component.scss']
 })
-export class DoclistComponent {
+export class DoclistComponent implements OnInit {
 	protected displayedColumns: string[] = ['documentId', 'documentName', 'documentType'];
 	protected documents: DocumentFile[] = [];
+	private destroyRef = inject(DestroyRef);
 	
-	constructor(public dialog: MatDialog) { }
+	constructor(private dialog: MatDialog, private documentService: DocumentService) { }
+    
+    public ngOnInit(): void {
+        this.documentService.getDocumentList().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(result => this.documents = result);
+    }
 	
 	protected import(): void {
 		const dialogRef = this.dialog.open(DocImportComponent, {data: {} as DocImportData});
