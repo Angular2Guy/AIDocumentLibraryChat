@@ -15,7 +15,6 @@ import { CommonModule } from '@angular/common';
 import {MatToolbarModule} from '@angular/material/toolbar'; 
 import {MatButtonModule} from '@angular/material/button'; 
 import {MatTableModule} from '@angular/material/table'; 
-import { HttpClientModule } from '@angular/common/http';
 import { DocumentFile } from '../model/DocumentFile';
 import {MatDialog, MatDialogRef, MatDialogModule} from '@angular/material/dialog';
 import { DocImportComponent } from '../doc-import/doc-import.component';
@@ -24,7 +23,7 @@ import { DocImportData } from '../doc-import/doc-import.component';
 @Component({
   selector: 'app-doclist',
   standalone: true,
-  imports: [CommonModule,MatToolbarModule,MatButtonModule,MatTableModule,HttpClientModule,MatDialogModule],
+  imports: [CommonModule,MatToolbarModule,MatButtonModule,MatTableModule,MatDialogModule],
   templateUrl: './doclist.component.html',
   styleUrls: ['./doclist.component.scss']
 })
