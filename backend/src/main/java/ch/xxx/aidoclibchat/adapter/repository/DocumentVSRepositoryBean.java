@@ -20,9 +20,11 @@ import org.springframework.ai.retriever.VectorStoreRetriever;
 import org.springframework.ai.vectorstore.PgVectorStore;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 import ch.xxx.aidoclibchat.domain.model.entity.DocumentVsRepository;
 
+@Repository
 public class DocumentVSRepositoryBean implements DocumentVsRepository {    
     private final VectorStore vectorStore;
     
