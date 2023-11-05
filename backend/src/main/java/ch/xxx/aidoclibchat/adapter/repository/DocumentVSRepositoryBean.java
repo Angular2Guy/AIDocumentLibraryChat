@@ -12,8 +12,33 @@
  */
 package ch.xxx.aidoclibchat.adapter.repository;
 
+import java.util.List;
+
+import org.springframework.ai.document.Document;
+import org.springframework.ai.embedding.EmbeddingClient;
+import org.springframework.ai.retriever.VectorStoreRetriever;
+import org.springframework.ai.vectorstore.PgVectorStore;
+import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.jdbc.core.JdbcTemplate;
+
 import ch.xxx.aidoclibchat.domain.model.entity.DocumentVsRepository;
 
-public class DocumentVSRepositoryBean implements DocumentVsRepository {
-
+public class DocumentVSRepositoryBean implements DocumentVsRepository {    
+    private final VectorStore vectorStore;
+    
+	public DocumentVSRepositoryBean(JdbcTemplate jdbcTemplate, EmbeddingClient embeddingClient) {				
+		this.vectorStore = new PgVectorStore(jdbcTemplate, embeddingClient);
+	}
+	
+	public void add(List<Document> documents) {
+		this.vectorStore.add(documents);
+	}
+	
+	public List<Document> retrieve(String query, int k, double threshold) {
+		return  new VectorStoreRetriever(vectorStore, k, threshold).retrieve(query);
+	}
+	
+	public List<Document> retrieve(String query) {
+		return new VectorStoreRetriever(vectorStore).retrieve(query);
+	}
 }

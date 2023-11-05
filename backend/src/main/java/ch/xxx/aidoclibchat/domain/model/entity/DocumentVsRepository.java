@@ -12,6 +12,12 @@
  */
 package ch.xxx.aidoclibchat.domain.model.entity;
 
-public interface DocumentVsRepository {
+import java.util.List;
 
+import org.springframework.ai.document.Document;
+
+public interface DocumentVsRepository {
+	void add(List<Document> documents);
+	List<Document> retrieve(String query, int k, double threshold);
+	List<Document> retrieve(String query);
 }

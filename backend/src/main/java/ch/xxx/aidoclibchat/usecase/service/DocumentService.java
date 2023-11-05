@@ -13,33 +13,84 @@
 package ch.xxx.aidoclibchat.usecase.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.springframework.ai.client.AiClient;
+import org.springframework.ai.client.AiResponse;
+import org.springframework.ai.client.Generation;
+import org.springframework.ai.prompt.Prompt;
+import org.springframework.ai.prompt.SystemPromptTemplate;
+import org.springframework.ai.prompt.messages.Message;
+import org.springframework.ai.prompt.messages.UserMessage;
+import org.springframework.ai.reader.tika.TikaDocumentReader;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.aidoclibchat.domain.model.entity.Document;
 import ch.xxx.aidoclibchat.domain.model.entity.DocumentRepository;
+import ch.xxx.aidoclibchat.domain.model.entity.DocumentVsRepository;
 import jakarta.transaction.Transactional;
 
 @Service
 @Transactional
 public class DocumentService {
-    private final DocumentRepository documentRepository;
+	private final static String ID = "id";
+	private final DocumentRepository documentRepository;
+	private final DocumentVsRepository documentVsRepository;
+	private final AiClient aiClient;
+	private String systemPrompt = "You're assisting with questions about documents in a catalog.\n"
+			+ "Use the information from the DOCUMENTS section to provide accurate answers.\n"
+			+ "If unsure, simply state that you don't know.\n"
+			+ "\n"
+			+ "DOCUMENTS:\n"
+			+ "{documents}";
 
-    public DocumentService(DocumentRepository documentRepository) {
-        this.documentRepository = documentRepository;
-    }
+	public DocumentService(DocumentRepository documentRepository, DocumentVsRepository documentVsRepository,
+			AiClient aiClient) {
+		this.documentRepository = documentRepository;
+		this.documentVsRepository = documentVsRepository;
+		this.aiClient = aiClient;
+	}
 
-    public Long storeDocument(Document document) {
-        var myDocument = this.documentRepository.save(document);
-        return Optional.ofNullable(myDocument.getDocumentContent()).stream().map(myContent -> Integer.valueOf(myContent.length).longValue()).findFirst().orElse(0L);
+	public Long storeDocument(Document document) {
+		var myDocument = this.documentRepository.save(document);
+		Resource resource = new ByteArrayResource(document.getDocumentContent());
+		var documents = new TikaDocumentReader(resource).get();
+		documents = documents.stream().flatMap(myDocument1 -> {
+			myDocument1.getMetadata().put(ID, myDocument.getId());
+			return Stream.of(myDocument1);
+		}).toList();
+		this.documentVsRepository.add(documents);
+		return Optional.ofNullable(myDocument.getDocumentContent()).stream()
+				.map(myContent -> Integer.valueOf(myContent.length).longValue()).findFirst().orElse(0L);
+	}
+
+	public Generation queryDocuments(String query) {
+		var similarDocuments = this.documentVsRepository.retrieve(query);
+        Message systemMessage = this.getSystemMessage(similarDocuments);
+        UserMessage userMessage = new UserMessage(query);
+        Prompt prompt = new Prompt(List.of(systemMessage, userMessage));        
+        AiResponse response = aiClient.generate(prompt);
+        return response.getGeneration();
+	}
+	
+    private Message getSystemMessage(List<org.springframework.ai.document.Document> similarDocuments) {
+        String documents = similarDocuments.stream().map(entry -> entry.getContent()).collect(Collectors.joining("\n"));
+        SystemPromptTemplate systemPromptTemplate = new SystemPromptTemplate(this.systemPrompt);
+        Message systemMessage = systemPromptTemplate.createMessage(Map.of("documents", documents));
+        return systemMessage;
+
     }
-    
-    public List<Document> getDocumentList() {
-    	return this.documentRepository.findAll();
-    }
-    
-    public Optional<Document> getDocumentById(Long id) {
-    	return this.documentRepository.findById(id);
-    }
+	
+	public List<Document> getDocumentList() {
+		return this.documentRepository.findAll();
+	}
+
+	public Optional<Document> getDocumentById(Long id) {
+		return this.documentRepository.findById(id);
+	}
 }
