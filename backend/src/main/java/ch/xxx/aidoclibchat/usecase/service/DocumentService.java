@@ -18,6 +18,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ai.client.AiClient;
 import org.springframework.ai.client.AiResponse;
 import org.springframework.ai.client.Generation;
@@ -38,7 +40,8 @@ import jakarta.transaction.Transactional;
 @Service
 @Transactional
 public class DocumentService {
-	private final static String ID = "id";
+	private static final Logger LOGGER = LoggerFactory.getLogger(DocumentService.class);
+	private static final String ID = "id";
 	private final DocumentRepository documentRepository;
 	private final DocumentVsRepository documentVsRepository;
 	private final AiClient aiClient;
@@ -64,6 +67,7 @@ public class DocumentService {
 			myDocument1.getMetadata().put(ID, myDocument.getId());
 			return Stream.of(myDocument1);
 		}).toList();
+		LOGGER.info("Name: {}, size: {}", document.getDocumentName(), documents.size());
 		this.documentVsRepository.add(documents);
 		return Optional.ofNullable(myDocument.getDocumentContent()).stream()
 				.map(myContent -> Integer.valueOf(myContent.length).longValue()).findFirst().orElse(0L);
