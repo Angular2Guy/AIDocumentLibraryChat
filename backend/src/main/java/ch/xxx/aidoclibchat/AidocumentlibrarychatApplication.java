@@ -21,5 +21,4 @@ public class AidocumentlibrarychatApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(AidocumentlibrarychatApplication.class, args);
 	}
-
 }

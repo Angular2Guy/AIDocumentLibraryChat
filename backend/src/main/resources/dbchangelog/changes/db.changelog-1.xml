@@ -12,24 +12,42 @@
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 	<changeSet id="1" author="angular2guy">
-		<sql>CREATE EXTENSION if not exists hstore SCHEMA public;</sql>
+		<sql>CREATE EXTENSION if not exists hstore;</sql>		
 	</changeSet>
-	<changeSet author="angular2guy" id="2">
+	<changeSet id="2" author="angular2guy">
+		<sql>CREATE EXTENSION if not exists vector;</sql>		
+	</changeSet>
+	<changeSet id="3" author="angular2guy">
+		<sql>CREATE EXTENSION if not exists "uuid-ossp";</sql>		
+	</changeSet>
+	<changeSet author="angular2guy" id="4">
 		<createTable tableName="document">
 			<column name="id" type="bigint">
 				<constraints primaryKey="true"/> 
 			</column>
 			<column name="document_name" type="varchar(255)">
-				<constraints notNullConstraintName="document_document_name" nullable="false"/>
+				<constraints notNullConstraintName="document_document_name_notnull" nullable="false"/>
 			</column>
 			<column name="document_type" type="varchar(25)">
-				<constraints notNullConstraintName="document_document_type" nullable="false"/>
+				<constraints notNullConstraintName="document_document_type_notnull" nullable="false"/>
 			</column>
 			<column name="document_content" type="blob"/>
 		</createTable>
 	</changeSet>
-	<changeSet author="angular2guy" id="3">
+	<changeSet author="angular2guy" id="5">
 		<createSequence sequenceName="document_seq" incrementBy="50"
 			startValue="1000" />
+	</changeSet>
+	<changeSet id="6" author="angular2guy">
+		<createTable tableName="vector_store">
+			<column name="id" type="uuid" defaultValueComputed="uuid_generate_v4 ()">
+				<constraints primaryKey="true"/> 
+			</column>
+			<column name="content" type="text"/>			
+			<column name="metadata" type="json"/>				
+			<column name="embedding" type="vector(1536)">
+				<constraints notNullConstraintName="vectorstore_embedding_type_notnull" nullable="false"/>
+			</column>
+		</createTable>
 	</changeSet>
 </databaseChangeLog>
