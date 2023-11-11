@@ -17,6 +17,10 @@
 group = 'ch.xxx'
 version = '0.0.1-SNAPSHOT'
 
+java {
+	sourceCompatibility = '21'
+}
+
 task cleanAngular {
 	if(project.hasProperty('withAngular')) {	
 		logger.info('Task cleanAngular')	

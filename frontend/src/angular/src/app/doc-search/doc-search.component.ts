@@ -15,20 +15,29 @@ import { CommonModule } from '@angular/common';
 import {MatToolbarModule} from '@angular/material/toolbar'; 
 import {MatButtonModule} from '@angular/material/button';
 import {MatTableModule} from '@angular/material/table';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {FormsModule} from '@angular/forms';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-doc-search',
   standalone: true,
-  imports: [CommonModule,MatToolbarModule,MatButtonModule,MatTableModule],
+  imports: [CommonModule,MatToolbarModule,MatButtonModule,MatTableModule,MatInputModule,MatFormFieldModule,FormsModule],
   templateUrl: './doc-search.component.html',
   styleUrls: ['./doc-search.component.scss']
 })
 export class DocSearchComponent {        
+	protected searchValue = '';
+	
     constructor(private destroyRef: DestroyRef, private router: Router) { }
     
 	protected showList(): void {
 		this.router.navigate(['/doclist']);
+	}
+	
+	protected search(): void {
+		console.log(this.searchValue);
 	}
 	
 	protected logout(): void {
