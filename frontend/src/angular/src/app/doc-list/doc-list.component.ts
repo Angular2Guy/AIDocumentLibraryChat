@@ -21,6 +21,7 @@ import { DocImportComponent } from '../doc-import/doc-import.component';
 import { DocImportData } from '../doc-import/doc-import.component';
 import { DocumentService } from '../service/document.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-doclist',
@@ -34,7 +35,7 @@ export class DocListComponent implements OnInit {
 	protected documents: DocumentFile[] = [];
 	private destroyRef = inject(DestroyRef);
 	
-	constructor(private dialog: MatDialog, private documentService: DocumentService) { }
+	constructor(private dialog: MatDialog, private documentService: DocumentService, private router: Router) { }
     
     public ngOnInit(): void {
         this.updateDocuments();
@@ -42,6 +43,10 @@ export class DocListComponent implements OnInit {
 	
 	private updateDocuments(): void {
 		this.documentService.getDocumentList().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(result => this.documents = result);
+	}
+	
+	protected search(): void {
+		this.router.navigate(['/docsearch']);
 	}
 	
 	protected import(): void {

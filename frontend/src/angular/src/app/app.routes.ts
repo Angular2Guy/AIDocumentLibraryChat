@@ -17,5 +17,9 @@ export const routes: Routes = [
     path: "doclist",
     loadChildren: () => import("./doc-list").then((mod) => mod.DOCLIST),
   },
+    {
+    path: "docsearch",
+    loadChildren: () => import("./doc-search").then((mod) => mod.DOCSEARCH),
+  },
   { path: "**", redirectTo: "doclist" },
 ];

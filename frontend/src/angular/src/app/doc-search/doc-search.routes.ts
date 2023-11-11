@@ -11,12 +11,12 @@
    limitations under the License.
  */
 import { Routes } from "@angular/router";
-import { DocListComponent } from "./doc-list.component";
+import { DocSearchComponent } from "./doc-search.component";
 
-export const DOCLIST: Routes = [
+export const DOCSEARCH: Routes = [
   {
     path: "",
-    component: DocListComponent,    
+    component: DocSearchComponent,    
   },
   { path: "**", redirectTo: "" },
 ];
