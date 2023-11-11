@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DoclistComponent } from './doclist.component';
+import { DocListComponent } from './doc-list.component';
 /*
 describe('DoclistComponent', () => {
   let component: DoclistComponent;

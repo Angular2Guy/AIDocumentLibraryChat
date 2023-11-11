@@ -50,4 +50,7 @@
 			</column>
 		</createTable>
 	</changeSet>
+	<changeSet id="7" author="angular2guy">
+		<sql>CREATE INDEX vectorstore_embedding_index ON vector_store USING HNSW (embedding vector_cosine_ops);</sql>
+	</changeSet>
 </databaseChangeLog>
