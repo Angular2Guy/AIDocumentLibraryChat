@@ -15,7 +15,7 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: "doclist",
-    loadChildren: () => import("./doclist").then((mod) => mod.DOCLIST),
+    loadChildren: () => import("./doc-list").then((mod) => mod.DOCLIST),
   },
   { path: "**", redirectTo: "doclist" },
 ];

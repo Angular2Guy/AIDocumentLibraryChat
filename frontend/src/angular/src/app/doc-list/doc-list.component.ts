@@ -26,10 +26,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   selector: 'app-doclist',
   standalone: true,
   imports: [CommonModule,MatToolbarModule,MatButtonModule,MatTableModule,MatDialogModule],
-  templateUrl: './doclist.component.html',
-  styleUrls: ['./doclist.component.scss']
+  templateUrl: './doc-list.component.html',
+  styleUrls: ['./doc-list.component.scss']
 })
-export class DoclistComponent implements OnInit {
+export class DocListComponent implements OnInit {
 	protected displayedColumns: string[] = ['documentId', 'documentName', 'documentType'];
 	protected documents: DocumentFile[] = [];
 	private destroyRef = inject(DestroyRef);
