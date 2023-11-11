@@ -19,12 +19,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import ch.xxx.aidoclibchat.domain.model.dto.DocumentDto;
+import ch.xxx.aidoclibchat.domain.model.dto.DocumentSearchDto;
+import ch.xxx.aidoclibchat.domain.model.dto.SearchDto;
 import ch.xxx.aidoclibchat.usecase.mapping.DocumentMapper;
 import ch.xxx.aidoclibchat.usecase.service.DocumentService;
 
@@ -58,5 +61,11 @@ public class DocumentController {
 	public ResponseEntity<DocumentDto> getDocument(@PathVariable("id") Long id) {
 		return ResponseEntity.ofNullable(this.documentService.getDocumentById(id).stream()
 				.map(myDocument -> this.documentMapper.toDto(myDocument)).findFirst().orElse(null));
+	}
+	
+	@PostMapping("/search")
+	public DocumentSearchDto postDocumentSearch(@RequestBody SearchDto searchDto) {
+		var result = this.documentMapper.toDto(this.documentService.queryDocuments(searchDto.getSearchString()));
+		return result;
 	}
 }

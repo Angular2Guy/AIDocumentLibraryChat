@@ -22,7 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.client.AiClient;
 import org.springframework.ai.client.AiResponse;
-import org.springframework.ai.client.Generation;
 import org.springframework.ai.prompt.Prompt;
 import org.springframework.ai.prompt.SystemPromptTemplate;
 import org.springframework.ai.prompt.messages.Message;
@@ -32,6 +31,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
+import ch.xxx.aidoclibchat.domain.model.dto.AiResult;
 import ch.xxx.aidoclibchat.domain.model.entity.Document;
 import ch.xxx.aidoclibchat.domain.model.entity.DocumentRepository;
 import ch.xxx.aidoclibchat.domain.model.entity.DocumentVsRepository;
@@ -47,10 +47,7 @@ public class DocumentService {
 	private final AiClient aiClient;
 	private String systemPrompt = "You're assisting with questions about documents in a catalog.\n"
 			+ "Use the information from the DOCUMENTS section to provide accurate answers.\n"
-			+ "If unsure, simply state that you don't know.\n"
-			+ "\n"
-			+ "DOCUMENTS:\n"
-			+ "{documents}";
+			+ "If unsure, simply state that you don't know.\n" + "\n" + "DOCUMENTS:\n" + "{documents}";
 
 	public DocumentService(DocumentRepository documentRepository, DocumentVsRepository documentVsRepository,
 			AiClient aiClient) {
@@ -73,23 +70,26 @@ public class DocumentService {
 				.map(myContent -> Integer.valueOf(myContent.length).longValue()).findFirst().orElse(0L);
 	}
 
-	public Generation queryDocuments(String query) {
+	public AiResult queryDocuments(String query) {
 		var similarDocuments = this.documentVsRepository.retrieve(query);
-        Message systemMessage = this.getSystemMessage(similarDocuments);
-        UserMessage userMessage = new UserMessage(query);
-        Prompt prompt = new Prompt(List.of(systemMessage, userMessage));        
-        AiResponse response = aiClient.generate(prompt);
-        return response.getGeneration();
+		Message systemMessage = this.getSystemMessage(similarDocuments);
+		UserMessage userMessage = new UserMessage(query);
+		Prompt prompt = new Prompt(List.of(systemMessage, userMessage));
+		AiResponse response = aiClient.generate(prompt);
+		var documents = response.getGenerations().stream().map(myGen -> myGen.getInfo().get(ID))
+				.filter(myId -> (myId instanceof Long)).map(myId -> this.documentRepository.findById((Long) myId))
+				.filter(Optional::isPresent).map(Optional::get).toList();
+		return new AiResult(query, response.getGenerations(), documents);
 	}
-	
-    private Message getSystemMessage(List<org.springframework.ai.document.Document> similarDocuments) {
-        String documents = similarDocuments.stream().map(entry -> entry.getContent()).collect(Collectors.joining("\n"));
-        SystemPromptTemplate systemPromptTemplate = new SystemPromptTemplate(this.systemPrompt);
-        Message systemMessage = systemPromptTemplate.createMessage(Map.of("documents", documents));
-        return systemMessage;
 
-    }
-	
+	private Message getSystemMessage(List<org.springframework.ai.document.Document> similarDocuments) {
+		String documents = similarDocuments.stream().map(entry -> entry.getContent()).collect(Collectors.joining("\n"));
+		SystemPromptTemplate systemPromptTemplate = new SystemPromptTemplate(this.systemPrompt);
+		Message systemMessage = systemPromptTemplate.createMessage(Map.of("documents", documents));
+		return systemMessage;
+
+	}
+
 	public List<Document> getDocumentList() {
 		return this.documentRepository.findAll();
 	}

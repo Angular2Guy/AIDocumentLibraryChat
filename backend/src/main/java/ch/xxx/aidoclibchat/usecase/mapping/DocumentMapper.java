@@ -19,7 +19,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import ch.xxx.aidoclibchat.domain.common.DocumentType;
+import ch.xxx.aidoclibchat.domain.model.dto.AiResult;
 import ch.xxx.aidoclibchat.domain.model.dto.DocumentDto;
+import ch.xxx.aidoclibchat.domain.model.dto.DocumentSearchDto;
 import ch.xxx.aidoclibchat.domain.model.entity.Document;
 
 @Component
@@ -53,6 +55,14 @@ public class DocumentMapper {
 		dto.setDocumentName(entity.getDocumentName());
 		dto.setDocumentType(entity.getDocumentType());
 		dto.setId(entity.getId());
+		return dto;
+	}
+	
+	public DocumentSearchDto toDto(AiResult aiResult) {
+		var dto = new DocumentSearchDto();
+		dto.setDocuments(aiResult.documents().stream().map(myDoc -> this.toDto(myDoc)).toList());
+		dto.setResultStrings(aiResult.generations().stream().map(myGen -> myGen.getText()).toList());
+		dto.setSearchString(aiResult.searchString());
 		return dto;
 	}
 }
