@@ -70,7 +70,8 @@ public class DocumentService {
 						myTikaRecord.document().getMetadata()))
 				.peek(myDocument1 -> myDocument1.getMetadata().put(ID, myDocument.getId())).toList();
 
-		LOGGER.info("Name: {}, size: {}, chunks: {}", document.getDocumentName(), document.getDocumentContent().length, aiDocuments.size());
+		LOGGER.info("Name: {}, size: {}, chunks: {}", document.getDocumentName(), document.getDocumentContent().length,
+				aiDocuments.size());
 		this.documentVsRepository.add(aiDocuments);
 		return Optional.ofNullable(myDocument.getDocumentContent()).stream()
 				.map(myContent -> Integer.valueOf(myContent.length).longValue()).findFirst().orElse(0L);
@@ -79,7 +80,8 @@ public class DocumentService {
 	public AiResult queryDocuments(String query) {
 		var similarDocuments = this.documentVsRepository.retrieve(query);
 		LOGGER.info("Documents: {}", similarDocuments.size());
-		Message systemMessage = this.getSystemMessage(similarDocuments, 2500);
+		Message systemMessage = this.getSystemMessage(similarDocuments,
+				(similarDocuments.size() <= 0 ? 2000 : Math.floorDiv(2000, similarDocuments.size())));
 		UserMessage userMessage = new UserMessage(query);
 		Prompt prompt = new Prompt(List.of(systemMessage, userMessage));
 		AiResponse response = aiClient.generate(prompt);
@@ -103,15 +105,16 @@ public class DocumentService {
 		List<String> splitStrings = new ArrayList<>();
 		var tokens = new StringTokenizer(documentStr).countTokens();
 		var chunks = Math.ceilDiv(tokens, tokenLimit);
-		if(chunks == 0) {
+		if (chunks == 0) {
 			return splitStrings;
 		}
-		var chunkSize = Math.ceilDiv(documentStr.length() , chunks);
+		var chunkSize = Math.ceilDiv(documentStr.length(), chunks);
 		var myDocumentStr = new String(documentStr);
-		while(!myDocumentStr.isBlank()) {
-			splitStrings.add(myDocumentStr.length() > chunkSize ? myDocumentStr.substring(0, chunkSize) : myDocumentStr);
+		while (!myDocumentStr.isBlank()) {
+			splitStrings
+					.add(myDocumentStr.length() > chunkSize ? myDocumentStr.substring(0, chunkSize) : myDocumentStr);
 			myDocumentStr = myDocumentStr.length() > chunkSize ? myDocumentStr.substring(chunkSize) : "";
-		}		
+		}
 		return splitStrings;
 	}
 
