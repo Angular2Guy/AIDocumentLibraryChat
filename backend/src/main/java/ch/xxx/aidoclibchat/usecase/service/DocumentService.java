@@ -12,13 +12,12 @@
  */
 package ch.xxx.aidoclibchat.usecase.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,19 +60,25 @@ public class DocumentService {
 	public Long storeDocument(Document document) {
 		var myDocument = this.documentRepository.save(document);
 		Resource resource = new ByteArrayResource(document.getDocumentContent());
-		var documents = new TikaDocumentReader(resource).get();
-		documents = documents.stream().flatMap(myDocument1 -> {
-			myDocument1.getMetadata().put(ID, myDocument.getId());
-			return Stream.of(myDocument1);
-		}).toList();
-		LOGGER.info("Name: {}, size: {}", document.getDocumentName(), documents.size());
-		this.documentVsRepository.add(documents);
+		var tikaDocuments = new TikaDocumentReader(resource).get();
+		record TikaDocumentAndContent(org.springframework.ai.document.Document document, String content) {
+		}
+		var aiDocuments = tikaDocuments.stream()
+				.flatMap(myDocument1 -> this.splitStringToTokenLimit(myDocument1.getContent(), 5000).stream()
+						.map(myStr -> new TikaDocumentAndContent(myDocument1, myStr)))
+				.map(myTikaRecord -> new org.springframework.ai.document.Document(myTikaRecord.content(),
+						myTikaRecord.document().getMetadata()))
+				.peek(myDocument1 -> myDocument1.getMetadata().put(ID, myDocument.getId())).toList();
+
+		LOGGER.info("Name: {}, size: {}, chunks: {}", document.getDocumentName(), document.getDocumentContent().length, aiDocuments.size());
+		this.documentVsRepository.add(aiDocuments);
 		return Optional.ofNullable(myDocument.getDocumentContent()).stream()
 				.map(myContent -> Integer.valueOf(myContent.length).longValue()).findFirst().orElse(0L);
 	}
 
 	public AiResult queryDocuments(String query) {
 		var similarDocuments = this.documentVsRepository.retrieve(query);
+		LOGGER.info("Documents: {}", similarDocuments.size());
 		Message systemMessage = this.getSystemMessage(similarDocuments, 2500);
 		UserMessage userMessage = new UserMessage(query);
 		Prompt prompt = new Prompt(List.of(systemMessage, userMessage));
@@ -94,8 +99,24 @@ public class DocumentService {
 
 	}
 
+	private List<String> splitStringToTokenLimit(String documentStr, int tokenLimit) {
+		List<String> splitStrings = new ArrayList<>();
+		var tokens = new StringTokenizer(documentStr).countTokens();
+		var chunks = Math.ceilDiv(tokens, tokenLimit);
+		if(chunks == 0) {
+			return splitStrings;
+		}
+		var chunkSize = Math.ceilDiv(documentStr.length() , chunks);
+		var myDocumentStr = new String(documentStr);
+		while(!myDocumentStr.isBlank()) {
+			splitStrings.add(myDocumentStr.length() > chunkSize ? myDocumentStr.substring(0, chunkSize) : myDocumentStr);
+			myDocumentStr = myDocumentStr.length() > chunkSize ? myDocumentStr.substring(chunkSize) : "";
+		}		
+		return splitStrings;
+	}
+
 	private String cutStringToTokenLimit(String documentStr, int tokenLimit) {
-		String cutString = documentStr;
+		String cutString = new String(documentStr);
 		while (tokenLimit < new StringTokenizer(cutString, " -.;,").countTokens()) {
 			cutString = cutString.length() > 1000 ? cutString.substring(0, cutString.length() - 1000) : "";
 		}
