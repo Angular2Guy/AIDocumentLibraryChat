@@ -12,6 +12,9 @@
  */
 package ch.xxx.aidoclibchat.usecase.service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -84,7 +87,11 @@ public class DocumentService {
 				(similarDocuments.size() <= 0 ? 2000 : Math.floorDiv(2000, similarDocuments.size())));
 		UserMessage userMessage = new UserMessage(query);
 		Prompt prompt = new Prompt(List.of(systemMessage, userMessage));
+		LocalDateTime start = LocalDateTime.now();
 		AiResponse response = aiClient.generate(prompt);
+		LOGGER.info("AI response time: {}ms",
+				ZonedDateTime.of(LocalDateTime.now(), ZoneId.systemDefault()).toInstant().toEpochMilli()
+						- ZonedDateTime.of(start, ZoneId.systemDefault()).toInstant().toEpochMilli());
 		var documents = response.getGenerations().stream().map(myGen -> myGen.getInfo().get(ID))
 				.filter(myId -> (myId instanceof Long)).map(myId -> this.documentRepository.findById((Long) myId))
 				.filter(Optional::isPresent).map(Optional::get).toList();
