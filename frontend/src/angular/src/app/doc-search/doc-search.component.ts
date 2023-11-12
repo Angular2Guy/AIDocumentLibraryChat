@@ -17,27 +17,33 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatTableModule} from '@angular/material/table';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
-import {FormsModule} from '@angular/forms';
+import {FormControl, FormsModule,ReactiveFormsModule, Validators} from '@angular/forms';
 import { Router } from '@angular/router';
+import { DocumentService } from '../service/document.service';
+import { DocumentSearch } from '../model/documents';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
 
 @Component({
   selector: 'app-doc-search',
   standalone: true,
-  imports: [CommonModule,MatToolbarModule,MatButtonModule,MatTableModule,MatInputModule,MatFormFieldModule,FormsModule],
+  imports: [CommonModule,MatToolbarModule,MatButtonModule,MatTableModule,MatInputModule,MatFormFieldModule,FormsModule,ReactiveFormsModule],
   templateUrl: './doc-search.component.html',
   styleUrls: ['./doc-search.component.scss']
 })
 export class DocSearchComponent {        
-	protected searchValue = '';
+	protected searchValueControl = new FormControl('', [Validators.required, Validators.minLength(3)]);
+	protected searchResults: string[] = [];
 	
-    constructor(private destroyRef: DestroyRef, private router: Router) { }
+    constructor(private destroyRef: DestroyRef, private router: Router, private documentService: DocumentService) { }
     
 	protected showList(): void {
 		this.router.navigate(['/doclist']);
 	}
 	
 	protected search(): void {
-		console.log(this.searchValue);
+		const documentSearch = {searchString: this.searchValueControl.value} as DocumentSearch;
+		this.documentService.postDocumentSearch(documentSearch).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(result => this.searchResults = result.resultStrings);
 	}
 	
 	protected logout(): void {

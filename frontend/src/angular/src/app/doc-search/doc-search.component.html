@@ -14,14 +14,17 @@
     </div>
   </div>
 </mat-toolbar>
-	<div class="search-bar">
-		<mat-form-field class="example-full-width">
-  			<mat-label i18n="@@search">Search</mat-label>
-  			<textarea matInput [(ngModel)]="searchValue"></textarea>
-		</mat-form-field>
-		<div class="search-button-box">
-		<button mat-flat-button color="primary" (click)="search()" i18n="@@search">
+<div class="search-bar">
+	<mat-form-field class="example-full-width">
+		<mat-label i18n="@@search">Search</mat-label>
+		<textarea matInput [formControl]="searchValueControl"></textarea>
+	</mat-form-field>
+	<div class="search-button-box">
+		<button mat-flat-button color="primary" (click)="search()" [disabled]="searchValueControl.invalid" i18n="@@search">
         	Search
       	</button>
-      	</div>	
-	</div>
+    </div>	
+</div>
+<div *ngFor="let searchResult of searchResults">
+	{{searchResult}}
+</div>

@@ -15,7 +15,7 @@ import { CommonModule } from '@angular/common';
 import {MatToolbarModule} from '@angular/material/toolbar'; 
 import {MatButtonModule} from '@angular/material/button'; 
 import {MatTableModule} from '@angular/material/table'; 
-import { DocumentFile } from '../model/DocumentFile';
+import { DocumentFile } from '../model/document-file';
 import {MatDialog, MatDialogRef, MatDialogModule} from '@angular/material/dialog';
 import { DocImportComponent } from '../doc-import/doc-import.component';
 import { DocImportData } from '../doc-import/doc-import.component';

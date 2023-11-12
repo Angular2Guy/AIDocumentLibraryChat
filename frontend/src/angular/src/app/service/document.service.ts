@@ -13,7 +13,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { DocumentFile } from '../model/DocumentFile';
+import { DocumentFile } from '../model/document-file';
+import { DocumentSearch, DocumentSearchResult } from '../model/documents';
 
 @Injectable({
   providedIn: 'root'
@@ -32,5 +33,9 @@ export class DocumentService {
   
   public postDocumentForm(formData: FormData): Observable<string> {
 	  return this.httpClient.post<string>('/rest/document/upload', formData);
+  }
+  
+  public postDocumentSearch(documentSearch: DocumentSearch): Observable<DocumentSearchResult> {
+	  return this.httpClient.post<DocumentSearchResult>('/rest/document/search', documentSearch);
   }
 }
