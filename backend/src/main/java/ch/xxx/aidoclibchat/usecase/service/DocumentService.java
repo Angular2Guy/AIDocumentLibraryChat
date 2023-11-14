@@ -46,6 +46,7 @@ import jakarta.transaction.Transactional;
 public class DocumentService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DocumentService.class);
 	private static final String ID = "id";
+	private static final String DISTANCE = "distance";
 	private final DocumentRepository documentRepository;
 	private final DocumentVsRepository documentVsRepository;
 	private final AiClient aiClient;
@@ -83,8 +84,16 @@ public class DocumentService {
 	public AiResult queryDocuments(String query) {
 		var similarDocuments = this.documentVsRepository.retrieve(query);
 		LOGGER.info("Documents: {}", similarDocuments.size());
-		Message systemMessage = this.getSystemMessage(similarDocuments,
-				(similarDocuments.size() <= 0 ? 2000 : Math.floorDiv(2000, similarDocuments.size())));
+		var mostSimilar = similarDocuments.stream()
+				.sorted((myDocA, myDocB) -> ((Float) myDocA.getMetadata().get(DISTANCE))
+						.compareTo(((Float) myDocB.getMetadata().get(DISTANCE))))
+				.findFirst();
+		var documentChunks = mostSimilar.stream()
+				.flatMap(mySimilar -> similarDocuments.stream()
+						.filter(mySimilar1 -> mySimilar1.getMetadata().get(ID).equals(mySimilar.getMetadata().get(ID))))
+				.toList();
+		Message systemMessage = this.getSystemMessage(documentChunks,
+				(documentChunks.size() <= 0 ? 2000 : Math.floorDiv(2000, documentChunks.size())));
 		UserMessage userMessage = new UserMessage(query);
 		Prompt prompt = new Prompt(List.of(systemMessage, userMessage));
 		LocalDateTime start = LocalDateTime.now();
@@ -92,9 +101,10 @@ public class DocumentService {
 		LOGGER.info("AI response time: {}ms",
 				ZonedDateTime.of(LocalDateTime.now(), ZoneId.systemDefault()).toInstant().toEpochMilli()
 						- ZonedDateTime.of(start, ZoneId.systemDefault()).toInstant().toEpochMilli());
-		var documents = response.getGenerations().stream().map(myGen -> myGen.getInfo().get(ID))
-				.filter(myId -> (myId instanceof Long)).map(myId -> this.documentRepository.findById((Long) myId))
-				.filter(Optional::isPresent).map(Optional::get).toList();
+		var documents = mostSimilar.stream().map(myGen -> myGen.getMetadata().get(ID))
+				.map(myId -> (myId instanceof Integer ? Integer.valueOf((Integer) myId).longValue() : (Long) myId))
+				.map(myId -> this.documentRepository.findById(myId)).filter(Optional::isPresent).map(Optional::get)
+				.toList();
 		return new AiResult(query, response.getGenerations(), documents);
 	}
 

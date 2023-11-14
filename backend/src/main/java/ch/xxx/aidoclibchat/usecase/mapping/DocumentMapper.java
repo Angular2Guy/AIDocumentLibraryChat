@@ -50,17 +50,25 @@ public class DocumentMapper {
 	}
 
 	public DocumentDto toDto(Document entity) {
+		return this.toDto(entity, false);
+	}
+
+	private DocumentDto toDto(Document entity, boolean noContent) {
 		var dto = new DocumentDto();
-		dto.setDocumentContent(entity.getDocumentContent());
+		dto.setDocumentContent(noContent ? null : entity.getDocumentContent());
 		dto.setDocumentName(entity.getDocumentName());
 		dto.setDocumentType(entity.getDocumentType());
 		dto.setId(entity.getId());
 		return dto;
 	}
-	
+
+	public DocumentDto toDtoNoContent(Document entity) {
+		return this.toDto(entity, true);
+	}
+
 	public DocumentSearchDto toDto(AiResult aiResult) {
 		var dto = new DocumentSearchDto();
-		dto.setDocuments(aiResult.documents().stream().map(myDoc -> this.toDto(myDoc)).toList());
+		dto.setDocuments(aiResult.documents().stream().map(myDoc -> this.toDtoNoContent(myDoc)).toList());
 		dto.setResultStrings(aiResult.generations().stream().map(myGen -> myGen.getText()).toList());
 		dto.setSearchString(aiResult.searchString());
 		return dto;
