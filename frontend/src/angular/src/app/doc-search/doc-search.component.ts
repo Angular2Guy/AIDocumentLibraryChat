@@ -22,18 +22,23 @@ import { Router } from '@angular/router';
 import { DocumentService } from '../service/document.service';
 import { DocumentSearch } from '../model/documents';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { map, tap } from 'rxjs/operators';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'; 
+import { interval } from 'rxjs';
 
 
 @Component({
   selector: 'app-doc-search',
   standalone: true,
-  imports: [CommonModule,MatToolbarModule,MatButtonModule,MatTableModule,MatInputModule,MatFormFieldModule,FormsModule,ReactiveFormsModule],
+  imports: [CommonModule,MatToolbarModule,MatButtonModule,MatTableModule,MatInputModule,MatFormFieldModule,FormsModule,ReactiveFormsModule,MatProgressSpinnerModule],
   templateUrl: './doc-search.component.html',
   styleUrls: ['./doc-search.component.scss']
 })
 export class DocSearchComponent {        
 	protected searchValueControl = new FormControl('', [Validators.required, Validators.minLength(3)]);
 	protected searchResults: string[] = [];
+	protected searching = false;
+	protected msWorking = 0;
 	
     constructor(private destroyRef: DestroyRef, private router: Router, private documentService: DocumentService) { }
     
@@ -42,8 +47,17 @@ export class DocSearchComponent {
 	}
 	
 	protected search(): void {
+		const startDate = new Date();
+		this.msWorking = 0;
+		this.searching = true;
+		const repeatSub = interval(100).pipe(map(() => new Date())).subscribe(newDate => this.msWorking = newDate.getTime() - startDate.getTime());
 		const documentSearch = {searchString: this.searchValueControl.value} as DocumentSearch;
-		this.documentService.postDocumentSearch(documentSearch).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(result => this.searchResults = result.resultStrings);
+		this.documentService.postDocumentSearch(documentSearch)
+		  .pipe(takeUntilDestroyed(this.destroyRef), tap(() => this.searching = false), tap(() => repeatSub.unsubscribe()))
+		  .subscribe(result => {
+			  this.searchResults = result.resultStrings;
+			  //console.log(this.searchResults);
+			  });
 	}
 	
 	protected logout(): void {
