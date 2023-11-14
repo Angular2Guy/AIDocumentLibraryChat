@@ -1,5 +1,3 @@
-import { DocumentFile } from "./document-file";
-
 /**
  *    Copyright 2023 Sven Loesekann
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +10,8 @@ import { DocumentFile } from "./document-file";
    See the License for the specific language governing permissions and
    limitations under the License.
  */
+import { DocumentFile } from "./document-file";
+
 export interface DocumentSearch {
 	searchString: string;
 }

@@ -47,6 +47,7 @@ export class DocSearchComponent {
 	}
 	
 	protected search(): void {
+		this.searchResults = [];
 		const startDate = new Date();
 		this.msWorking = 0;
 		this.searching = true;
