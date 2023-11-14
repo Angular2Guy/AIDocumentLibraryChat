@@ -24,7 +24,7 @@ import { DocumentSearch } from '../model/documents';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map, tap } from 'rxjs/operators';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'; 
-import { interval } from 'rxjs';
+import { Subscription, interval } from 'rxjs';
 
 
 @Component({
@@ -39,6 +39,7 @@ export class DocSearchComponent {
 	protected searchResults: string[] = [];
 	protected searching = false;
 	protected msWorking = 0;
+	private repeatSub: Subscription | null = null;
 	
     constructor(private destroyRef: DestroyRef, private router: Router, private documentService: DocumentService) { }
     
@@ -51,13 +52,14 @@ export class DocSearchComponent {
 		const startDate = new Date();
 		this.msWorking = 0;
 		this.searching = true;
-		const repeatSub = interval(100).pipe(map(() => new Date())).subscribe(newDate => this.msWorking = newDate.getTime() - startDate.getTime());
+		this.repeatSub?.unsubscribe();
+		this.repeatSub = interval(100).pipe(map(() => new Date()), takeUntilDestroyed(this.destroyRef)).subscribe(newDate => this.msWorking = newDate.getTime() - startDate.getTime());
 		const documentSearch = {searchString: this.searchValueControl.value} as DocumentSearch;
 		this.documentService.postDocumentSearch(documentSearch)
-		  .pipe(takeUntilDestroyed(this.destroyRef), tap(() => this.searching = false), tap(() => repeatSub.unsubscribe()))
+		  .pipe(takeUntilDestroyed(this.destroyRef), tap(() => this.searching = false), tap(() => this.repeatSub?.unsubscribe()))
 		  .subscribe(result => {
 			  this.searchResults = result.resultStrings;
-			  //console.log(this.searchResults);
+			  console.log(this.searchResults);
 			  });
 	}
 	
