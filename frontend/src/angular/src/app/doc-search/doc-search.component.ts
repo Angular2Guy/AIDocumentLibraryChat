@@ -20,7 +20,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {FormControl, FormsModule,ReactiveFormsModule, Validators} from '@angular/forms';
 import { Router } from '@angular/router';
 import { DocumentService } from '../service/document.service';
-import { DocumentSearch } from '../model/documents';
+import { DocumentSearch, DocumentSearchResult } from '../model/documents';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map, tap } from 'rxjs/operators';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'; 
@@ -36,7 +36,7 @@ import { Subscription, interval } from 'rxjs';
 })
 export class DocSearchComponent {        
 	protected searchValueControl = new FormControl('', [Validators.required, Validators.minLength(3)]);
-	protected searchResults: string[] = [];
+	protected searchResult: DocumentSearchResult | null = null;
 	protected searching = false;
 	protected msWorking = 0;
 	private repeatSub: Subscription | null = null;
@@ -48,7 +48,7 @@ export class DocSearchComponent {
 	}
 	
 	protected search(): void {
-		this.searchResults = [];
+		this.searchResult = null;
 		const startDate = new Date();
 		this.msWorking = 0;
 		this.searching = true;
@@ -58,8 +58,8 @@ export class DocSearchComponent {
 		this.documentService.postDocumentSearch(documentSearch)
 		  .pipe(takeUntilDestroyed(this.destroyRef), tap(() => this.searching = false), tap(() => this.repeatSub?.unsubscribe()))
 		  .subscribe(result => {
-			  this.searchResults = result.resultStrings;
-			  console.log(this.searchResults);
+			  this.searchResult = result;
+			  console.log(this.searchResult);
 			  });
 	}
 	

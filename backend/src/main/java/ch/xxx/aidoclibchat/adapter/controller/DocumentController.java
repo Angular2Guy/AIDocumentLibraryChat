@@ -15,6 +15,7 @@ package ch.xxx.aidoclibchat.adapter.controller;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -57,10 +58,17 @@ public class DocumentController {
 				}).toList();
 	}
 
-	@GetMapping("/id/{id}")
+	@GetMapping("/doc/{id}")
 	public ResponseEntity<DocumentDto> getDocument(@PathVariable("id") Long id) {
 		return ResponseEntity.ofNullable(this.documentService.getDocumentById(id).stream()
 				.map(myDocument -> this.documentMapper.toDto(myDocument)).findFirst().orElse(null));
+	}
+	
+	@GetMapping("/pdf/{id}")
+	public ResponseEntity<byte[]> getDocumentPdf(@PathVariable("id") Long id) {		
+		var resultOpt = this.documentService.getDocumentById(id).stream()
+		.map(myDocument -> this.documentMapper.toDto(myDocument)).map(myDocument -> myDocument.getDocumentContent()).findFirst();
+		return resultOpt.isPresent() ? ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF).body(resultOpt.get()) : ResponseEntity.notFound().build();		
 	}
 	
 	@PostMapping("/search")
