@@ -72,7 +72,7 @@ public class DocumentService {
 						.map(myStr -> new TikaDocumentAndContent(myDocument1, myStr)))
 				.map(myTikaRecord -> new org.springframework.ai.document.Document(myTikaRecord.content(),
 						myTikaRecord.document().getMetadata()))
-				.peek(myDocument1 -> myDocument1.getMetadata().put(ID, myDocument.getId())).toList();
+				.peek(myDocument1 -> myDocument1.getMetadata().put(ID, myDocument.getId().toString())).toList();
 
 		LOGGER.info("Name: {}, size: {}, chunks: {}", document.getDocumentName(), document.getDocumentContent().length,
 				aiDocuments.size());
@@ -102,7 +102,8 @@ public class DocumentService {
 				ZonedDateTime.of(LocalDateTime.now(), ZoneId.systemDefault()).toInstant().toEpochMilli()
 						- ZonedDateTime.of(start, ZoneId.systemDefault()).toInstant().toEpochMilli());
 		var documents = mostSimilar.stream().map(myGen -> myGen.getMetadata().get(ID))
-				.map(myId -> (myId instanceof Integer ? Integer.valueOf((Integer) myId).longValue() : (Long) myId))
+				.filter(myId -> Optional.ofNullable(myId).stream().allMatch(myId1 -> (myId1 instanceof String)))
+				.map(myId -> Long.parseLong(((String) myId)))
 				.map(myId -> this.documentRepository.findById(myId)).filter(Optional::isPresent).map(Optional::get)
 				.toList();
 		return new AiResult(query, response.getGenerations(), documents);
