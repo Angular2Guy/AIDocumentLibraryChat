@@ -15,6 +15,7 @@ package ch.xxx.aidoclibchat.usecase.mapping;
 import java.io.IOException;
 import java.util.Optional;
 
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,9 +32,17 @@ public class DocumentMapper {
 		try {
 			entity.setDocumentContent(multipartFile.getBytes());
 			entity.setDocumentName(multipartFile.getOriginalFilename());
-			entity.setDocumentType(Optional.ofNullable(multipartFile.getContentType()).stream()
-					.filter(myContentType -> myContentType.contains("pdf")).map(x -> DocumentType.PDF).findFirst()
-					.orElse(DocumentType.UNKNOWN));
+			entity.setDocumentType(Optional.ofNullable(multipartFile.getContentType()).stream().map(myContentType -> {
+				var result = switch (myContentType) {
+				case MediaType.APPLICATION_PDF_VALUE -> DocumentType.PDF;
+				case MediaType.TEXT_HTML_VALUE -> DocumentType.HTML;
+				case MediaType.TEXT_PLAIN_VALUE -> DocumentType.TEXT;
+				case MediaType.APPLICATION_XML_VALUE -> DocumentType.XML;
+				case MediaType.TEXT_XML_VALUE -> DocumentType.XML;
+				default -> DocumentType.UNKNOWN;
+				};
+				return result;
+			}).findFirst().orElse(DocumentType.UNKNOWN));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

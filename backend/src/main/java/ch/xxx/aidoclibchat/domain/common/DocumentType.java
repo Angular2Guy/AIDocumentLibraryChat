@@ -12,4 +12,4 @@
  */
 package ch.xxx.aidoclibchat.domain.common;
 
-public enum DocumentType { PDF, UNKNOWN }
+public enum DocumentType { PDF, HTML, TEXT, XML, UNKNOWN }
