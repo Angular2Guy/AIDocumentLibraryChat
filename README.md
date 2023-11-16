@@ -7,11 +7,11 @@ Author: Sven Loesekann
 
 Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, Spring AI, OpenAI, Postgresql(vector,hstore), Liquibase, Jpa, Gradle, Java
 
-##Features
+## Features
 1. It shows the list of the documents.
 2. It uploads new documents and creates the embeddings.
 3. It provides a chat box and shows the AI answers based on the nearest document with a link.
 
-##Mission Statement
+## Mission Statement
 The project shows howto use Spring AI to generate answers based on a provided set of documents with a link to the source. The Angular frontend provides the use interface for the backend and shows the responses. Spring AI makes using OpenAI services simple and useful and this project demonstrates that. 
 
