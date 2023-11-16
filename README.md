@@ -15,3 +15,6 @@ Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, S
 ## Mission Statement
 The project shows howto use Spring AI to generate answers based on a provided set of documents with a link to the source. The Angular frontend provides the use interface for the backend and shows the responses. Spring AI makes using OpenAI services simple and useful and this project demonstrates that. 
 
+## Postgresql setup
+In the runPostgresql.sh file are the commands to pull and run the Postgresql Docker image with vector extension locally. 
+
