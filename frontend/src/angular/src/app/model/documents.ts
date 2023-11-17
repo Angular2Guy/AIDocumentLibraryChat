@@ -12,8 +12,11 @@
  */
 import { DocumentFile } from "./document-file";
 
+export enum SearchType {PARAGRAPH = "PARAGRAPH", DOCUMENT="DOCUMENT"} 
+
 export interface DocumentSearch {
 	searchString: string;
+	searchType: SearchType;
 }
 
 export interface DocumentSearchResult {

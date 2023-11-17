@@ -20,9 +20,15 @@
 		<textarea matInput [formControl]="searchValueControl"></textarea>
 	</mat-form-field>
 	<div class="search-button-box">
-		<button mat-flat-button color="primary" (click)="search()" [disabled]="searchValueControl.invalid" i18n="@@search">
+		<button mat-flat-button color="primary" class="search-button" (click)="search()" [disabled]="searchValueControl.invalid" i18n="@@search">
         	Search
       	</button>
+      	<div>
+      	<mat-radio-group [formControl]="searchTypeControl">
+  			<mat-radio-button [value]="SearchType.DOCUMENT" i18n="@@document">Document</mat-radio-button>
+  			<mat-radio-button [value]="SearchType.PARAGRAPH" i18n="@@paragraph">Paragraph</mat-radio-button>
+		</mat-radio-group>
+		</div>
     </div>	
 </div>
 <div *ngIf="searching" class="spinner-container">	

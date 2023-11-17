@@ -16,11 +16,12 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatButtonModule} from '@angular/material/button';
 import {MatTableModule} from '@angular/material/table';
 import {MatInputModule} from '@angular/material/input';
+import {MatRadioModule} from '@angular/material/radio';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {FormControl, FormsModule,ReactiveFormsModule, Validators} from '@angular/forms';
 import { Router } from '@angular/router';
 import { DocumentService } from '../service/document.service';
-import { DocumentSearch, DocumentSearchResult } from '../model/documents';
+import { DocumentSearch, DocumentSearchResult, SearchType } from '../model/documents';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map, tap } from 'rxjs/operators';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'; 
@@ -30,15 +31,18 @@ import { Subscription, interval } from 'rxjs';
 @Component({
   selector: 'app-doc-search',
   standalone: true,
-  imports: [CommonModule,MatToolbarModule,MatButtonModule,MatTableModule,MatInputModule,MatFormFieldModule,FormsModule,ReactiveFormsModule,MatProgressSpinnerModule],
+  imports: [CommonModule,MatToolbarModule,MatButtonModule,MatTableModule,MatInputModule,
+  	MatFormFieldModule,FormsModule,ReactiveFormsModule,MatProgressSpinnerModule,MatRadioModule],
   templateUrl: './doc-search.component.html',
   styleUrls: ['./doc-search.component.scss']
 })
 export class DocSearchComponent {        
 	protected searchValueControl = new FormControl('', [Validators.required, Validators.minLength(3)]);
+	protected searchTypeControl = new FormControl(SearchType.DOCUMENT, [Validators.required]);
 	protected searchResult: DocumentSearchResult | null = null;
 	protected searching = false;
 	protected msWorking = 0;
+	protected SearchType = SearchType;
 	private repeatSub: Subscription | null = null;
 	
     constructor(private destroyRef: DestroyRef, private router: Router, private documentService: DocumentService) { }
@@ -54,7 +58,7 @@ export class DocSearchComponent {
 		this.searching = true;
 		this.repeatSub?.unsubscribe();
 		this.repeatSub = interval(100).pipe(map(() => new Date()), takeUntilDestroyed(this.destroyRef)).subscribe(newDate => this.msWorking = newDate.getTime() - startDate.getTime());
-		const documentSearch = {searchString: this.searchValueControl.value} as DocumentSearch;
+		const documentSearch = {searchString: this.searchValueControl.value, searchType: this.searchTypeControl.value} as DocumentSearch;
 		this.documentService.postDocumentSearch(documentSearch)
 		  .pipe(takeUntilDestroyed(this.destroyRef), tap(() => this.searching = false), tap(() => this.repeatSub?.unsubscribe()))
 		  .subscribe(result => {

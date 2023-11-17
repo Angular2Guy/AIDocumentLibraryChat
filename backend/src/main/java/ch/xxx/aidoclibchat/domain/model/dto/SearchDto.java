@@ -13,7 +13,9 @@
 package ch.xxx.aidoclibchat.domain.model.dto;
 
 public class SearchDto {
+	public enum SearchType {PARAGRAPH, DOCUMENT}
 	private String searchString;
+	private SearchType searchType;
 
 	public String getSearchString() {
 		return searchString;
@@ -21,5 +23,13 @@ public class SearchDto {
 
 	public void setSearchString(String searchString) {
 		this.searchString = searchString;
+	}
+
+	public SearchType getSearchType() {
+		return searchType;
+	}
+
+	public void setSearchType(SearchType searchType) {
+		this.searchType = searchType;
 	}
 }

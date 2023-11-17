@@ -73,7 +73,7 @@ public class DocumentController {
 	
 	@PostMapping("/search")
 	public DocumentSearchDto postDocumentSearch(@RequestBody SearchDto searchDto) {
-		var result = this.documentMapper.toDto(this.documentService.queryDocuments(searchDto.getSearchString()));
+		var result = this.documentMapper.toDto(this.documentService.queryDocuments(searchDto));
 		return result;
 	}
 }

@@ -36,6 +36,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.aidoclibchat.domain.model.dto.AiResult;
+import ch.xxx.aidoclibchat.domain.model.dto.SearchDto;
 import ch.xxx.aidoclibchat.domain.model.entity.Document;
 import ch.xxx.aidoclibchat.domain.model.entity.DocumentRepository;
 import ch.xxx.aidoclibchat.domain.model.entity.DocumentVsRepository;
@@ -81,8 +82,9 @@ public class DocumentService {
 				.map(myContent -> Integer.valueOf(myContent.length).longValue()).findFirst().orElse(0L);
 	}
 
-	public AiResult queryDocuments(String query) {
-		var similarDocuments = this.documentVsRepository.retrieve(query);
+	public AiResult queryDocuments(SearchDto searchDto) {
+		LOGGER.info("SearchType: {}", searchDto.getSearchType());
+		var similarDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString());
 		LOGGER.info("Documents: {}", similarDocuments.size());
 		var mostSimilar = similarDocuments.stream()
 				.sorted((myDocA, myDocB) -> ((Float) myDocA.getMetadata().get(DISTANCE))
@@ -94,7 +96,7 @@ public class DocumentService {
 				.toList();
 		Message systemMessage = this.getSystemMessage(documentChunks,
 				(documentChunks.size() <= 0 ? 2000 : Math.floorDiv(2000, documentChunks.size())));
-		UserMessage userMessage = new UserMessage(query);
+		UserMessage userMessage = new UserMessage(searchDto.getSearchString());
 		Prompt prompt = new Prompt(List.of(systemMessage, userMessage));
 		LocalDateTime start = LocalDateTime.now();
 		AiResponse response = aiClient.generate(prompt);
@@ -106,7 +108,7 @@ public class DocumentService {
 				.map(myId -> Long.parseLong(((String) myId)))
 				.map(myId -> this.documentRepository.findById(myId)).filter(Optional::isPresent).map(Optional::get)
 				.toList();
-		return new AiResult(query, response.getGenerations(), documents);
+		return new AiResult(searchDto.getSearchString(), response.getGenerations(), documents);
 	}
 
 	private Message getSystemMessage(List<org.springframework.ai.document.Document> similarDocuments, int tokenLimit) {
