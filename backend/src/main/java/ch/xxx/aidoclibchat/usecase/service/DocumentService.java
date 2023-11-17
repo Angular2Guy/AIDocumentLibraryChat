@@ -83,9 +83,9 @@ public class DocumentService {
 	}
 
 	public AiResult queryDocuments(SearchDto searchDto) {
-		LOGGER.info("SearchType: {}", searchDto.getSearchType());
+		//LOGGER.info("SearchType: {}", searchDto.getSearchType());
 		var similarDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString());
-		LOGGER.info("Documents: {}", similarDocuments.size());
+		//LOGGER.info("Documents: {}", similarDocuments.size());
 		var mostSimilar = similarDocuments.stream()
 				.sorted((myDocA, myDocB) -> ((Float) myDocA.getMetadata().get(DISTANCE))
 						.compareTo(((Float) myDocB.getMetadata().get(DISTANCE))))
@@ -94,8 +94,11 @@ public class DocumentService {
 				.flatMap(mySimilar -> similarDocuments.stream()
 						.filter(mySimilar1 -> mySimilar1.getMetadata().get(ID).equals(mySimilar.getMetadata().get(ID))))
 				.toList();
-		Message systemMessage = this.getSystemMessage(documentChunks,
+		Message systemMessage = switch (searchDto.getSearchType()) {
+		case SearchDto.SearchType.DOCUMENT -> this.getSystemMessage(documentChunks,
 				(documentChunks.size() <= 0 ? 2000 : Math.floorDiv(2000, documentChunks.size())));
+		case SearchDto.SearchType.PARAGRAPH -> this.getSystemMessage(mostSimilar.stream().toList(), 2000);
+		};
 		UserMessage userMessage = new UserMessage(searchDto.getSearchString());
 		Prompt prompt = new Prompt(List.of(systemMessage, userMessage));
 		LocalDateTime start = LocalDateTime.now();
@@ -105,9 +108,8 @@ public class DocumentService {
 						- ZonedDateTime.of(start, ZoneId.systemDefault()).toInstant().toEpochMilli());
 		var documents = mostSimilar.stream().map(myGen -> myGen.getMetadata().get(ID))
 				.filter(myId -> Optional.ofNullable(myId).stream().allMatch(myId1 -> (myId1 instanceof String)))
-				.map(myId -> Long.parseLong(((String) myId)))
-				.map(myId -> this.documentRepository.findById(myId)).filter(Optional::isPresent).map(Optional::get)
-				.toList();
+				.map(myId -> Long.parseLong(((String) myId))).map(myId -> this.documentRepository.findById(myId))
+				.filter(Optional::isPresent).map(Optional::get).toList();
 		return new AiResult(searchDto.getSearchString(), response.getGenerations(), documents);
 	}
 
