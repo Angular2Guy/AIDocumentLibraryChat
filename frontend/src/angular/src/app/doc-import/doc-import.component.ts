@@ -12,7 +12,8 @@
  */
 import { Component, DestroyRef, Inject, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'; 
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatButtonModule} from '@angular/material/button';
 import {FormsModule} from '@angular/forms';
@@ -28,7 +29,7 @@ export interface DocImportData {
 @Component({
   selector: 'app-docimport',
   standalone: true,
-  imports: [CommonModule,MatFormFieldModule, MatDialogModule,MatButtonModule, MatInputModule, FormsModule],
+  imports: [CommonModule,MatFormFieldModule, MatDialogModule,MatButtonModule, MatInputModule, FormsModule, MatProgressSpinnerModule],
   templateUrl: './doc-import.component.html',
   styleUrls: ['./doc-import.component.scss']
 })
@@ -45,12 +46,14 @@ export class DocImportComponent {
 	}
 	
 	protected upload(): void {
-		console.log(this.file);
+		//console.log(this.file);
 		if(!!this.file) {
 		  const formData = new FormData();
           formData.append('file', this.file as Blob, this.file.name as string);
           this.documentService.postDocumentForm(formData).pipe(tap(() => {this.uploading = true;}), takeUntilDestroyed(this.destroyRef))
-            .subscribe(result => {this.uploading = false; console.log(result); this.dialogRef.close();});
+            .subscribe(result => {this.uploading = false; 
+            //console.log(result); 
+            this.dialogRef.close();});
         }
 	}
 	

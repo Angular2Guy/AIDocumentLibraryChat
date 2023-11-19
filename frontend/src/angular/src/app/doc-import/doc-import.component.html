@@ -1,10 +1,8 @@
 <h1 mat-dialog-title i18n="@@docimportImportFile">Import file</h1>
 <div mat-dialog-content>
   <p i18n="@@docimportFileToImport">File to import</p>
-  <!--<mat-form-field>
-    <mat-label i18n="@@docimportFilename">Filename</mat-label>-->
-    <input type="file" (change)="onFileInputChange($event)">    
-  <!--</mat-form-field>-->
+    <input *ngIf="!uploading" type="file" (change)="onFileInputChange($event)">
+    <div class="upload-spinner"><mat-spinner *ngIf="uploading"></mat-spinner></div>    
   <div *ngIf="!!file">
 	<ul>
       <li>Name: {{file.name}}</li>
@@ -15,5 +13,5 @@
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="cancel()" i18n="@@cancel">Cancel</button>
-  <button mat-flat-button color="primary" [disabled]="!file" (click)="upload()" i18n="@@docimportUpload">Upload</button>
+  <button mat-flat-button color="primary" [disabled]="!file || uploading" (click)="upload()" i18n="@@docimportUpload">Upload</button>
 </div>
