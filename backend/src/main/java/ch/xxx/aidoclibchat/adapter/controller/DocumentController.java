@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import ch.xxx.aidoclibchat.domain.common.DocumentType;
 import ch.xxx.aidoclibchat.domain.model.dto.DocumentDto;
 import ch.xxx.aidoclibchat.domain.model.dto.DocumentSearchDto;
 import ch.xxx.aidoclibchat.domain.model.dto.SearchDto;
@@ -63,14 +64,27 @@ public class DocumentController {
 		return ResponseEntity.ofNullable(this.documentService.getDocumentById(id).stream()
 				.map(myDocument -> this.documentMapper.toDto(myDocument)).findFirst().orElse(null));
 	}
-	
+
 	@GetMapping("/pdf/{id}")
-	public ResponseEntity<byte[]> getDocumentPdf(@PathVariable("id") Long id) {		
+	public ResponseEntity<byte[]> getDocumentPdf(@PathVariable("id") Long id) {
 		var resultOpt = this.documentService.getDocumentById(id).stream()
-		.map(myDocument -> this.documentMapper.toDto(myDocument)).map(myDocument -> myDocument.getDocumentContent()).findFirst();
-		return resultOpt.isPresent() ? ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF).body(resultOpt.get()) : ResponseEntity.notFound().build();		
+				.map(myDocument -> this.documentMapper.toDto(myDocument)).findFirst();
+		ResponseEntity<byte[]> result = null;
+		if (resultOpt.isPresent()) {
+			var contentType = switch (resultOpt.get().getDocumentType()) {
+			case DocumentType.PDF -> MediaType.APPLICATION_PDF;
+			case DocumentType.HTML -> MediaType.TEXT_HTML;
+			case DocumentType.TEXT -> MediaType.TEXT_PLAIN;
+			case DocumentType.XML -> MediaType.APPLICATION_XML;
+			default -> MediaType.ALL;
+			};
+			result = ResponseEntity.ok().contentType(contentType).body(resultOpt.get().getDocumentContent());
+		} else {
+			result = ResponseEntity.notFound().build();
+		}
+		return result;
 	}
-	
+
 	@PostMapping("/search")
 	public DocumentSearchDto postDocumentSearch(@RequestBody SearchDto searchDto) {
 		var result = this.documentMapper.toDto(this.documentService.queryDocuments(searchDto));
