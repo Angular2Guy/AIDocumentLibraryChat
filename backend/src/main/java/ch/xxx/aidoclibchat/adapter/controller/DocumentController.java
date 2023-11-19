@@ -65,8 +65,8 @@ public class DocumentController {
 				.map(myDocument -> this.documentMapper.toDto(myDocument)).findFirst().orElse(null));
 	}
 
-	@GetMapping("/pdf/{id}")
-	public ResponseEntity<byte[]> getDocumentPdf(@PathVariable("id") Long id) {
+	@GetMapping("/content/{id}")
+	public ResponseEntity<byte[]> getDocumentContent(@PathVariable("id") Long id) {
 		var resultOpt = this.documentService.getDocumentById(id).stream()
 				.map(myDocument -> this.documentMapper.toDto(myDocument)).findFirst();
 		ResponseEntity<byte[]> result = null;
