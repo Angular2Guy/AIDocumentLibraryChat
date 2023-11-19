@@ -7,6 +7,9 @@ Author: Sven Loesekann
 
 Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, Spring AI, OpenAI, Postgresql(vector,hstore), Liquibase, Jpa, Gradle, Java
 
+## Articles
+* [Making Spring AI and OpenAI GPT useful with RAG on your own Documents](https://angular2guy.wordpress.com/2023/11/19/making-spring-ai-and-openai-gpt-useful-with-rag-on-your-own-documents/)
+
 ## Features
 1. It shows the list of the documents.
 2. It uploads new documents and creates the embeddings.
