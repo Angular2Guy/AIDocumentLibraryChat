@@ -1,6 +1,23 @@
 {
-    "locale": "de",
-    "translations": {
-        "key": "value"
-    }
-}    
+  "locale": "de",
+  "translations": {
+    "docimportImportFile": "Import file",
+    "docimportFileToImport": "File to import",
+    "cancel": "Cancel",
+    "docimportUpload": "Upload",
+    "doclistHeading": "Document List",
+    "search": "Search",
+    "import": "Import",
+    "logout": "Logout",
+    "doclistId": "Id",
+    "doclistName": "Name",
+    "doclistType": "Type",
+    "list": "List",
+    "document": "Document",
+    "paragraph": "Paragraph",
+    "docSearchWorking": "The AI is working on the answer.",
+    "docSearchBePatient": "Please be patient. {$INTERPOLATION} sec.",
+    "docSearchResultDocument": "Result Document:",
+    "link": "Link: {$START_LINK}{$INTERPOLATION}{$CLOSE_LINK}"
+  }
+}
