@@ -15,6 +15,7 @@ package ch.xxx.aidoclibchat.usecase.mapping;
 import java.io.IOException;
 import java.util.Optional;
 
+import org.springframework.ai.client.Generation;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,21 +33,24 @@ public class DocumentMapper {
 		try {
 			entity.setDocumentContent(multipartFile.getBytes());
 			entity.setDocumentName(multipartFile.getOriginalFilename());
-			entity.setDocumentType(Optional.ofNullable(multipartFile.getContentType()).stream().map(myContentType -> {
-				var result = switch (myContentType) {
-				case MediaType.APPLICATION_PDF_VALUE -> DocumentType.PDF;
-				case MediaType.TEXT_HTML_VALUE -> DocumentType.HTML;
-				case MediaType.TEXT_PLAIN_VALUE -> DocumentType.TEXT;
-				case MediaType.APPLICATION_XML_VALUE -> DocumentType.XML;
-				case MediaType.TEXT_XML_VALUE -> DocumentType.XML;
-				default -> DocumentType.UNKNOWN;
-				};
-				return result;
-			}).findFirst().orElse(DocumentType.UNKNOWN));
+			entity.setDocumentType(Optional.ofNullable(multipartFile.getContentType()).stream()
+					.map(this::toDocumentType).findFirst().orElse(DocumentType.UNKNOWN));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 		return entity;
+	}
+
+	private DocumentType toDocumentType(String myContentType) {
+		var result = switch (myContentType) {
+		case MediaType.APPLICATION_PDF_VALUE -> DocumentType.PDF;
+		case MediaType.TEXT_HTML_VALUE -> DocumentType.HTML;
+		case MediaType.TEXT_PLAIN_VALUE -> DocumentType.TEXT;
+		case MediaType.APPLICATION_XML_VALUE -> DocumentType.XML;
+		case MediaType.TEXT_XML_VALUE -> DocumentType.XML;
+		default -> DocumentType.UNKNOWN;
+		};
+		return result;
 	}
 
 	public Document toEntity(DocumentDto dto) {
@@ -77,8 +81,8 @@ public class DocumentMapper {
 
 	public DocumentSearchDto toDto(AiResult aiResult) {
 		var dto = new DocumentSearchDto();
-		dto.setDocuments(aiResult.documents().stream().map(myDoc -> this.toDtoNoContent(myDoc)).toList());
-		dto.setResultStrings(aiResult.generations().stream().map(myGen -> myGen.getText()).toList());
+		dto.setDocuments(aiResult.documents().stream().map(this::toDtoNoContent).toList());
+		dto.setResultStrings(aiResult.generations().stream().map(Generation::getText).toList());
 		dto.setSearchString(aiResult.searchString());
 		return dto;
 	}

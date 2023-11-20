@@ -62,27 +62,25 @@ public class DocumentController {
 	@GetMapping("/doc/{id}")
 	public ResponseEntity<DocumentDto> getDocument(@PathVariable("id") Long id) {
 		return ResponseEntity.ofNullable(this.documentService.getDocumentById(id).stream()
-				.map(myDocument -> this.documentMapper.toDto(myDocument)).findFirst().orElse(null));
+				.map(this.documentMapper::toDto).findFirst().orElse(null));
 	}
 
 	@GetMapping("/content/{id}")
 	public ResponseEntity<byte[]> getDocumentContent(@PathVariable("id") Long id) {
-		var resultOpt = this.documentService.getDocumentById(id).stream()
-				.map(myDocument -> this.documentMapper.toDto(myDocument)).findFirst();
-		ResponseEntity<byte[]> result = null;
-		if (resultOpt.isPresent()) {
-			var contentType = switch (resultOpt.get().getDocumentType()) {
-			case DocumentType.PDF -> MediaType.APPLICATION_PDF;
-			case DocumentType.HTML -> MediaType.TEXT_HTML;
-			case DocumentType.TEXT -> MediaType.TEXT_PLAIN;
-			case DocumentType.XML -> MediaType.APPLICATION_XML;
-			default -> MediaType.ALL;
-			};
-			result = ResponseEntity.ok().contentType(contentType).body(resultOpt.get().getDocumentContent());
-		} else {
-			result = ResponseEntity.notFound().build();
-		}
+		var resultOpt = this.documentService.getDocumentById(id).stream().map(this.documentMapper::toDto).findFirst();
+		var result = resultOpt.stream().map(this::toResultEntity).findFirst().orElse(ResponseEntity.notFound().build());
 		return result;
+	}
+
+	private ResponseEntity<byte[]> toResultEntity(DocumentDto documentDto) {
+		var contentType = switch (documentDto.getDocumentType()) {
+		case DocumentType.PDF -> MediaType.APPLICATION_PDF;
+		case DocumentType.HTML -> MediaType.TEXT_HTML;
+		case DocumentType.TEXT -> MediaType.TEXT_PLAIN;
+		case DocumentType.XML -> MediaType.APPLICATION_XML;
+		default -> MediaType.ALL;
+		};
+		return ResponseEntity.ok().contentType(contentType).body(documentDto.getDocumentContent());
 	}
 
 	@PostMapping("/search")

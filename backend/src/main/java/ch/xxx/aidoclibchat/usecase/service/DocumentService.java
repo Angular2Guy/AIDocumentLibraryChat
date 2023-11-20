@@ -70,8 +70,8 @@ public class DocumentService {
 		record TikaDocumentAndContent(org.springframework.ai.document.Document document, String content) {
 		}
 		var aiDocuments = tikaDocuments.stream()
-				.flatMap(myDocument1 -> this.splitStringToTokenLimit(myDocument1.getContent(), CHUNK_TOKEN_LIMIT).stream()
-						.map(myStr -> new TikaDocumentAndContent(myDocument1, myStr)))
+				.flatMap(myDocument1 -> this.splitStringToTokenLimit(myDocument1.getContent(), CHUNK_TOKEN_LIMIT)
+						.stream().map(myStr -> new TikaDocumentAndContent(myDocument1, myStr)))
 				.map(myTikaRecord -> new org.springframework.ai.document.Document(myTikaRecord.content(),
 						myTikaRecord.document().getMetadata()))
 				.peek(myDocument1 -> myDocument1.getMetadata().put(ID, myDocument.getId().toString())).toList();
@@ -84,9 +84,9 @@ public class DocumentService {
 	}
 
 	public AiResult queryDocuments(SearchDto searchDto) {
-		//LOGGER.info("SearchType: {}", searchDto.getSearchType());
+		// LOGGER.info("SearchType: {}", searchDto.getSearchType());
 		var similarDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString());
-		//LOGGER.info("Documents: {}", similarDocuments.size());
+		// LOGGER.info("Documents: {}", similarDocuments.size());
 		var mostSimilar = similarDocuments.stream()
 				.sorted((myDocA, myDocB) -> ((Float) myDocA.getMetadata().get(DISTANCE))
 						.compareTo(((Float) myDocB.getMetadata().get(DISTANCE))))
@@ -109,7 +109,7 @@ public class DocumentService {
 						- ZonedDateTime.of(start, ZoneId.systemDefault()).toInstant().toEpochMilli());
 		var documents = mostSimilar.stream().map(myGen -> myGen.getMetadata().get(ID))
 				.filter(myId -> Optional.ofNullable(myId).stream().allMatch(myId1 -> (myId1 instanceof String)))
-				.map(myId -> Long.parseLong(((String) myId))).map(myId -> this.documentRepository.findById(myId))
+				.map(myId -> Long.parseLong(((String) myId))).map(this.documentRepository::findById)
 				.filter(Optional::isPresent).map(Optional::get).toList();
 		return new AiResult(searchDto.getSearchString(), response.getGenerations(), documents);
 	}
