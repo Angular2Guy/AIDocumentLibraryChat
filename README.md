@@ -23,3 +23,15 @@ The project shows howto use Spring AI to generate answers based on a provided se
 ## Postgresql setup
 In the runPostgresql.sh file are the commands to pull and run the Postgresql Docker image with vector extension locally. 
 
+## Setup
+Postgresql with Vector Extension 0.5.1 or newer
+
+Java 21 or newer
+
+Gradle 8.3 or newer
+
+NodeJs 18.13.x or newer
+
+Npm 8.19.x or newer
+
+Angular Cli 17 or newer
