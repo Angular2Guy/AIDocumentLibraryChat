@@ -34,6 +34,7 @@ export class DocListComponent implements OnInit {
 	protected displayedColumns: string[] = ['documentId', 'documentName', 'documentType'];
 	protected documents: DocumentFile[] = [];
 	private destroyRef = inject(DestroyRef);
+	private tabRef: Window | null = null;
 	
 	constructor(private dialog: MatDialog, private documentService: DocumentService, private router: Router) { }
     
@@ -47,6 +48,13 @@ export class DocListComponent implements OnInit {
 	
 	protected search(): void {
 		this.router.navigate(['/docsearch']);
+	}
+	
+	protected showDocument(documentId: number): void {
+		if(!!this.tabRef) {
+			this.tabRef.close();
+		}
+		this.tabRef = window.open(`/rest/document/content/${documentId}`, '_blank');
 	}
 	
 	protected import(): void {

@@ -35,6 +35,10 @@
 	width: 100%;
 }
 
+.table-row {
+	cursor: pointer;
+}
+
 @media (max-width: 900px), (max-height: 480px) {
   .custom-toolbar {
     height: fit-content;
