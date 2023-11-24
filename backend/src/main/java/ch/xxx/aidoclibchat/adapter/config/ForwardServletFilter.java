@@ -37,7 +37,7 @@ import org.springframework.stereotype.Component;
 @WebFilter
 @Component
 public class ForwardServletFilter implements Filter {
-	private static final Logger LOG = LoggerFactory.getLogger(ForwardServletFilter.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ForwardServletFilter.class);
 	public static final List<Locale> SUPPORTED_LOCALES = List.of(Locale.ENGLISH, Locale.GERMAN);
 	public static final List<String> REST_PATHS = List.of("/rest", "/actuator", "/h2-console", "/swagger-ui.html",
 			"/swagger-ui", "/v3");

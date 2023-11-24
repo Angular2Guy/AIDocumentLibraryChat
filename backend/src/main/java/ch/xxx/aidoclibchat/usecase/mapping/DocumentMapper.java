@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import ch.xxx.aidoclibchat.domain.common.DocumentType;
+import ch.xxx.aidoclibchat.domain.exceptions.DocumentException;
 import ch.xxx.aidoclibchat.domain.model.dto.AiResult;
 import ch.xxx.aidoclibchat.domain.model.dto.DocumentDto;
 import ch.xxx.aidoclibchat.domain.model.dto.DocumentSearchDto;
@@ -28,6 +29,7 @@ import ch.xxx.aidoclibchat.domain.model.entity.Document;
 
 @Component
 public class DocumentMapper {
+	
 	public Document toEntity(MultipartFile multipartFile) {
 		var entity = new Document();
 		try {
@@ -36,7 +38,7 @@ public class DocumentMapper {
 			entity.setDocumentType(Optional.ofNullable(multipartFile.getContentType()).stream()
 					.map(this::toDocumentType).findFirst().orElse(DocumentType.UNKNOWN));
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new DocumentException("IOException", e);
 		}
 		return entity;
 	}

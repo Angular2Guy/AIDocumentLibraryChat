@@ -29,6 +29,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 @Order(SecurityProperties.DEFAULT_FILTER_ORDER)
 public class SecurityConfig {
+//	private static final Logger LOGGER = LoggerFactory.getLogger(SecurityConfig.class);
 	/*
 	private final JwtTokenService jwtTokenService;
 
