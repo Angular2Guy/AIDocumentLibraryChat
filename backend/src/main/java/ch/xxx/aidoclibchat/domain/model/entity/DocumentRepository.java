@@ -19,4 +19,5 @@ public interface DocumentRepository {
     Optional<Document> findById(Long id);
     Document save(Document document);
     List<Document> findAll();
+    List<Document> findAllById(Iterable<Long> ids);
 }

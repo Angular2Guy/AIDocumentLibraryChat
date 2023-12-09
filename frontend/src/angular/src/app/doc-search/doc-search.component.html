@@ -41,13 +41,24 @@
   </div>
 }
 @for(searchResultStr of searchResult?.resultStrings; track searchResult?.resultStrings) {
-  <div>
+  <div>	  
 	  <ul>
 		  <li i18n="@@docSearchResultDocument">Result Document:</li>
 		  <ul>
 			  <li i18n="@@link">Link: <a mat-button href="/rest/document/content/{{!!searchResult && searchResult.documents[$index].id}}" target="_blank">{{!!searchResult && searchResult.documents[$index].documentName}}</a></li>
 			  <li>{{searchResultStr}}</li>
 		  </ul>
-	  </ul>	
+	  </ul>	  
   </div>
+}
+@for(myDocument of searchResult?.documents; track searchResult?.documents) {
+  <div>
+	  <ul>
+	  @if((searchResult?.documents?.length || 0) > 1 && $index === 0) {
+		<li i18n="@@docSearchOtherDocuments">Other Documents:</li>		  
+	  } @else {
+		<li i18n="@@link">Link: <a mat-button href="/rest/document/content/{{!!searchResult && searchResult.documents[$index].id}}" target="_blank">{{!!searchResult && searchResult.documents[$index].documentName}}</a></li>  
+	  }	  
+	  </ul>
+  </div>	
 }

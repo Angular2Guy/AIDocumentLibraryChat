@@ -48,7 +48,7 @@ public class DocumentService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DocumentService.class);
 	private static final String ID = "id";
 	private static final String DISTANCE = "distance";
-	private static final Integer CHUNK_TOKEN_LIMIT = 5000;	
+	private static final Integer CHUNK_TOKEN_LIMIT = 5000;
 	private final DocumentRepository documentRepository;
 	private final DocumentVsRepository documentVsRepository;
 	private final AiClient aiClient;
@@ -85,12 +85,18 @@ public class DocumentService {
 
 	public AiResult queryDocuments(SearchDto searchDto) {
 		// LOGGER.info("SearchType: {}", searchDto.getSearchType());
-		var similarDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString(), searchDto.getResultAmount());
+		var similarDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString(),
+				searchDto.getResultAmount());
 		// LOGGER.info("Documents: {}", similarDocuments.size());
-		var mostSimilar = similarDocuments.stream()
+//		var mostSimilar = similarDocuments.stream()
+//				.sorted((myDocA, myDocB) -> ((Float) myDocA.getMetadata().get(DISTANCE))
+//						.compareTo(((Float) myDocB.getMetadata().get(DISTANCE))))
+//				.findFirst();
+		var mostSimilarDocs = similarDocuments.stream()
 				.sorted((myDocA, myDocB) -> ((Float) myDocA.getMetadata().get(DISTANCE))
 						.compareTo(((Float) myDocB.getMetadata().get(DISTANCE))))
-				.findFirst();
+				.toList();
+		var mostSimilar = mostSimilarDocs.stream().findFirst();
 		var documentChunks = mostSimilar.stream()
 				.flatMap(mySimilar -> similarDocuments.stream()
 						.filter(mySimilar1 -> mySimilar1.getMetadata().get(ID).equals(mySimilar.getMetadata().get(ID))))
@@ -110,7 +116,14 @@ public class DocumentService {
 		var documents = mostSimilar.stream().map(myGen -> myGen.getMetadata().get(ID))
 				.filter(myId -> Optional.ofNullable(myId).stream().allMatch(myId1 -> (myId1 instanceof String)))
 				.map(myId -> Long.parseLong(((String) myId))).map(this.documentRepository::findById)
-				.filter(Optional::isPresent).map(Optional::get).toList();
+				.filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
+		var docIds = mostSimilarDocs.stream()
+				.filter(myDoc -> !mostSimilar.stream()
+						.anyMatch(myDoc1 -> myDoc1.getMetadata().get(ID).equals(myDoc.getMetadata().get(ID))))
+				.map(myDoc -> myDoc.getMetadata().get(ID)).filter(myId -> myId instanceof String)
+				.map(idStr -> Long.valueOf((String) idStr)).toList();
+		documents.addAll(this.documentRepository.findAllById(docIds));
+
 		return new AiResult(searchDto.getSearchString(), response.getGenerations(), documents);
 	}
 

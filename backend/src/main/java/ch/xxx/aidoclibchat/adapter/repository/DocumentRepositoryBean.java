@@ -24,24 +24,29 @@ import ch.xxx.aidoclibchat.domain.model.entity.DocumentRepository;
 
 @Repository
 public class DocumentRepositoryBean implements DocumentRepository {
-    private final JpaDocumentRepository JpaDocumentRepository;
+    private final JpaDocumentRepository jpaDocumentRepository;
 
     public DocumentRepositoryBean(JpaDocumentRepository jpaDocumentRepository) {
-        this.JpaDocumentRepository = jpaDocumentRepository;
+        this.jpaDocumentRepository = jpaDocumentRepository;
     }
 
     @Override
     public Optional<Document> findById(Long id) {
-        return this.JpaDocumentRepository.findById(id);        
+        return this.jpaDocumentRepository.findById(id);        
     }
 
     @Override
     public Document save(Document document) {
-        return this.JpaDocumentRepository.save(document);
+        return this.jpaDocumentRepository.save(document);
     }
     
     @Override
     public List<Document> findAll() {
-    	return this.JpaDocumentRepository.findAll(PageRequest.of(0, 100, Sort.by("documentName"))).toList();
+    	return this.jpaDocumentRepository.findAll(PageRequest.of(0, 100, Sort.by("documentName"))).toList();
+    }
+    
+    @Override
+    public List<Document> findAllById(Iterable<Long> ids) {
+    	return this.jpaDocumentRepository.findAllById(ids);
     }
 }
