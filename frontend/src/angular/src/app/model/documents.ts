@@ -17,6 +17,7 @@ export enum SearchType {PARAGRAPH = "PARAGRAPH", DOCUMENT="DOCUMENT"}
 export interface DocumentSearch {
 	searchString: string;
 	searchType: SearchType;
+	resultAmount: number;
 }
 
 export interface DocumentSearchResult {

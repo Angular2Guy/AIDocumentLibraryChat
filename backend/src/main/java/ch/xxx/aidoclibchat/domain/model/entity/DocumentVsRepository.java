@@ -19,5 +19,6 @@ import org.springframework.ai.document.Document;
 public interface DocumentVsRepository {
 	void add(List<Document> documents);
 	List<Document> retrieve(String query, int k, double threshold);
+	List<Document> retrieve(String query, int k);
 	List<Document> retrieve(String query);
 }

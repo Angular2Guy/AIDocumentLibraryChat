@@ -85,6 +85,7 @@ public class DocumentController {
 
 	@PostMapping("/search")
 	public DocumentSearchDto postDocumentSearch(@RequestBody SearchDto searchDto) {
+		searchDto.setResultAmount(searchDto.getResultAmount() < 4 ? 4 : searchDto.getResultAmount());
 		var result = this.documentMapper.toDto(this.documentService.queryDocuments(searchDto));
 		return result;
 	}

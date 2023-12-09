@@ -40,6 +40,10 @@ public class DocumentVSRepositoryBean implements DocumentVsRepository {
 		return  new VectorStoreRetriever(vectorStore, k, threshold).retrieve(query);
 	}
 	
+	public List<Document> retrieve(String query, int k) {
+		return  new VectorStoreRetriever(vectorStore, k).retrieve(query);
+	}
+	
 	public List<Document> retrieve(String query) {
 		return new VectorStoreRetriever(vectorStore).retrieve(query);
 	}

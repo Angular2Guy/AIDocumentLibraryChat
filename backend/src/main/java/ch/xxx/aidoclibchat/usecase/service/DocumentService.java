@@ -48,7 +48,7 @@ public class DocumentService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DocumentService.class);
 	private static final String ID = "id";
 	private static final String DISTANCE = "distance";
-	private static final Integer CHUNK_TOKEN_LIMIT = 5000;
+	private static final Integer CHUNK_TOKEN_LIMIT = 5000;	
 	private final DocumentRepository documentRepository;
 	private final DocumentVsRepository documentVsRepository;
 	private final AiClient aiClient;
@@ -85,7 +85,7 @@ public class DocumentService {
 
 	public AiResult queryDocuments(SearchDto searchDto) {
 		// LOGGER.info("SearchType: {}", searchDto.getSearchType());
-		var similarDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString());
+		var similarDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString(), searchDto.getResultAmount());
 		// LOGGER.info("Documents: {}", similarDocuments.size());
 		var mostSimilar = similarDocuments.stream()
 				.sorted((myDocA, myDocB) -> ((Float) myDocA.getMetadata().get(DISTANCE))

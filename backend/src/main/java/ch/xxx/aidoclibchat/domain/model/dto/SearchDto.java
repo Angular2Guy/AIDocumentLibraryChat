@@ -16,6 +16,7 @@ public class SearchDto {
 	public enum SearchType {PARAGRAPH, DOCUMENT}
 	private String searchString;
 	private SearchType searchType;
+	private int resultAmount;
 
 	public String getSearchString() {
 		return searchString;
@@ -31,5 +32,13 @@ public class SearchDto {
 
 	public void setSearchType(SearchType searchType) {
 		this.searchType = searchType;
+	}
+
+	public int getResultAmount() {
+		return resultAmount;
+	}
+
+	public void setResultAmount(int resultAmount) {
+		this.resultAmount = resultAmount;
 	}
 }
