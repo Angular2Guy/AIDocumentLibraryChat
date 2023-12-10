@@ -58,7 +58,7 @@ export class DocSearchComponent {
 		this.searching = true;
 		this.repeatSub?.unsubscribe();
 		this.repeatSub = interval(100).pipe(map(() => new Date()), takeUntilDestroyed(this.destroyRef)).subscribe(newDate => this.msWorking = newDate.getTime() - startDate.getTime());
-		const documentSearch = {searchString: this.searchValueControl.value, searchType: this.searchTypeControl.value, resultAmount: 10} as DocumentSearch;
+		const documentSearch = {searchString: this.searchValueControl.value, searchType: this.searchTypeControl.value, resultAmount: 5} as DocumentSearch;
 		this.documentService.postDocumentSearch(documentSearch)
 		  .pipe(takeUntilDestroyed(this.destroyRef), tap(() => this.searching = false), tap(() => this.repeatSub?.unsubscribe()))
 		  .subscribe(result => {

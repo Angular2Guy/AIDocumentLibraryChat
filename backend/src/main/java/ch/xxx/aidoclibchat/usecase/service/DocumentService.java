@@ -88,10 +88,6 @@ public class DocumentService {
 		var similarDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString(),
 				searchDto.getResultAmount());
 		// LOGGER.info("Documents: {}", similarDocuments.size());
-//		var mostSimilar = similarDocuments.stream()
-//				.sorted((myDocA, myDocB) -> ((Float) myDocA.getMetadata().get(DISTANCE))
-//						.compareTo(((Float) myDocB.getMetadata().get(DISTANCE))))
-//				.findFirst();
 		var mostSimilarDocs = similarDocuments.stream()
 				.sorted((myDocA, myDocB) -> ((Float) myDocA.getMetadata().get(DISTANCE))
 						.compareTo(((Float) myDocB.getMetadata().get(DISTANCE))))
