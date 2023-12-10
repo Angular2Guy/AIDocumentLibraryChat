@@ -23,6 +23,10 @@ The project shows howto use Spring AI to generate answers based on a provided se
 ## Postgresql setup
 In the runPostgresql.sh file are the commands to pull and run the Postgresql Docker image with vector extension locally. 
 
+## OpenAI Api key
+To get the OpenAI api key you need to create a account at [https://platform.openai.com](https://platform.openai.com) and create a key in the user settings. That key has to be added in the [application.properties](https://platform.openai.com) at the key: 'spring.ai.openai.api-key'.
+As alternative it can be provided as the environment variable 'OPEN-API-KEY'.
+
 ## Setup
 Postgresql with Vector Extension 0.5.1 or newer
 
