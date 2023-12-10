@@ -17,7 +17,9 @@
     "paragraph": "Paragraph",
     "docSearchWorking": "The AI is working on the answer.",
     "docSearchBePatient": "Please be patient. {$INTERPOLATION} sec.",
+    "docSearchRequestFailed": "Ai Request Failed. Please try again.",
     "docSearchResultDocument": "Result Document:",
-    "link": "Link: {$START_LINK}{$INTERPOLATION}{$CLOSE_LINK}"
+    "link": "Link: {$START_LINK}{$INTERPOLATION}{$CLOSE_LINK}",
+    "docSearchOtherDocuments": "Other Documents:"
   }
 }
