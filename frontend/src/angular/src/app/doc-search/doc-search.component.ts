@@ -23,9 +23,9 @@ import { Router } from '@angular/router';
 import { DocumentService } from '../service/document.service';
 import { DocumentSearch, DocumentSearchResult, SearchType } from '../model/documents';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { map, tap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'; 
-import { Subscription, interval } from 'rxjs';
+import { Subscription, interval, of } from 'rxjs';
 
 
 @Component({
@@ -41,6 +41,7 @@ export class DocSearchComponent {
 	protected searchTypeControl = new FormControl(SearchType.DOCUMENT, [Validators.required]);
 	protected searchResult: DocumentSearchResult | null = null;
 	protected searching = false;
+	protected requestFailed = false;
 	protected msWorking = 0;
 	protected SearchType = SearchType;
 	private repeatSub: Subscription | null = null;
@@ -56,11 +57,16 @@ export class DocSearchComponent {
 		const startDate = new Date();
 		this.msWorking = 0;
 		this.searching = true;
+		this.requestFailed = false;
 		this.repeatSub?.unsubscribe();
 		this.repeatSub = interval(100).pipe(map(() => new Date()), takeUntilDestroyed(this.destroyRef)).subscribe(newDate => this.msWorking = newDate.getTime() - startDate.getTime());
 		const documentSearch = {searchString: this.searchValueControl.value, searchType: this.searchTypeControl.value, resultAmount: 5} as DocumentSearch;
 		this.documentService.postDocumentSearch(documentSearch)
-		  .pipe(takeUntilDestroyed(this.destroyRef), tap(() => this.searching = false), tap(() => this.repeatSub?.unsubscribe()))
+		  .pipe(takeUntilDestroyed(this.destroyRef), tap(() => this.searching = false), tap(() => this.repeatSub?.unsubscribe()), catchError(error => {
+			  console.log(error);
+			  this.requestFailed = true;
+			  return of({documents: [], resultStrings: [], searchString: ''} as DocumentSearchResult);
+		  }))
 		  .subscribe(result => {
 			  this.searchResult = result;
 			  console.log(this.searchResult);

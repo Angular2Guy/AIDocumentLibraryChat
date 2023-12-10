@@ -40,6 +40,9 @@
 	  </div>	
   </div>
 }
+@if(requestFailed) {
+  <h2 i18n="@@docSearchRequestFailed">Ai Request Failed. Please try again.</h2>
+}
 @for(searchResultStr of searchResult?.resultStrings; track searchResult?.resultStrings) {
   <div>	  
 	  <ul>
