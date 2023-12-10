@@ -65,6 +65,7 @@ export class DocSearchComponent {
 		  .pipe(takeUntilDestroyed(this.destroyRef), tap(() => this.searching = false), tap(() => this.repeatSub?.unsubscribe()), catchError(error => {
 			  console.log(error);
 			  this.requestFailed = true;
+			  this.searching = false;
 			  return of({documents: [], resultStrings: [], searchString: ''} as DocumentSearchResult);
 		  }))
 		  .subscribe(result => {
