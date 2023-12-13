@@ -33,7 +33,6 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.experimental.ai:spring-ai-openai-spring-boot-starter:0.7.1-SNAPSHOT'
 	implementation 'org.springframework.experimental.ai:spring-ai-tika-document-reader:0.7.1-SNAPSHOT'
 	implementation 'org.springframework.experimental.ai:spring-ai-pgvector-store:0.7.1-SNAPSHOT'
 	implementation 'org.liquibase:liquibase-core'
@@ -45,6 +44,12 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	testImplementation 'com.tngtech.archunit:archunit-junit5:1.1.0'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	
+	if(project.hasProperty('useOllama') {
+		implementation 'org.springframework.experimental.ai:spring-ai-ollama:0.7.1-SNAPSHOT'
+	} else {	    
+		implementation 'org.springframework.experimental.ai:spring-ai-openai-spring-boot-starter:0.7.1-SNAPSHOT'
+	}
 }
 
 bootJar {
