@@ -45,7 +45,7 @@ dependencies {
 	testImplementation 'com.tngtech.archunit:archunit-junit5:1.1.0'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	
-	if(project.hasProperty('useOllama') {
+	if(project.hasProperty('useOllama')) {
 		implementation 'org.springframework.experimental.ai:spring-ai-ollama-spring-boot-starter:0.7.1-SNAPSHOT'
 		implementation 'org.springframework.experimental.ai:transformers-embedding:0.7.1-SNAPSHOT'
 	} else {	    
