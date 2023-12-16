@@ -143,8 +143,7 @@ public class DocumentService {
 				.map(myStr -> this.cutStringToTokenLimit(myStr, tokenLimit)).collect(Collectors.joining("\n"));
 		SystemPromptTemplate systemPromptTemplate = this.activeProfile.contains("ollama")
 				? new SystemPromptTemplate(this.ollamaPrompt)
-				: new SystemPromptTemplate(this.systemPrompt);
-		systemPromptTemplate = new SystemPromptTemplate("{prompt} \n");
+				: new SystemPromptTemplate(this.systemPrompt);		
 		Message systemMessage = systemPromptTemplate.createMessage(Map.of("documents", documents, "prompt", prompt));
 		return systemMessage;
 	}
