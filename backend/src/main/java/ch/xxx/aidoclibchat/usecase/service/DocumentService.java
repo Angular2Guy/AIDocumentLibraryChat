@@ -31,6 +31,7 @@ import org.springframework.ai.prompt.SystemPromptTemplate;
 import org.springframework.ai.prompt.messages.Message;
 import org.springframework.ai.prompt.messages.UserMessage;
 import org.springframework.ai.reader.tika.TikaDocumentReader;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -48,13 +49,23 @@ public class DocumentService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DocumentService.class);
 	private static final String ID = "id";
 	private static final String DISTANCE = "distance";
-	private static final Integer CHUNK_TOKEN_LIMIT = 5000;
 	private final DocumentRepository documentRepository;
 	private final DocumentVsRepository documentVsRepository;
 	private final AiClient aiClient;
-	private String systemPrompt = "You're assisting with questions about documents in a catalog.\n"
+	private final String systemPrompt = "You're assisting with questions about documents in a catalog.\n"
 			+ "Use the information from the DOCUMENTS section to provide accurate answers.\n"
 			+ "If unsure, simply state that you don't know.\n" + "\n" + "DOCUMENTS:\n" + "{documents}";
+
+	private final String ollamaPrompt = "You're assisting with questions about documents in a catalog.\n"
+			+ "Use the information from the DOCUMENTS section to provide accurate answers.\n"
+			+ "If unsure, simply state that you don't know.\n \n" + " {prompt} \n \n" + "DOCUMENTS:\n" + "{documents}";
+
+	@Value("${embedding-token-limit:1000}")
+	private Integer embeddingTokenLimit;
+	@Value("${document-token-limit:1000}")
+	private Integer documentTokenLimit;	
+	@Value("${spring.profiles.active:}")
+	private String activeProfile;
 
 	public DocumentService(DocumentRepository documentRepository, DocumentVsRepository documentVsRepository,
 			AiClient aiClient) {
@@ -70,7 +81,7 @@ public class DocumentService {
 		record TikaDocumentAndContent(org.springframework.ai.document.Document document, String content) {
 		}
 		var aiDocuments = tikaDocuments.stream()
-				.flatMap(myDocument1 -> this.splitStringToTokenLimit(myDocument1.getContent(), CHUNK_TOKEN_LIMIT)
+				.flatMap(myDocument1 -> this.splitStringToTokenLimit(myDocument1.getContent(), embeddingTokenLimit)
 						.stream().map(myStr -> new TikaDocumentAndContent(myDocument1, myStr)))
 				.map(myTikaRecord -> new org.springframework.ai.document.Document(myTikaRecord.content(),
 						myTikaRecord.document().getMetadata()))
@@ -99,8 +110,10 @@ public class DocumentService {
 				.toList();
 		Message systemMessage = switch (searchDto.getSearchType()) {
 		case SearchDto.SearchType.DOCUMENT -> this.getSystemMessage(documentChunks,
-				(documentChunks.size() <= 0 ? 2000 : Math.floorDiv(2000, documentChunks.size())));
-		case SearchDto.SearchType.PARAGRAPH -> this.getSystemMessage(mostSimilar.stream().toList(), 2000);
+				(documentChunks.size() <= 0 ? this.documentTokenLimit : Math.floorDiv(this.documentTokenLimit, documentChunks.size())),
+				searchDto.getSearchString());
+		case SearchDto.SearchType.PARAGRAPH ->
+			this.getSystemMessage(mostSimilar.stream().toList(), this.documentTokenLimit, searchDto.getSearchString());
 		};
 		UserMessage userMessage = new UserMessage(searchDto.getSearchString());
 		Prompt prompt = new Prompt(List.of(systemMessage, userMessage));
@@ -123,14 +136,17 @@ public class DocumentService {
 		return new AiResult(searchDto.getSearchString(), response.getGenerations(), documents);
 	}
 
-	private Message getSystemMessage(List<org.springframework.ai.document.Document> similarDocuments, int tokenLimit) {
+	private Message getSystemMessage(List<org.springframework.ai.document.Document> similarDocuments, int tokenLimit,
+			String prompt) {
 		String documents = similarDocuments.stream().map(entry -> entry.getContent())
 				.filter(myStr -> myStr != null && !myStr.isBlank())
 				.map(myStr -> this.cutStringToTokenLimit(myStr, tokenLimit)).collect(Collectors.joining("\n"));
-		SystemPromptTemplate systemPromptTemplate = new SystemPromptTemplate(this.systemPrompt);
-		Message systemMessage = systemPromptTemplate.createMessage(Map.of("documents", documents));
+		SystemPromptTemplate systemPromptTemplate = this.activeProfile.contains("ollama")
+				? new SystemPromptTemplate(this.ollamaPrompt)
+				: new SystemPromptTemplate(this.systemPrompt);
+		systemPromptTemplate = new SystemPromptTemplate("{prompt} \n");
+		Message systemMessage = systemPromptTemplate.createMessage(Map.of("documents", documents, "prompt", prompt));
 		return systemMessage;
-
 	}
 
 	private List<String> splitStringToTokenLimit(String documentStr, int tokenLimit) {
