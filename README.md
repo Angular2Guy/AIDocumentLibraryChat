@@ -19,14 +19,17 @@ Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, S
 3. It provides a chat box and shows the AI answers based on the nearest document with a link.
 
 ## Mission Statement
-The project shows howto use Spring AI to generate answers based on a provided set of documents with a link to the source. The Angular frontend provides the use interface for the backend and shows the responses. Spring AI makes using OpenAI services simple and useful and this project demonstrates that. 
+The project shows howto use Spring AI to generate answers based on a provided set of documents with a link to the source. The Angular frontend provides the use interface for the backend and shows the responses. Spring AI makes using OpenAI / Ollama services simple and useful and this project demonstrates that. 
 
 ## Postgresql setup
-In the runPostgresql.sh file are the commands to pull and run the Postgresql Docker image with vector extension locally. 
+In the [runPostgresql.sh](https://github.com/Angular2Guy/AIDocumentLibraryChat/blob/master/runPostgresql.sh) file are the commands to pull and run the Postgresql Docker image with vector extension locally. 
 
 ## OpenAI Api key
 To get the OpenAI api key you need to create a account at [https://platform.openai.com](https://platform.openai.com) and create a key in the user settings. That key has to be added in the [application.properties](https://github.com/Angular2Guy/AIDocumentLibraryChat/blob/master/backend/src/main/resources/application.properties) at the key: 'spring.ai.openai.api-key'.
 As alternative it can be provided as the environment variable 'OPEN-API-KEY'.
+
+## Ollama setup
+[Ollama](https://ollama.ai/) can run the AI model locally. The file [runOllama.sh](https://github.com/Angular2Guy/AIDocumentLibraryChat/blob/master/runOllama.sh) has the commands to run it as Docker container. The application needs to be build with the 'useOllama=true' Gradle build property to include the dependencies. The application needs to be started with the 'ollama' profile to switch on the configs/features to use Ollama based models. Ollama has support for GPU acceleration.
 
 ## Setup
 Postgresql with Vector Extension 0.5.1 or newer
