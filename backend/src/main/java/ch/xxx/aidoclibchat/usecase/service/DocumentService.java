@@ -63,7 +63,7 @@ public class DocumentService {
 	@Value("${embedding-token-limit:1000}")
 	private Integer embeddingTokenLimit;
 	@Value("${document-token-limit:1000}")
-	private Integer documentTokenLimit;	
+	private Integer documentTokenLimit;
 	@Value("${spring.profiles.active:}")
 	private String activeProfile;
 
@@ -109,9 +109,8 @@ public class DocumentService {
 						.filter(mySimilar1 -> mySimilar1.getMetadata().get(ID).equals(mySimilar.getMetadata().get(ID))))
 				.toList();
 		Message systemMessage = switch (searchDto.getSearchType()) {
-		case SearchDto.SearchType.DOCUMENT -> this.getSystemMessage(documentChunks,
-				(documentChunks.size() <= 0 ? this.documentTokenLimit : Math.floorDiv(this.documentTokenLimit, documentChunks.size())),
-				searchDto.getSearchString());
+		case SearchDto.SearchType.DOCUMENT ->
+			this.getSystemMessage(documentChunks, this.documentTokenLimit, searchDto.getSearchString());
 		case SearchDto.SearchType.PARAGRAPH ->
 			this.getSystemMessage(mostSimilar.stream().toList(), this.documentTokenLimit, searchDto.getSearchString());
 		};
@@ -138,13 +137,14 @@ public class DocumentService {
 
 	private Message getSystemMessage(List<org.springframework.ai.document.Document> similarDocuments, int tokenLimit,
 			String prompt) {
-		String documents = similarDocuments.stream().map(entry -> entry.getContent())
-				.filter(myStr -> myStr != null && !myStr.isBlank())
-				.map(myStr -> this.cutStringToTokenLimit(myStr, tokenLimit)).collect(Collectors.joining("\n"));
+		String documentStr = this.cutStringToTokenLimit(
+				similarDocuments.stream().map(entry -> entry.getContent())
+						.filter(myStr -> myStr != null && !myStr.isBlank()).collect(Collectors.joining("\n")),
+				tokenLimit);
 		SystemPromptTemplate systemPromptTemplate = this.activeProfile.contains("ollama")
 				? new SystemPromptTemplate(this.ollamaPrompt)
-				: new SystemPromptTemplate(this.systemPrompt);		
-		Message systemMessage = systemPromptTemplate.createMessage(Map.of("documents", documents, "prompt", prompt));
+				: new SystemPromptTemplate(this.systemPrompt);
+		Message systemMessage = systemPromptTemplate.createMessage(Map.of("documents", documentStr, "prompt", prompt));
 		return systemMessage;
 	}
 
@@ -168,7 +168,7 @@ public class DocumentService {
 	private String cutStringToTokenLimit(String documentStr, int tokenLimit) {
 		String cutString = new String(documentStr);
 		while (tokenLimit < new StringTokenizer(cutString, " -.;,").countTokens()) {
-			cutString = cutString.length() > 1000 ? cutString.substring(0, cutString.length() - 1000) : "";
+			cutString = cutString.length() > 100 ? cutString.substring(0, cutString.length() - 100) : "";
 		}
 		return cutString;
 	}
