@@ -41,6 +41,7 @@ import ch.xxx.aidoclibchat.domain.model.dto.SearchDto;
 import ch.xxx.aidoclibchat.domain.model.entity.Document;
 import ch.xxx.aidoclibchat.domain.model.entity.DocumentRepository;
 import ch.xxx.aidoclibchat.domain.model.entity.DocumentVsRepository;
+import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -73,7 +74,12 @@ public class DocumentService {
 		this.documentVsRepository = documentVsRepository;
 		this.aiClient = aiClient;
 	}
-
+	
+	@PostConstruct
+	public void init() {
+		LOGGER.info("Profile: {}", this.activeProfile);
+	}
+	
 	public Long storeDocument(Document document) {
 		var myDocument = this.documentRepository.save(document);
 		Resource resource = new ByteArrayResource(document.getDocumentContent());
