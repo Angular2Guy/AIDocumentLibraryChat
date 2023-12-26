@@ -15,7 +15,7 @@ package ch.xxx.aidoclibchat.usecase.mapping;
 import java.io.IOException;
 import java.util.Optional;
 
-import org.springframework.ai.client.Generation;
+import org.springframework.ai.chat.Generation;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -84,7 +84,7 @@ public class DocumentMapper {
 	public DocumentSearchDto toDto(AiResult aiResult) {
 		var dto = new DocumentSearchDto();
 		dto.setDocuments(aiResult.documents().stream().map(this::toDtoNoContent).toList());
-		dto.setResultStrings(aiResult.generations().stream().map(Generation::getText).toList());
+		dto.setResultStrings(aiResult.generations().stream().map(Generation::getContent).toList());
 		dto.setSearchString(aiResult.searchString());
 		return dto;
 	}

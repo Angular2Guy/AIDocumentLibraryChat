@@ -24,8 +24,8 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.ai.client.AiClient;
-import org.springframework.ai.client.AiResponse;
+import org.springframework.ai.chat.ChatClient;
+import org.springframework.ai.chat.ChatResponse;
 import org.springframework.ai.prompt.Prompt;
 import org.springframework.ai.prompt.SystemPromptTemplate;
 import org.springframework.ai.prompt.messages.Message;
@@ -52,7 +52,7 @@ public class DocumentService {
 	private static final String DISTANCE = "distance";
 	private final DocumentRepository documentRepository;
 	private final DocumentVsRepository documentVsRepository;
-	private final AiClient aiClient;
+	private final ChatClient chatClient;
 	private final String systemPrompt = "You're assisting with questions about documents in a catalog.\n"
 			+ "Use the information from the DOCUMENTS section to provide accurate answers.\n"
 			+ "If unsure, simply state that you don't know.\n" + "\n" + "DOCUMENTS:\n" + "{documents}";
@@ -69,17 +69,17 @@ public class DocumentService {
 	private String activeProfile;
 
 	public DocumentService(DocumentRepository documentRepository, DocumentVsRepository documentVsRepository,
-			AiClient aiClient) {
+			ChatClient chatClient) {
 		this.documentRepository = documentRepository;
 		this.documentVsRepository = documentVsRepository;
-		this.aiClient = aiClient;
+		this.chatClient = chatClient;
 	}
-	
+
 	@PostConstruct
 	public void init() {
 		LOGGER.info("Profile: {}", this.activeProfile);
 	}
-	
+
 	public Long storeDocument(Document document) {
 		var myDocument = this.documentRepository.save(document);
 		Resource resource = new ByteArrayResource(document.getDocumentContent());
@@ -123,7 +123,7 @@ public class DocumentService {
 		UserMessage userMessage = new UserMessage(searchDto.getSearchString());
 		Prompt prompt = new Prompt(List.of(systemMessage, userMessage));
 		LocalDateTime start = LocalDateTime.now();
-		AiResponse response = aiClient.generate(prompt);
+		ChatResponse response = chatClient.generate(prompt);
 		LOGGER.info("AI response time: {}ms",
 				ZonedDateTime.of(LocalDateTime.now(), ZoneId.systemDefault()).toInstant().toEpochMilli()
 						- ZonedDateTime.of(start, ZoneId.systemDefault()).toInstant().toEpochMilli());
