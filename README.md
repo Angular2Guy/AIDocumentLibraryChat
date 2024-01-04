@@ -21,6 +21,9 @@ Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, S
 ## Mission Statement
 The project shows howto use Spring AI to generate answers based on a provided set of documents with a link to the source. The Angular frontend provides the use interface for the backend and shows the responses. Spring AI makes using OpenAI / Ollama services simple and useful and this project demonstrates that. 
 
+## C4 Architecture Diagrams
+The project has a [System Context Diagram](structurizr/diagrams/structurizr-1-SystemContext.svg), a [Container Diagram](structurizr/diagrams/structurizr-1-Containers.svg) and a [Component Diagram](structurizr/diagrams/structurizr-1-Components.svg). The Diagrams have been created with Structurizr. The file runStructurizr.sh contains the commands to use Structurizr and the directory structurizr contains the dsl file.
+
 ## Postgresql setup
 In the [runPostgresql.sh](https://github.com/Angular2Guy/AIDocumentLibraryChat/blob/master/runPostgresql.sh) file are the commands to pull and run the Postgresql Docker image with vector extension locally. 
 
