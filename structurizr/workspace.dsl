@@ -13,13 +13,13 @@ workspace "AIDocumentLibraryChat" "A project to show howto use SpringAI with Ope
         	}
         	database = container "Postgresql Db" "Postgresql stores the relational and vector data of the system." tag "Database"
         }
-		aiModelSystem = softwareSystem "OpenAI/Ollama AI Model" "The OpenAI/Ollama interface for Embeddings/Answers"
-		databaseSystem = softwareSystem "Postgresql Db" "Postgresql relational and vector data database" 
+		aiModelSystem = softwareSystem "OpenAI Model" "The OpenAI interface for Embeddings/Answers"
+		#databaseSystem = softwareSystem "Postgresql Db" "Postgresql relational and vector data database" 
 		
 		# relationships people / software systems
         user -> aiDocumentLibraryChatSystem "ask questions about documents"
         aiDocumentLibraryChatSystem -> aiModelSystem "generate embeddings/answers"
-        aiDocumentLibraryChatSystem -> databaseSystem "store relational/vector data"
+        #aiDocumentLibraryChatSystem -> databaseSystem "store relational/vector data"
         
         # relationships containers
         user -> aiDocumentLibraryChat "manages the document imports/searches"
