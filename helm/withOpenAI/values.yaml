@@ -21,7 +21,7 @@ envDb:
   secret:
     POSTGRES_USER: dbuser
     POSTGRES_PASSWORD: passwordtoreplace
-    POSTGRES_DB: movies
+    POSTGRES_DB: aidoclibchat
     
 envApp:
   normal: 
