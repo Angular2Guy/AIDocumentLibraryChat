@@ -1,0 +1,37 @@
+webAppName: aidocumentlibrarychatapp
+dbName: postgresserver
+webImageName: angular2guy/aidocumentlibrarychat
+webImageVersion: latest
+dbImageName: ankane/pgvector
+dbImageVersion: latest
+volumeClaimName: postgres-pv-claim
+persistentVolumeName: task-pv-volume
+webServiceName: aidocumentlibrarychatservice
+dbServiceName: postgresservice
+#for production use replace the jwtTokenSecrect value with a random alphanumeric string of the same length or longer
+jwtTokenSecrect: secret-key1234567890abcdefghijklmnopqrstuvpxyz
+
+secret:
+  nameApp: app-env-secret
+  nameDb: db-env-secret
+
+envDb:
+  normal: 
+    POSTGRES_URL: "jdbc:postgresql://postgresservice:5432/aidoclibchat"
+  secret:
+    POSTGRES_USER: dbuser
+    POSTGRES_PASSWORD: passwordtoreplace
+    POSTGRES_DB: movies
+    
+envApp:
+  normal: 
+    JPA_SHOW_SQL: true
+    H2_CONSOLE: false
+    SHUTDOWN_PHASE: 10s
+    SPRING_PROFILES_ACTIVE: "prod"
+  secret:
+    JWTTOKEN_SECRET: secret-key1234567890abcdefghijklmnopqrstuvwxyz
+    POSTGRES_USER: dbuser
+    POSTGRES_PASSWORD: passwordtoreplace
+    POSTGRES_URL: "jdbc:postgresql://postgresservice:5432/aidoclibchat"
+    TINK_JSON_KEY: '{"primaryKeyId":1047384356,"key":[{"keyData":{"typeUrl":"type.googleapis.com/google.crypto.tink.AesSivKey","value":"EkBtsrB3Aomkmsiq16f9KJQXZX2Y2ZfK3bN1QBBQuxGpSb/5pqQPgqXc5D5FETW6rrBsCv7qIsPyzoEAS2rXPgLx","keyMaterialType":"SYMMETRIC"},"status":"ENABLED","keyId":1047384356,"outputPrefixType":"TINK"}]}'
