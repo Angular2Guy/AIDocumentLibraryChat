@@ -18,10 +18,10 @@ secret:
 envDb:
   normal: 
     POSTGRES_URL: "jdbc:postgresql://postgresservice:5432/aidoclibchat"
+    POSTGRES_DB: aidoclibchat
   secret:
     POSTGRES_USER: dbuser
     POSTGRES_PASSWORD: passwordtoreplace
-    POSTGRES_DB: aidoclibchat
     
 envApp:
   normal: 
