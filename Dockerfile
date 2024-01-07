@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jdk-alpine
+FROM openjdk:21-jdk
 VOLUME /tmp
 ARG JAR_FILE
 ADD backend/build/libs/$JAR_FILE /app.jar
