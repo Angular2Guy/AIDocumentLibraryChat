@@ -31,6 +31,7 @@ Create chart name and version as used by the chart label.
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{/*
 Create envApp values
 */}}
 {{- define "helpers.list-envApp-variables"}}
@@ -48,6 +49,7 @@ Create envApp values
 {{- end}}
 {{- end }}
 
+{{/*
 Create envDb values
 */}}
 {{- define "helpers.list-envDb-variables"}}
