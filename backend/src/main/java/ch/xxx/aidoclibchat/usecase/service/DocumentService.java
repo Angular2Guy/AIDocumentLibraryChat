@@ -36,6 +36,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
+import ch.xxx.aidoclibchat.domain.common.DataType;
 import ch.xxx.aidoclibchat.domain.model.dto.AiResult;
 import ch.xxx.aidoclibchat.domain.model.dto.SearchDto;
 import ch.xxx.aidoclibchat.domain.model.entity.Document;
@@ -49,6 +50,7 @@ import jakarta.transaction.Transactional;
 public class DocumentService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DocumentService.class);
 	private static final String ID = "id";
+	private static final String DATATYPE = "datatype";
 	private static final String DISTANCE = "distance";
 	private final DocumentRepository documentRepository;
 	private final DocumentVsRepository documentVsRepository;
@@ -91,7 +93,8 @@ public class DocumentService {
 						.stream().map(myStr -> new TikaDocumentAndContent(myDocument1, myStr)))
 				.map(myTikaRecord -> new org.springframework.ai.document.Document(myTikaRecord.content(),
 						myTikaRecord.document().getMetadata()))
-				.peek(myDocument1 -> myDocument1.getMetadata().put(ID, myDocument.getId().toString())).toList();
+				.peek(myDocument1 -> myDocument1.getMetadata().put(ID, myDocument.getId().toString()))
+				.peek(myDocument1 -> myDocument1.getMetadata().put(DATATYPE, DataType.DOCUMENT.toString())).toList();
 
 		LOGGER.info("Name: {}, size: {}, chunks: {}", document.getDocumentName(), document.getDocumentContent().length,
 				aiDocuments.size());
@@ -103,11 +106,13 @@ public class DocumentService {
 	public AiResult queryDocuments(SearchDto searchDto) {
 		// LOGGER.info("SearchType: {}", searchDto.getSearchType());
 		var similarDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString(),
-				searchDto.getResultAmount());
+				searchDto.getResultAmount() * 10);
 		// LOGGER.info("Documents: {}", similarDocuments.size());
 		var mostSimilarDocs = similarDocuments.stream()
+				.filter(myDoc -> myDoc.getMetadata().get(DATATYPE).equals(DataType.DOCUMENT.toString()))
 				.sorted((myDocA, myDocB) -> ((Float) myDocA.getMetadata().get(DISTANCE))
 						.compareTo(((Float) myDocB.getMetadata().get(DISTANCE))))
+				.limit(searchDto.getResultAmount())
 				.toList();
 		var mostSimilar = mostSimilarDocs.stream().findFirst();
 		var documentChunks = mostSimilar.stream()
