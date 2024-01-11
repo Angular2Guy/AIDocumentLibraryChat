@@ -16,8 +16,8 @@ import java.util.List;
 
 import org.springframework.ai.document.Document;
 import org.springframework.ai.embedding.EmbeddingClient;
-import org.springframework.ai.retriever.VectorStoreRetriever;
 import org.springframework.ai.vectorstore.PgVectorStore;
+import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -37,14 +37,14 @@ public class DocumentVSRepositoryBean implements DocumentVsRepository {
 	}
 	
 	public List<Document> retrieve(String query, int k, double threshold) {
-		return  new VectorStoreRetriever(vectorStore, k, threshold).retrieve(query);
+		return this.vectorStore.similaritySearch(SearchRequest.query(query).withTopK(k).withSimilarityThreshold(threshold));
 	}
 	
 	public List<Document> retrieve(String query, int k) {
-		return  new VectorStoreRetriever(vectorStore, k).retrieve(query);
+		return this.vectorStore.similaritySearch(SearchRequest.query(query).withTopK(k));
 	}
 	
 	public List<Document> retrieve(String query) {
-		return new VectorStoreRetriever(vectorStore).retrieve(query);
+		return this.vectorStore.similaritySearch(SearchRequest.query(query));
 	}
 }

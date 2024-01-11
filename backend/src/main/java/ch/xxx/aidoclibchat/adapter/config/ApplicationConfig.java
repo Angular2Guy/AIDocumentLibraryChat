@@ -16,7 +16,7 @@
 package ch.xxx.aidoclibchat.adapter.config;
 
 import org.springframework.ai.embedding.EmbeddingClient;
-import org.springframework.ai.embedding.TransformersEmbeddingClient;
+import org.springframework.ai.transformers.TransformersEmbeddingClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
