@@ -60,12 +60,9 @@
 			<column name="imputed" type="boolean" defaultValueBoolean="false"/>
 			<column name="deviceid" type="varchar(30)" />
 			<column name="time" type="varchar(10)" />
-			<column name="zipcode" type="varchar(8)">
-				<constraints nullable="false"
-					foreignKeyName="fk_2_zipcode_zipcode" references="zipcode(zipcode)" />
-			</column>
+			<column name="zipcode" type="varchar(12)"/>
 			<column name="photo" type="varchar(50)" />
-			<column name="otherskuitem" type="varchar(20)" />
+			<column name="otherskuitem" type="varchar(40)" />
 			<column name="comments" type="varchar(255)" />
 			<column name="pricetype" type="varchar(50)" />
 			<column name="code" type="varchar(15)" />
@@ -85,10 +82,10 @@
 			<column name="price_online" type="double" />
 			<column name="price_amazon" type="double" />
 			<column name="sale_online" type="boolean" />
-			<column name="product_online" type="varchar(255)" />
-			<column name="product_amazon" type="varchar(255)" />
-			<column name="merchant" type="varchar(255)" />
-			<column name="url" type="varchar(255)" />
+			<column name="product_online" type="varchar(512)" />
+			<column name="product_amazon" type="varchar(512)" />
+			<column name="merchant" type="varchar(512)" />
+			<column name="url" type="varchar(512)" />
 			<column name="imputed" type="boolean" defaultValueBoolean="false"/>
 			<column name="comments" type="varchar(255)" />
 			<column name="pricetype" type="varchar(50)" />
