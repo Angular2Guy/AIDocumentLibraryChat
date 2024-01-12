@@ -40,18 +40,20 @@ public class TableService {
 	}
 	
 	@Async
-	public void importData() {
+	public void importData() {		
 		var start = new Date();
-		//this.importClient.importZipcodes().forEach(myZipcode -> LOGGER.info(myZipcode.toString()));
-		//this.importClient.importSupermarkets().forEach(mySupermarket -> LOGGER.info(mySupermarket.toString()));
-		//this.importClient.importProducts().forEach(myProduct -> LOGGER.info(myProduct.toString()));
-		//this.importClient.importAmazonProducts().forEach(myAmazonProduct -> LOGGER.info(myAmazonProduct.toString()));
+		LOGGER.info("Import started.");
 		List<Zipcode> zipcodes = this.importClient.importZipcodes();
 		List<Supermarket> supermarkets = this.importClient.importSupermarkets();
 		List<Product> products = this.importClient.importProducts();
 		List<AmazonProduct> amazonProducts = this.importClient.importAmazonProducts();
+		LOGGER.info("Data fetched in {}ms", new Date().getTime() - start.getTime());
+		var deleteStart = new Date();
 		this.importService.deleteData();
-		this.importService.saveAllData(zipcodes, supermarkets, products, amazonProducts);		
+		LOGGER.info("Data deleted in {}ms", new Date().getTime() - deleteStart.getTime());
+		var saveStart = new Date();
+		this.importService.saveAllData(zipcodes, supermarkets, products, amazonProducts);
+		LOGGER.info("Data saved in {}ms", new Date().getTime() - saveStart.getTime());
 		LOGGER.info("Import done in {}ms.", new Date().getTime() - start.getTime());
 	}
 }
