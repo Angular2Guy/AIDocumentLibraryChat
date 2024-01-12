@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2019 Sven Loesekann Licensed under the Apache License, Version 
+	2.0 (the "License"); you may not use this file except in compliance with 
+	the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+	<changeSet author="angular2guy" id="9">
+		<createTable tableName="zipcode">
+			<column name="zipcode" type="varchar(8)">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="zipcodetype" type="varchar(15)">
+				<constraints
+					notNullConstraintName="zipcode_zipcodetype_notnull"
+					nullable="false" />
+			</column>
+			<column name="city" type="varchar(50)" />
+			<column name="state" type="varchar(10)" />
+			<column name="lat" type="double" defaultValue="0.0" />
+			<column name="lgt" type="double" defaultValue="0.0" />
+		</createTable>
+	</changeSet>
+	<!-- <changeSet author="angular2guy" id="5"> <createSequence sequenceName="document_seq" 
+		incrementBy="50" startValue="1000" /> </changeSet> -->
+	<changeSet id="10" author="angular2guy">
+		<createTable tableName="supermarket">
+			<column name="id" type="bigint">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="price" type="double" />
+			<column name="zip" type="varchar(8)">
+				<constraints nullable="false"
+					foreignKeyName="fk_zipcode_zipcode" references="zipcode(zipcode)" />
+			</column>
+			<column name="prices" type="int" />
+			<column name="zips" type="int" />
+		</createTable>
+	</changeSet>
+	<changeSet id="11" author="angular2guy">
+		<createTable tableName="product">
+			<column name="id" type="bigint">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="country" type="varchar(25)" />
+			<column name="retailer" type="bigint" />
+			<column name="retailer_s" type="varchar(25)" />
+			<column name="date" type="date" />
+			<column name="day" type="int" />
+			<column name="month" type="int" />
+			<column name="year" type="int" />
+			<column name="price" type="double" />
+			<column name="price_online" type="double" />
+			<column name="imputed" type="boolean" defaultValueBoolean="false"/>
+			<column name="deviceid" type="varchar(30)" />
+			<column name="time" type="varchar(10)" />
+			<column name="zipcode" type="varchar(8)">
+				<constraints nullable="false"
+					foreignKeyName="fk_2_zipcode_zipcode" references="zipcode(zipcode)" />
+			</column>
+			<column name="photo" type="varchar(50)" />
+			<column name="otherskuitem" type="varchar(20)" />
+			<column name="comments" type="varchar(255)" />
+			<column name="pricetype" type="varchar(50)" />
+			<column name="code" type="varchar(15)" />
+			<column name="sale_online" type="boolean"
+				defaultValueBoolean="false" />
+			<column name="country_s" type="varchar(25)" />
+		</createTable>
+	</changeSet>
+	<changeSet id="12" author="angular2guy">
+		<createTable tableName="amazon_product">
+			<column name="id" type="bigint">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="date_amazon" type="date" />
+			<column name="date" type="date" />
+			<column name="price" type="double" />
+			<column name="price_online" type="double" />
+			<column name="price_amazon" type="double" />
+			<column name="sale_online" type="boolean" />
+			<column name="product_online" type="varchar(255)" />
+			<column name="product_amazon" type="varchar(255)" />
+			<column name="merchant" type="varchar(255)" />
+			<column name="url" type="varchar(255)" />
+			<column name="imputed" type="boolean" defaultValueBoolean="false"/>
+			<column name="comments" type="varchar(255)" />
+			<column name="pricetype" type="varchar(50)" />
+			<column name="datediff" type="int" />
+			<column name="cat_id" type="int" />
+			<column name="category" type="varchar(50)" />
+			<column name="retailer_id" type="bigint"/>
+			<column name="retailer_s" type="varchar(50)" />
+		</createTable>
+	</changeSet>
+</databaseChangeLog>

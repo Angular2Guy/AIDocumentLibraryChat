@@ -32,6 +32,7 @@ public class TableController {
 	
 	@GetMapping("/import")
 	public boolean importData() {
+		this.tableService.importData();
 		return true;
 	}
 }

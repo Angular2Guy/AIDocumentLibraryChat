@@ -10,15 +10,20 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package ch.xxx.aidoclibchat.domain.model.dto;
+package ch.xxx.aidoclibchat.domain.model.entity;
 
-public class ZipcodeDto {
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
+public class Zipcode {
+	@Id
 	private String zipcode;
 	private String zipcodetype;
 	private String city;
 	private String state;
-	private double lat = 0.0;
-	private double lgt = 0.0;
+	private double lat;
+	private double lgt;
 	
 	public String getZipcode() {
 		return zipcode;
@@ -55,11 +60,5 @@ public class ZipcodeDto {
 	}
 	public void setLgt(double lgt) {
 		this.lgt = lgt;
-	}
-
-	@Override
-	public String toString() {
-		return "ZipcodeDto [zipcode=" + zipcode + ", zipcodetype=" + zipcodetype + ", city=" + city + ", state=" + state
-				+ ", lat=" + lat + ", lgt=" + lgt + "]";
 	}
 }

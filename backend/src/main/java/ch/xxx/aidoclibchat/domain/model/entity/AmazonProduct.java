@@ -10,52 +10,42 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package ch.xxx.aidoclibchat.domain.model.dto;
+package ch.xxx.aidoclibchat.domain.model.entity;
 
 import java.time.LocalDate;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
-public class AmazonProductDto {
-	private String id;
-	@JsonProperty("date_amazon")
-	@JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "M/d/yyyy")
+@Entity
+public class AmazonProduct {
+	@Id
+	private Long id;
 	private LocalDate dateAmazon;
-	@JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "M/d/yyyy")
 	private LocalDate date;
 	private double price;
-	@JsonProperty("price_online")
 	private double priceOnline;
-	@JsonProperty("price_amazon")
 	private double priceAmazon;
-	@JsonProperty("sale_online")
-	private int saleOnline;
-	@JsonProperty("product_online")
+	private boolean saleOnline;
 	private String productOnline;
-	@JsonProperty("product_amazon")
 	private String productAmazon;
 	private String merchant;
-	@JsonProperty("URL")
 	private String url;
-	private int imputed;
-	@JsonProperty("COMMENTS")
+	private boolean imputed;
 	private String comments;
-	@JsonProperty("PRICETYPE")
 	private String pricetype;
 	private int datediff;
-	@JsonProperty("cat_id")
 	private int catId;
 	private String category;
-	@JsonProperty("retailer_id")
 	private Long retailerId;
-	@JsonProperty("retailer_s")
+	@Column(name="retailer_s")
 	private String retailerS;
 	
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public LocalDate getDateAmazon() {
@@ -88,10 +78,10 @@ public class AmazonProductDto {
 	public void setPriceAmazon(double priceAmazon) {
 		this.priceAmazon = priceAmazon;
 	}
-	public int isSaleOnline() {
+	public boolean isSaleOnline() {
 		return saleOnline;
 	}
-	public void setSaleOnline(int saleOnline) {
+	public void setSaleOnline(boolean saleOnline) {
 		this.saleOnline = saleOnline;
 	}
 	public String getProductOnline() {
@@ -118,10 +108,10 @@ public class AmazonProductDto {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	public int getImputed() {
+	public boolean isImputed() {
 		return imputed;
 	}
-	public void setImputed(int imputed) {
+	public void setImputed(boolean imputed) {
 		this.imputed = imputed;
 	}
 	public String getComments() {
@@ -165,15 +155,5 @@ public class AmazonProductDto {
 	}
 	public void setRetailerS(String retailerS) {
 		this.retailerS = retailerS;
-	}
-
-	@Override
-	public String toString() {
-		return "AmazonProductDto [id=" + id + ", dateAmazon=" + dateAmazon + ", date=" + date + ", price=" + price
-				+ ", priceOnline=" + priceOnline + ", priceAmazon=" + priceAmazon + ", saleOnline=" + saleOnline
-				+ ", productOnline=" + productOnline + ", productAmazon=" + productAmazon + ", merchant=" + merchant
-				+ ", url=" + url + ", imputed=" + imputed + ", comments=" + comments + ", pricetype=" + pricetype
-				+ ", datediff=" + datediff + ", catId=" + catId + ", category=" + category + ", retailerId="
-				+ retailerId + ", retailerS=" + retailerS + "]";
-	}
+	}	
 }

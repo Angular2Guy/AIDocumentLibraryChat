@@ -12,14 +12,15 @@
  */
 package ch.xxx.aidoclibchat.adapter.client;
 
-import java.lang.reflect.Array;
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvSchema;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import ch.xxx.aidoclibchat.domain.client.ImportClient;
 import ch.xxx.aidoclibchat.domain.model.dto.AmazonProductDto;
@@ -29,15 +30,16 @@ import ch.xxx.aidoclibchat.domain.model.dto.ZipcodeDto;
 
 @Component
 public class ImportRestClient implements ImportClient {
-	private CsvMapper csvMapper;
+	private final CsvMapper csvMapper;
 	
-	public ImportRestClient(CsvMapper csvMapper) {
-		this.csvMapper = csvMapper;
+	public ImportRestClient() {
+		this.csvMapper = new CsvMapper();
+		this.csvMapper.registerModule(new JavaTimeModule());
 	}
 	
 	public List<ZipcodeDto> importZipcodes() {
 		RestClient restClient = RestClient.create();
-		String result = restClient.get().uri("https://github.com/Angular2Guy/AIDocumentLibraryChat/blob/master/retailData/zipcodes.csv")
+		String result = restClient.get().uri("https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/retailData/zipcodes.csv")
 		.retrieve().body(String.class);
 		/*
 		var zipcodes = new ZipcodeDto[0];
@@ -48,38 +50,37 @@ public class ImportRestClient implements ImportClient {
 		}
 		return List.of(zipcodes);
 		*/
-		return this.mapString(result, ZipcodeDto[].class);
+		return this.mapString(result, ZipcodeDto.class);
 	}
 	
-	private <T> List<T> mapString(String result, Class<T[]> myClass) {
-		@SuppressWarnings("unchecked")
-		var zipcodes = (T[]) Array.newInstance(myClass, 0);
-		try {
-			zipcodes = this.csvMapper.readValue(result, myClass);
-		} catch (JsonProcessingException e) {
+	private <T> List<T> mapString(String result, Class<T> myClass) {
+		List<T> zipcodes = List.of();
+		try {			
+			zipcodes = this.csvMapper.readerFor(myClass).with(CsvSchema.builder().setUseHeader(true).build()).<T>readValues(result).readAll();
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		return List.of(zipcodes);
+		return zipcodes;
 	}
 	
 	public List<SupermarketDto> importSupermarkets() {
 		RestClient restClient = RestClient.create();
-		String result = restClient.get().uri("https://github.com/Angular2Guy/AIDocumentLibraryChat/blob/master/retailData/supermarket-1day-45zips.csv")
+		String result = restClient.get().uri("https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/retailData/supermarket-1day-45zips.csv")
 		.retrieve().body(String.class);
-		return this.mapString(result,SupermarketDto[].class);
+		return this.mapString(result,SupermarketDto.class);
 	}
 	
 	public List<AmazonProductDto> importAmazonProducts() {
 		RestClient restClient = RestClient.create();
-		String result = restClient.get().uri("https://github.com/Angular2Guy/AIDocumentLibraryChat/blob/master/retailData/amazon_compare.csv")
+		String result = restClient.get().uri("https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/retailData/amazon_compare.csv")
 		.retrieve().body(String.class);
-		return this.mapString(result,AmazonProductDto[].class);
+		return this.mapString(result,AmazonProductDto.class);
 	}
 	
 	public List<ProductDto> importProducts() {
 		RestClient restClient = RestClient.create();
-		String result = restClient.get().uri("https://github.com/Angular2Guy/AIDocumentLibraryChat/blob/master/retailData/online_offline_ALL_clean.csv")
+		String result = restClient.get().uri("https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/retailData/online_offline_ALL_clean.csv")
 		.retrieve().body(String.class);
-		return this.mapString(result,ProductDto[].class);
+		return this.mapString(result,ProductDto.class);
 	}
 }

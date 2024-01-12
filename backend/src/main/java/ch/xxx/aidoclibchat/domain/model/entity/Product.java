@@ -10,54 +10,45 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package ch.xxx.aidoclibchat.domain.model.dto;
+package ch.xxx.aidoclibchat.domain.model.entity;
 
 import java.time.LocalDate;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
-public class ProductDto {
-	private String id;
-	@JsonProperty("COUNTRY")
+@Entity
+public class Product {
+	@Id
+	private Long id;
 	private String country;
 	private Long retailer;
-	@JsonProperty("retailer_s")
+	@Column(name="retailer_s")
 	private String retailerS;
-    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "M/d/yyyy")
 	private LocalDate date;
 	private int day;
 	private int month;
 	private int year;
 	private double price;
-	@JsonProperty("price_online")
 	private double priceOnline;
-	private int imputed;
-	@JsonProperty("DEVICEID")
+	private boolean imputed;
 	private String deviceid;
-	@JsonProperty("TIME")
 	private String time;
-	@JsonProperty("ZIPCODE")
 	private String zipcode;
-	@JsonProperty("PHOTO")
 	private String photo;
-	@JsonProperty("OTHERSKUITEM")
 	private String otherskuitem;
-	@JsonProperty("COMMENTS")
 	private String comments;
-	@JsonProperty("PRICETYPE")
 	private String pricetype;
-	@JsonProperty("CODE")
 	private String code;
-	@JsonProperty("sale_online")
-	private String saleOnline;
-	@JsonProperty("country_s")
+	private boolean saleOnline;
+	@Column(name="country_s")
 	private String countryS;
 	
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getCountry() {
@@ -114,10 +105,10 @@ public class ProductDto {
 	public void setPriceOnline(double priceOnline) {
 		this.priceOnline = priceOnline;
 	}
-	public int getImputed() {
+	public boolean isImputed() {
 		return imputed;
 	}
-	public void setImputed(int imputed) {
+	public void setImputed(boolean imputed) {
 		this.imputed = imputed;
 	}
 	public String getDeviceid() {
@@ -168,10 +159,10 @@ public class ProductDto {
 	public void setCode(String code) {
 		this.code = code;
 	}
-	public String getSaleOnline() {
+	public boolean getSaleOnline() {
 		return saleOnline;
 	}
-	public void setSaleOnline(String saleOnline) {
+	public void setSaleOnline(boolean saleOnline) {
 		this.saleOnline = saleOnline;
 	}
 	public String getCountryS() {
@@ -179,15 +170,5 @@ public class ProductDto {
 	}
 	public void setCountryS(String countryS) {
 		this.countryS = countryS;
-	}
-	
-	@Override
-	public String toString() {
-		return "ProductDto [id=" + id + ", country=" + country + ", retailer=" + retailer + ", retailerS=" + retailerS
-				+ ", date=" + date + ", day=" + day + ", month=" + month + ", year=" + year + ", price=" + price
-				+ ", priceOnline=" + priceOnline + ", imputed=" + imputed + ", deviceid=" + deviceid + ", time=" + time
-				+ ", zipcode=" + zipcode + ", photo=" + photo + ", otherskuitem=" + otherskuitem + ", comments="
-				+ comments + ", pricetype=" + pricetype + ", code=" + code + ", saleOnline=" + saleOnline
-				+ ", countryS=" + countryS + "]";
 	}
 }
