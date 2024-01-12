@@ -14,14 +14,14 @@ package ch.xxx.aidoclibchat.domain.client;
 
 import java.util.List;
 
-import ch.xxx.aidoclibchat.domain.model.dto.AmazonProductDto;
-import ch.xxx.aidoclibchat.domain.model.dto.ProductDto;
-import ch.xxx.aidoclibchat.domain.model.dto.SupermarketDto;
-import ch.xxx.aidoclibchat.domain.model.dto.ZipcodeDto;
+import ch.xxx.aidoclibchat.domain.model.entity.AmazonProduct;
+import ch.xxx.aidoclibchat.domain.model.entity.Product;
+import ch.xxx.aidoclibchat.domain.model.entity.Supermarket;
+import ch.xxx.aidoclibchat.domain.model.entity.Zipcode;
 
 public interface ImportClient {
-	List<ZipcodeDto> importZipcodes();
-	List<SupermarketDto> importSupermarkets();
-	List<AmazonProductDto> importAmazonProducts();	
-	List<ProductDto> importProducts();
+	List<Zipcode> importZipcodes();
+	List<Supermarket> importSupermarkets();
+	List<AmazonProduct> importAmazonProducts();	
+	List<Product> importProducts();
 }

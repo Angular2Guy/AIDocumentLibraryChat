@@ -14,6 +14,7 @@ package ch.xxx.aidoclibchat.adapter.client;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -27,60 +28,65 @@ import ch.xxx.aidoclibchat.domain.model.dto.AmazonProductDto;
 import ch.xxx.aidoclibchat.domain.model.dto.ProductDto;
 import ch.xxx.aidoclibchat.domain.model.dto.SupermarketDto;
 import ch.xxx.aidoclibchat.domain.model.dto.ZipcodeDto;
+import ch.xxx.aidoclibchat.domain.model.entity.AmazonProduct;
+import ch.xxx.aidoclibchat.domain.model.entity.Product;
+import ch.xxx.aidoclibchat.domain.model.entity.Supermarket;
+import ch.xxx.aidoclibchat.domain.model.entity.Zipcode;
+import ch.xxx.aidoclibchat.usecase.mapping.TableMapper;
 
 @Component
 public class ImportRestClient implements ImportClient {
 	private final CsvMapper csvMapper;
-	
-	public ImportRestClient() {
+	private final TableMapper tableMapper;
+
+	public ImportRestClient(TableMapper tableMapper) {
+		this.tableMapper = tableMapper;
 		this.csvMapper = new CsvMapper();
 		this.csvMapper.registerModule(new JavaTimeModule());
 	}
-	
-	public List<ZipcodeDto> importZipcodes() {
+
+	public List<Zipcode> importZipcodes() {
 		RestClient restClient = RestClient.create();
-		String result = restClient.get().uri("https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/retailData/zipcodes.csv")
-		.retrieve().body(String.class);
-		/*
-		var zipcodes = new ZipcodeDto[0];
-		try {
-			zipcodes = this.csvMapper.readValue(result, ZipcodeDto[].class);
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
-		}
-		return List.of(zipcodes);
-		*/
-		return this.mapString(result, ZipcodeDto.class);
+		String result = restClient.get().uri(
+				"https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/retailData/zipcodes.csv")
+				.retrieve().body(String.class);
+		return this.mapString(result, ZipcodeDto.class).stream().map(myDto -> this.tableMapper.map(myDto)).toList();
 	}
-	
+
 	private <T> List<T> mapString(String result, Class<T> myClass) {
 		List<T> zipcodes = List.of();
-		try {			
-			zipcodes = this.csvMapper.readerFor(myClass).with(CsvSchema.builder().setUseHeader(true).build()).<T>readValues(result).readAll();
+		try {
+			zipcodes = this.csvMapper.readerFor(myClass).with(CsvSchema.builder().setUseHeader(true).build())
+					.<T>readValues(result).readAll();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 		return zipcodes;
 	}
-	
-	public List<SupermarketDto> importSupermarkets() {
+
+	public List<Supermarket> importSupermarkets() {
 		RestClient restClient = RestClient.create();
-		String result = restClient.get().uri("https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/retailData/supermarket-1day-45zips.csv")
-		.retrieve().body(String.class);
-		return this.mapString(result,SupermarketDto.class);
+		String result = restClient.get().uri(
+				"https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/retailData/supermarket-1day-45zips.csv")
+				.retrieve().body(String.class);
+		return this.mapString(result, SupermarketDto.class).stream().map(myDto -> this.tableMapper.map(myDto)).toList();
 	}
-	
-	public List<AmazonProductDto> importAmazonProducts() {
+
+	public List<AmazonProduct> importAmazonProducts() {
 		RestClient restClient = RestClient.create();
-		String result = restClient.get().uri("https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/retailData/amazon_compare.csv")
-		.retrieve().body(String.class);
-		return this.mapString(result,AmazonProductDto.class);
+		String result = restClient.get().uri(
+				"https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/retailData/amazon_compare.csv")
+				.retrieve().body(String.class);
+		return this.mapString(result, AmazonProductDto.class).stream().map(myDto -> this.tableMapper.map(myDto))
+				.filter(Optional::isPresent).map(Optional::get).toList();
 	}
-	
-	public List<ProductDto> importProducts() {
+
+	public List<Product> importProducts() {
 		RestClient restClient = RestClient.create();
-		String result = restClient.get().uri("https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/retailData/online_offline_ALL_clean.csv")
-		.retrieve().body(String.class);
-		return this.mapString(result,ProductDto.class);
+		String result = restClient.get().uri(
+				"https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/retailData/online_offline_ALL_clean.csv")
+				.retrieve().body(String.class);
+		return this.mapString(result, ProductDto.class).stream().map(myDto -> this.tableMapper.map(myDto))
+				.filter(Optional::isPresent).map(Optional::get).toList();
 	}
 }

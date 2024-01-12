@@ -61,4 +61,9 @@ public class Zipcode {
 	public void setLgt(double lgt) {
 		this.lgt = lgt;
 	}
+	@Override
+	public String toString() {
+		return "Zipcode [zipcode=" + zipcode + ", zipcodetype=" + zipcodetype + ", city=" + city + ", state=" + state
+				+ ", lat=" + lat + ", lgt=" + lgt + "]";
+	}
 }

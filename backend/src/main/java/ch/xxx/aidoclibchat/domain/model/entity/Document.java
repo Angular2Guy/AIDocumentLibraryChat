@@ -12,6 +12,8 @@
  */
 package ch.xxx.aidoclibchat.domain.model.entity;
 
+import java.util.Arrays;
+
 import ch.xxx.aidoclibchat.domain.common.DocumentType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -63,5 +65,11 @@ public class Document {
     public void setDocumentContent(byte[] documentContent) {
         this.documentContent = documentContent;
     }
+
+	@Override
+	public String toString() {
+		return "Document [id=" + id + ", documentName=" + documentName + ", documentType=" + documentType
+				+ ", documentContent=" + Arrays.toString(documentContent) + "]";
+	}
 
 }

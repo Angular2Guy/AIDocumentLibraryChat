@@ -171,4 +171,13 @@ public class Product {
 	public void setCountryS(String countryS) {
 		this.countryS = countryS;
 	}
+	@Override
+	public String toString() {
+		return "Product [id=" + id + ", country=" + country + ", retailer=" + retailer + ", retailerS=" + retailerS
+				+ ", date=" + date + ", day=" + day + ", month=" + month + ", year=" + year + ", price=" + price
+				+ ", priceOnline=" + priceOnline + ", imputed=" + imputed + ", deviceid=" + deviceid + ", time=" + time
+				+ ", zipcode=" + zipcode + ", photo=" + photo + ", otherskuitem=" + otherskuitem + ", comments="
+				+ comments + ", pricetype=" + pricetype + ", code=" + code + ", saleOnline=" + saleOnline
+				+ ", countryS=" + countryS + "]";
+	}
 }

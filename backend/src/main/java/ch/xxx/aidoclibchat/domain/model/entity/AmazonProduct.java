@@ -155,5 +155,14 @@ public class AmazonProduct {
 	}
 	public void setRetailerS(String retailerS) {
 		this.retailerS = retailerS;
+	}
+	@Override
+	public String toString() {
+		return "AmazonProduct [id=" + id + ", dateAmazon=" + dateAmazon + ", date=" + date + ", price=" + price
+				+ ", priceOnline=" + priceOnline + ", priceAmazon=" + priceAmazon + ", saleOnline=" + saleOnline
+				+ ", productOnline=" + productOnline + ", productAmazon=" + productAmazon + ", merchant=" + merchant
+				+ ", url=" + url + ", imputed=" + imputed + ", comments=" + comments + ", pricetype=" + pricetype
+				+ ", datediff=" + datediff + ", catId=" + catId + ", category=" + category + ", retailerId="
+				+ retailerId + ", retailerS=" + retailerS + "]";
 	}	
 }

@@ -54,4 +54,9 @@ public class Supermarket {
 	public void setZips(int zips) {
 		this.zips = zips;
 	}
+	@Override
+	public String toString() {
+		return "Supermarket [id=" + id + ", price=" + price + ", zip=" + zip + ", prices=" + prices + ", zips=" + zips
+				+ "]";
+	}
 }
