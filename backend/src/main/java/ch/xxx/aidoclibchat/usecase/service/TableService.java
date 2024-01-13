@@ -49,14 +49,14 @@ public class TableService {
 		List<Museum> museums = this.importClient.importMuseums();
 		List<MuseumHours> museumHours = this.importClient.importMuseumHours();
 		List<Work> works = this.importClient.importWorks();
-		List<Subject> sujects = this.importClient.importSubjects();
+		List<Subject> subjects = this.importClient.importSubjects();
 		List<WorkLink> workLinks = this.importClient.importWorkLinks();		
 		LOGGER.info("Data fetched in {}ms", new Date().getTime() - start.getTime());
 		var deleteStart = new Date();
 		this.importService.deleteData();
 		LOGGER.info("Data deleted in {}ms", new Date().getTime() - deleteStart.getTime());
 		var saveStart = new Date();
-		//this.importService.saveAllData(zipcodes, supermarkets, products, amazonProducts);
+		this.importService.saveAllData(works, museumHours, museums, artists, subjects, workLinks);
 		LOGGER.info("Data saved in {}ms", new Date().getTime() - saveStart.getTime());
 		LOGGER.info("Import done in {}ms.", new Date().getTime() - start.getTime());
 	}
