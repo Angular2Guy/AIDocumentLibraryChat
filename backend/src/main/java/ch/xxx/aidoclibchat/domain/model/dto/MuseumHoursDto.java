@@ -12,7 +12,10 @@
  */
 package ch.xxx.aidoclibchat.domain.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class MuseumHoursDto {
+	@JsonProperty("museum_id")
 	private Long museumId;
 	private String day;
 	private String open;

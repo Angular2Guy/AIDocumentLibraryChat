@@ -108,7 +108,7 @@ public class ImportRestClient implements ImportClient {
 	public List<WorkLink> importWorkLinks() {
 		RestClient restClient = RestClient.create();
 		String result = restClient.get().uri(
-				"https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/museumDataset/subject.csv")
+				"https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/museumDataset/work_link.csv")
 				.retrieve().body(String.class);
 		return this.mapString(result, WorkLinkDto.class).stream().map(myDto -> this.tableMapper.map(myDto)).toList();
 	}
