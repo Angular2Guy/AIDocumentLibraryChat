@@ -10,22 +10,11 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package ch.xxx.aidoclibchat.domain.client;
+package ch.xxx.aidoclibchat.domain.model.entity;
 
 import java.util.List;
 
-import ch.xxx.aidoclibchat.domain.model.entity.Artist;
-import ch.xxx.aidoclibchat.domain.model.entity.Museum;
-import ch.xxx.aidoclibchat.domain.model.entity.MuseumHours;
-import ch.xxx.aidoclibchat.domain.model.entity.Subject;
-import ch.xxx.aidoclibchat.domain.model.entity.Work;
-import ch.xxx.aidoclibchat.domain.model.entity.WorkLink;
-
-public interface ImportClient {
-	List<Artist> importArtists();
-	List<Museum> importMuseums();
-	List<MuseumHours> importMuseumHours();
-	List<Work> importWorks();
-	List<Subject> importSubjects();
-	List<WorkLink> importWorkLinks();
+public interface WorkLinkRepository {
+	List<WorkLink> saveAll(Iterable<WorkLink> entities);
+	void deleteAll();
 }

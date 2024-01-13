@@ -10,24 +10,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package ch.xxx.aidoclibchat.domain.model.entity;
+package ch.xxx.aidoclibchat.domain.model.dto;
 
-import java.util.Objects;
-
-import jakarta.persistence.Embeddable;
-
-@Embeddable
-public class MuseumHoursId {
+public class MuseumHoursDto {
 	private Long museumId;
 	private String day;
-	
-	public MuseumHoursId() { }
-	
-	public MuseumHoursId(Long museumId, String day) {
-		super();
-		this.museumId = museumId;
-		this.day = day;
-	}
+	private String open;
+	private String close;
 
 	public Long getMuseumId() {
 		return museumId;
@@ -41,21 +30,16 @@ public class MuseumHoursId {
 	public void setDay(String day) {
 		this.day = day;
 	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(day, museumId);
+	public String getOpen() {
+		return open;
 	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		MuseumHoursId other = (MuseumHoursId) obj;
-		return Objects.equals(day, other.day) && Objects.equals(museumId, other.museumId);
+	public void setOpen(String open) {
+		this.open = open;
+	}
+	public String getClose() {
+		return close;
+	}
+	public void setClose(String close) {
+		this.close = close;
 	}
 }

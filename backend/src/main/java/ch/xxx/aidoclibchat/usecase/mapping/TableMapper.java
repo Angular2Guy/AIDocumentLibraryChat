@@ -12,100 +12,87 @@
  */
 package ch.xxx.aidoclibchat.usecase.mapping;
 
-import java.util.Optional;
-
 import org.springframework.stereotype.Component;
 
-import ch.xxx.aidoclibchat.domain.model.dto.AmazonProductDto;
-import ch.xxx.aidoclibchat.domain.model.dto.ProductDto;
-import ch.xxx.aidoclibchat.domain.model.dto.SupermarketDto;
-import ch.xxx.aidoclibchat.domain.model.dto.ZipcodeDto;
+import ch.xxx.aidoclibchat.domain.model.dto.ArtistDto;
+import ch.xxx.aidoclibchat.domain.model.dto.MuseumDto;
+import ch.xxx.aidoclibchat.domain.model.dto.MuseumHoursDto;
+import ch.xxx.aidoclibchat.domain.model.dto.SubjectDto;
+import ch.xxx.aidoclibchat.domain.model.dto.WorkDto;
+import ch.xxx.aidoclibchat.domain.model.dto.WorkLinkDto;
 import ch.xxx.aidoclibchat.domain.model.entity.Artist;
 import ch.xxx.aidoclibchat.domain.model.entity.Museum;
 import ch.xxx.aidoclibchat.domain.model.entity.MuseumHours;
+import ch.xxx.aidoclibchat.domain.model.entity.MuseumHoursId;
+import ch.xxx.aidoclibchat.domain.model.entity.Subject;
 import ch.xxx.aidoclibchat.domain.model.entity.Work;
+import ch.xxx.aidoclibchat.domain.model.entity.WorkLink;
 
 @Component
 public class TableMapper {
-	public Work map(ZipcodeDto dto) {
+	public Work map(WorkDto dto) {
 		var entity = new Work();
-//		entity.setCity(dto.getCity());
-//		entity.setLat(dto.getLat());
-//		entity.setLgt(dto.getLgt());
-//		entity.setState(dto.getState());
-//		entity.setZipcode(dto.getZipcode());
-//		entity.setZipcodetype(dto.getZipcodetype());
+		entity.setArtistId(dto.getArtistId());
+		entity.setHeight(dto.getHeight());
+		entity.setId(dto.getId());
+		entity.setMuseumId(dto.getMuseumId());
+		entity.setName(dto.getName());
+		entity.setStyle(dto.getStyle());
+		entity.setWidth(dto.getWidth());
 		return entity;
 	}
 
-	public MuseumHours map(SupermarketDto dto) {
+	public MuseumHours map(MuseumHoursDto dto) {
 		var entity = new MuseumHours();
-//		entity.setId(dto.getId());
-//		entity.setPrice(dto.getPrice());
-//		entity.setPrices(dto.getPrices());
-//		entity.setZip(dto.getZip());
-//		entity.setZips(dto.getZips());
+		entity.setClose(dto.getClose());
+		entity.setOpen(dto.getOpen());
+		entity.setMuseumHoursId(new MuseumHoursId(dto.getMuseumId(), dto.getDay()));
 		return entity;
-	}
-
-	public Optional<Museum> map(ProductDto dto) {
-		var myOpt = Optional.of(new Museum());
-		var entity = myOpt.get();
-		try {
-//			entity.setCode(dto.getCode());
-//			entity.setComments(dto.getComments());
-//			entity.setCountry(dto.getCountry());
-//			entity.setCountryS(dto.getCountryS());
-//			entity.setDate(dto.getDate());
-//			entity.setDay(dto.getDay());
-//			entity.setDeviceid(dto.getDeviceid());
-//			entity.setId(Long.parseLong(dto.getId()));
-//			entity.setImputed(dto.getImputed() == 1);
-//			entity.setMonth(dto.getMonth());
-//			entity.setOtherskuitem(dto.getOtherskuitem());
-//			entity.setPhoto(dto.getPhoto());
-//			entity.setPrice(dto.getPrice());
-//			entity.setPrice(dto.getPrice());
-//			entity.setPriceOnline(dto.getPriceOnline());
-//			entity.setPricetype(dto.getPricetype());
-//			entity.setRetailer(dto.getRetailer());
-//			entity.setRetailerS(dto.getRetailerS());
-//			entity.setSaleOnline(Optional.ofNullable(dto.getSaleOnline()).stream().allMatch(myStr -> !myStr.isBlank()));
-//			entity.setTime(dto.getTime());
-//			entity.setYear(dto.getYear());
-//			entity.setZipcode(dto.getZipcode());
-		} catch (Exception e) {
-			myOpt = Optional.empty();
-		}
-		return myOpt;
 	}
 	
-	public Optional<Artist> map(AmazonProductDto dto) {
-		var myOpt = Optional.of(new Artist());
-		var entity = myOpt.get();
-		try {
-//			entity.setCategory(dto.getCategory());
-//			entity.setCatId(dto.getCatId());
-//			entity.setComments(dto.getComments());
-//			entity.setDate(dto.getDate());
-//			entity.setDateAmazon(dto.getDateAmazon());
-//			entity.setDatediff(dto.getDatediff());
-//			entity.setId(Long.parseLong(dto.getId()));
-//			entity.setImputed(dto.getImputed() == 1);
-//			entity.setMerchant(dto.getMerchant());
-//			entity.setPrice(dto.getPrice());
-//			entity.setPriceAmazon(dto.getPriceAmazon());
-//			entity.setPriceOnline(dto.getPriceOnline());
-//			entity.setPricetype(dto.getPricetype());
-//			entity.setProductAmazon(dto.getProductAmazon());
-//			entity.setPriceOnline(dto.getPriceOnline());
-//			entity.setRetailerId(dto.getRetailerId());
-//			entity.setRetailerS(dto.getRetailerS());
-//			entity.setSaleOnline(dto.isSaleOnline() == 1);
-//			entity.setUrl(dto.getUrl());
-		}catch(Exception e) {
-			myOpt = Optional.empty();
-		}
-		return myOpt;
+	public Museum map(MuseumDto dto) {
+		var entity = new Museum();
+		entity.setAddress(dto.getAddress());
+		entity.setCity(dto.getCity());
+		entity.setCountry(dto.getCountry());
+		entity.setId(dto.getId());
+		entity.setName(dto.getName());
+		entity.setPhone(dto.getPhone());
+		entity.setPostal(dto.getPostal());
+		entity.setState(dto.getState());
+		entity.setUrl(dto.getUrl());
+		return entity;
+	}
+	
+	public Artist map(ArtistDto dto) {
+		var entity = new Artist();
+		entity.setBirth(dto.getBirth());
+		entity.setDeath(dto.getDeath());
+		entity.setFirstName(dto.getFirstName());
+		entity.setFullName(dto.getFullName());
+		entity.setId(dto.getId());
+		entity.setLastName(dto.getLastName());
+		entity.setMiddleName(dto.getMiddleName());
+		entity.setNationality(dto.getNationality());
+		entity.setStyle(dto.getStyle());
+		return entity;
+	}
+	
+	public Subject map(SubjectDto dto) {
+		var entity = new Subject();
+		entity.setSubject(dto.getSubject());
+		entity.setWorkId(dto.getWorkId());
+		return entity;
+	}
+	
+	public WorkLink map(WorkLinkDto dto) {
+		var entity = new WorkLink();
+		entity.setArtistId(dto.getArtistId());
+		entity.setImageLink(dto.getImageLink());
+		entity.setMuseumId(dto.getMuseumId());
+		entity.setName(dto.getName());
+		entity.setStyle(dto.getStyle());
+		entity.setWorkId(dto.getWorkId());
+		return entity;
 	}
 }

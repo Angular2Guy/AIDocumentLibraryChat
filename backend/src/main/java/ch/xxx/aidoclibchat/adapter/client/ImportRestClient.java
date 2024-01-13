@@ -14,7 +14,6 @@ package ch.xxx.aidoclibchat.adapter.client;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -24,14 +23,18 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import ch.xxx.aidoclibchat.domain.client.ImportClient;
-import ch.xxx.aidoclibchat.domain.model.dto.AmazonProductDto;
-import ch.xxx.aidoclibchat.domain.model.dto.ProductDto;
-import ch.xxx.aidoclibchat.domain.model.dto.SupermarketDto;
-import ch.xxx.aidoclibchat.domain.model.dto.ZipcodeDto;
+import ch.xxx.aidoclibchat.domain.model.dto.ArtistDto;
+import ch.xxx.aidoclibchat.domain.model.dto.MuseumDto;
+import ch.xxx.aidoclibchat.domain.model.dto.MuseumHoursDto;
+import ch.xxx.aidoclibchat.domain.model.dto.SubjectDto;
+import ch.xxx.aidoclibchat.domain.model.dto.WorkDto;
+import ch.xxx.aidoclibchat.domain.model.dto.WorkLinkDto;
 import ch.xxx.aidoclibchat.domain.model.entity.Artist;
 import ch.xxx.aidoclibchat.domain.model.entity.Museum;
 import ch.xxx.aidoclibchat.domain.model.entity.MuseumHours;
+import ch.xxx.aidoclibchat.domain.model.entity.Subject;
 import ch.xxx.aidoclibchat.domain.model.entity.Work;
+import ch.xxx.aidoclibchat.domain.model.entity.WorkLink;
 import ch.xxx.aidoclibchat.usecase.mapping.TableMapper;
 
 @Component
@@ -45,12 +48,13 @@ public class ImportRestClient implements ImportClient {
 		this.csvMapper.registerModule(new JavaTimeModule());
 	}
 
-	public List<Work> importZipcodes() {
+	@Override
+	public List<Artist> importArtists() {
 		RestClient restClient = RestClient.create();
 		String result = restClient.get().uri(
-				"https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/retailData/zipcodes.csv")
+				"https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/museumDataset/artist.csv")
 				.retrieve().body(String.class);
-		return this.mapString(result, ZipcodeDto.class).stream().map(myDto -> this.tableMapper.map(myDto)).toList();
+		return this.mapString(result, ArtistDto.class).stream().map(myDto -> this.tableMapper.map(myDto)).toList();
 	}
 
 	private <T> List<T> mapString(String result, Class<T> myClass) {
@@ -64,29 +68,48 @@ public class ImportRestClient implements ImportClient {
 		return zipcodes;
 	}
 
-	public List<MuseumHours> importSupermarkets() {
+	@Override
+	public List<Museum> importMuseums() {
 		RestClient restClient = RestClient.create();
 		String result = restClient.get().uri(
-				"https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/retailData/supermarket-1day-45zips.csv")
+				"https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/museumDataset/museum.csv")
 				.retrieve().body(String.class);
-		return this.mapString(result, SupermarketDto.class).stream().map(myDto -> this.tableMapper.map(myDto)).toList();
+		return this.mapString(result, MuseumDto.class).stream().map(myDto -> this.tableMapper.map(myDto)).toList();
 	}
 
-	public List<Artist> importAmazonProducts() {
+	@Override
+	public List<MuseumHours> importMuseumHours() {
 		RestClient restClient = RestClient.create();
 		String result = restClient.get().uri(
-				"https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/retailData/amazon_compare.csv")
+				"https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/museumDataset/museum_hours.csv")
 				.retrieve().body(String.class);
-		return this.mapString(result, AmazonProductDto.class).stream().map(myDto -> this.tableMapper.map(myDto))
-				.filter(Optional::isPresent).map(Optional::get).toList();
+		return this.mapString(result, MuseumHoursDto.class).stream().map(myDto -> this.tableMapper.map(myDto)).toList();
 	}
 
-	public List<Museum> importProducts() {
+	@Override
+	public List<Work> importWorks() {
 		RestClient restClient = RestClient.create();
 		String result = restClient.get().uri(
-				"https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/retailData/online_offline_ALL_clean.csv")
+				"https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/museumDataset/work.csv")
 				.retrieve().body(String.class);
-		return this.mapString(result, ProductDto.class).stream().map(myDto -> this.tableMapper.map(myDto))
-				.filter(Optional::isPresent).map(Optional::get).toList();
+		return this.mapString(result, WorkDto.class).stream().map(myDto -> this.tableMapper.map(myDto)).toList();
+	}
+	
+	@Override
+	public List<Subject> importSubjects() {
+		RestClient restClient = RestClient.create();
+		String result = restClient.get().uri(
+				"https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/museumDataset/subject.csv")
+				.retrieve().body(String.class);
+		return this.mapString(result, SubjectDto.class).stream().map(myDto -> this.tableMapper.map(myDto)).toList();
+	}
+	
+	@Override
+	public List<WorkLink> importWorkLinks() {
+		RestClient restClient = RestClient.create();
+		String result = restClient.get().uri(
+				"https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/museumDataset/subject.csv")
+				.retrieve().body(String.class);
+		return this.mapString(result, WorkLinkDto.class).stream().map(myDto -> this.tableMapper.map(myDto)).toList();
 	}
 }

@@ -20,9 +20,13 @@ import ch.xxx.aidoclibchat.domain.model.entity.Artist;
 import ch.xxx.aidoclibchat.domain.model.entity.ArtistRepository;
 import ch.xxx.aidoclibchat.domain.model.entity.Museum;
 import ch.xxx.aidoclibchat.domain.model.entity.MuseumRepository;
+import ch.xxx.aidoclibchat.domain.model.entity.Subject;
+import ch.xxx.aidoclibchat.domain.model.entity.SubjectRepository;
 import ch.xxx.aidoclibchat.domain.model.entity.MuseumHours;
 import ch.xxx.aidoclibchat.domain.model.entity.MuseumHoursRepository;
 import ch.xxx.aidoclibchat.domain.model.entity.Work;
+import ch.xxx.aidoclibchat.domain.model.entity.WorkLink;
+import ch.xxx.aidoclibchat.domain.model.entity.WorkLinkRepository;
 import ch.xxx.aidoclibchat.domain.model.entity.WorkRepository;
 import jakarta.transaction.Transactional;
 import jakarta.transaction.Transactional.TxType;
@@ -30,31 +34,40 @@ import jakarta.transaction.Transactional.TxType;
 @Service
 @Transactional(value = TxType.REQUIRES_NEW)
 public class ImportService {
-	private final WorkRepository zipcodeRepository;
-	private final MuseumHoursRepository supermarketRepository;
-	private final MuseumRepository productRepository;
-	private final ArtistRepository amazonProductRepository;
+	private final WorkRepository workRepository;
+	private final MuseumHoursRepository museumHoursRepository;
+	private final MuseumRepository museumRepository;
+	private final ArtistRepository artistRepository;
+	private final SubjectRepository subjectRepository;
+	private final WorkLinkRepository workLinkRepository;
+	
 
-	public ImportService(WorkRepository zipcodeRepository, MuseumHoursRepository supermarketRepository,
-			MuseumRepository productRepository, ArtistRepository amazonProductRepository) {
-		this.zipcodeRepository = zipcodeRepository;
-		this.supermarketRepository = supermarketRepository;
-		this.productRepository = productRepository;
-		this.amazonProductRepository = amazonProductRepository;
+	public ImportService(WorkRepository zipcodeRepository, MuseumHoursRepository supermarketRepository,WorkLinkRepository workLinkRepository,
+			MuseumRepository productRepository, ArtistRepository amazonProductRepository, SubjectRepository subjectRepository) {
+		this.workRepository = zipcodeRepository;
+		this.museumHoursRepository = supermarketRepository;
+		this.museumRepository = productRepository;
+		this.artistRepository = amazonProductRepository;
+		this.subjectRepository = subjectRepository;
+		this.workLinkRepository = workLinkRepository;
 	}
 
 	public void deleteData() {
-		this.amazonProductRepository.deleteAll();
-		this.supermarketRepository.deleteAll();
-		this.productRepository.deleteAll();
-		this.zipcodeRepository.deleteAll();
+		this.subjectRepository.deleteAll();
+		this.workLinkRepository.deleteAll();
+		this.museumHoursRepository.deleteAll();
+		this.workRepository.deleteAll();
+		this.artistRepository.deleteAll();
+		this.museumRepository.deleteAll();
 	}
 
-	public void saveAllData(List<Work> zipcodes, List<MuseumHours> supermarkets, List<Museum> products,
-			List<Artist> amazonProducts) {
-		this.zipcodeRepository.saveAll(zipcodes);
-		this.supermarketRepository.saveAll(supermarkets);
-		this.productRepository.saveAll(products);
-		this.amazonProductRepository.saveAll(amazonProducts);
+	public void saveAllData(List<Work> works, List<MuseumHours> museumHours, List<Museum> museums,
+			List<Artist> artists, List<Subject> subjects, List<WorkLink> workLinks) {
+		this.museumRepository.saveAll(museums);
+		this.artistRepository.saveAll(artists);
+		this.workRepository.saveAll(works);
+		this.museumHoursRepository.saveAll(museumHours);
+		this.subjectRepository.saveAll(subjects);
+		this.workLinkRepository.saveAll(workLinks);
 	}
 }

@@ -75,13 +75,19 @@
 	</changeSet>
 	<changeSet id="13" author="angular2guy">
 		<createTable tableName="subject">
-			<column name="work_id" type="bigint" />
+			<column name="work_id" type="bigint" >
+			<constraints nullable="false"
+					foreignKeyName="fk_subject_work_id" references="work(id)" />
+			</column>
 			<column name="subject" type="varchar(50)" />
 		</createTable>
 	</changeSet>
 	<changeSet id="14" author="angular2guy">
 		<createTable tableName="work_link">
-			<column name="work_id" type="bigint" />
+			<column name="work_id" type="bigint" >
+			<constraints nullable="false"
+					foreignKeyName="fk_work_link_work_id" references="work(id)" />
+			</column>
 			<column name="name" type="varchar(80)" />
 			<column name="artist_id" type="bigint">
 				<constraints nullable="false"
