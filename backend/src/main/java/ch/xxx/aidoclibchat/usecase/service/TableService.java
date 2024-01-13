@@ -21,10 +21,10 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.aidoclibchat.domain.client.ImportClient;
-import ch.xxx.aidoclibchat.domain.model.entity.AmazonProduct;
-import ch.xxx.aidoclibchat.domain.model.entity.Product;
-import ch.xxx.aidoclibchat.domain.model.entity.Supermarket;
-import ch.xxx.aidoclibchat.domain.model.entity.Zipcode;
+import ch.xxx.aidoclibchat.domain.model.entity.Artist;
+import ch.xxx.aidoclibchat.domain.model.entity.Museum;
+import ch.xxx.aidoclibchat.domain.model.entity.MuseumHours;
+import ch.xxx.aidoclibchat.domain.model.entity.Work;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -43,10 +43,10 @@ public class TableService {
 	public void importData() {		
 		var start = new Date();
 		LOGGER.info("Import started.");
-		List<Zipcode> zipcodes = this.importClient.importZipcodes();
-		List<Supermarket> supermarkets = this.importClient.importSupermarkets();
-		List<Product> products = this.importClient.importProducts();
-		List<AmazonProduct> amazonProducts = this.importClient.importAmazonProducts();
+		List<Work> zipcodes = this.importClient.importZipcodes();
+		List<MuseumHours> supermarkets = this.importClient.importSupermarkets();
+		List<Museum> products = this.importClient.importProducts();
+		List<Artist> amazonProducts = this.importClient.importAmazonProducts();
 		LOGGER.info("Data fetched in {}ms", new Date().getTime() - start.getTime());
 		var deleteStart = new Date();
 		this.importService.deleteData();

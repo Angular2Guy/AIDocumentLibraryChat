@@ -1,0 +1,422 @@
+artist_id,full_name,first_name,middle_names,last_name,nationality,style,birth,death
+500,Pierre-Auguste Renoir,Pierre,Auguste,Renoir,French,Impressionist,1841,1919
+501,Alexandre Cabanel,Alexandre,,Cabanel,French,Classicist,1823,1889
+502,James Ensor,James,,Ensor,Belgian,Expressionist,1860,1949
+503,Maximilien Luce,Maximilien,,Luce,French,Pointillist,1858,1941
+504,August Macke,August,,Macke,German,Expressionist,1887,1914
+505,Thomas Gainsborough,Thomas,,Gainsborough,English,Rococo,1727,1788
+506,Julien Dupré,Julien,,Dupre,French,Naturalist,1851,1910
+507,George Catlin,George,,Catlin,American,American West,1796,1872
+508,Federico Zandomeneghi,Federico,,Zandomeneghi,Italian,Expressionist,1841,1917
+509,Cornelis Springer,Cornelis,,Springer,Dutch,Landscape Art,1817,1891
+510,Hans Memling,Hans,,Memling,Dutch,Northern Renaissance,1435,1494
+511,Piet Mondrian,Piet,,Mondrian,Dutch,Modern Art,1872,1944
+512,Lemuel Francis Abbott,Lemuel,Francis,Abbott,English,Portraitist,1760,1803
+513,Mary Cassatt,Mary,,Cassatt,American,Impressionist,1844,1926
+514,Heinrich Campendonk,Heinrich,,Campendonk,German,Expressionist,1889,1957
+515,Thomas Cole,Thomas,,Cole,American,Hudson River School,1801,1848
+516,Thomas Luny,Thomas,,Luny,English,Marine Art,1759,1837
+517,Eugène-Louis Boudin,Eugene,Louis,Boudin,French,Impressionist,1824,1898
+518,Hendrick Dubbels,Hendrick,,Dubbels,Dutch,Marine Art,1621,1676
+519,Frank Duveneck,Frank,,Duveneck,American,Realist,1848,1919
+520,Asher Brown Durand,Asher,Brown,Durand,American,Hudson River School,1796,1886
+521,George Henry Laporte,George,Henry,Laporte,English,Realist,1799,1873
+522,Peter Monamy,Peter,,Monamy,English,Marine Art,1681,1749
+523,John Francis Rigaud,John,Francis,Rigaud,English,Portraitist,1742,1810
+524,John William Waterhouse,John,William,Waterhouse,English,Romantic,1849,1917
+525,Francis William Edmonds,Francis,William,Edmonds,American,Colonial,1806,1863
+526,Frank Weston Benson,Benson,Frank,Weston,American,Impressionist,1862,1951
+527,Jean Raoux,Jean,,Raoux,French,Rococo,1677,1734
+528,Joseph Ducreux,Joseph,,Ducreux,French,Portraitist,1735,1802
+529,Gustaf Wilhelm Palm,Gustaf,Wilhelm,Palm,Swiss,Classicist,1810,1890
+530,Edward William Cooke,Edward,William,Cooke,English,Marine Art,1811,1880
+531,Camille Pissarro,Camille,,Pissarro,French,Impressionist,1830,1903
+532,Pieter Quast,Pieter,,Quast,Dutch,Baroque,1606,1647
+533,George Wesley Bellows,George,Wesley,Bellows,American,Realist,1882,1925
+534,Alfred Henry Maurer,Alfred,Henry,Maurer,American,Avant-Garde,1868,1932
+535,Pierre-Henri De Valenciennes,Pierre,Henri,De Valenciennes,French,Romantic,1750,1819
+536,Henri Lebasque,Henri,,Lebasque,French,Post-Impressionist,1865,1937
+537,Claude Lorrain,Claude,,Lorraine,French,Baroque,1602,1682
+538,Thomas Moran,Thomas,,Moran,American,Hudson River School,1837,1926
+539,Jean-Baptiste Greuze,Jean,Baptiste,Greuze,French,Rococo,1725,1805
+540,Fernand Cormon,Fernand,,Cormon,French,Classicist,1845,1924
+541,Pierre Puvis De Chavannes,Pierre,Puvis,De Chavannes,French,Symbolist,1824,1898
+542,Sir Henry Raeburn,Henry,,Raeburn,English,Romantic,1756,1823
+543,Charles Peale Polk,Charles,Peale,Polk,American,Portraitist,1767,1822
+544,Peter Paul Rubens,Peter,Paul,Rubens,Flemish,Baroque,1577,1640
+545,Odilon Redon,Odilon,,Redon,French,Symbolist,1840,1916
+546,Vilhelm Hammershoi,Vilhelm,,Hammershoi,Danish,Symbolist,1864,1916
+547,Édouard Vuillard,Edouard,,Vuillard,French,Nabi,1868,1940
+548,Albrecht Durer,Albrecht,,Durer,German,Northern Renaissance,1471,1528
+549,Arnold Böcklin,Arnold,,Bocklin,Swiss,Symbolist,1827,1901
+550,Claude Monet,Claude,,Monet,French,Impressionist,1840,1926
+551,Sir Lawrence Alma-Tadema,Lawrence,Alma,Tadema,English,Classicist,1836,1912
+552,Maurice Denis,Maurice,,Denis,French,Nabi,1870,1943
+553,El Greco,Domḗnikos,,Theotokópoulos,Spanish,Mannerist,1541,1614
+554,Frans Jansz Post,Frans,Jansz,Post,Dutch,Baroque,1612,1680
+555,Angel Zárraga,Angel,,Zarraga,Mexican,Realist,1886,1946
+556,James Tissot,James,,Tissot,French,Classicist,1836,1902
+557,Liubov Popova,Liubov,,Popova,Russian,Modern Art,1889,1924
+558,Sansio Raphael,Sansio,,Raphael,Italian,High Renaissance,1483,1520
+559,Albert Marquet,Albert,,Marquet,French,Post-Impressionist,1875,1947
+560,Charles Marion Russell,Charles,Marion,Russell,American,American West,1864,1926
+561,Canaletto,Giovanni,Antionio,Canaletto,Italian,Rococo,1697,1768
+562,Lyonel Feininger,Lyonel,,Feininger,German,Expressionist,1871,1956
+563,Édouard Adam,Adam,,Edouard,American,Marine Art,1847,1929
+564,Willem Duyster,Willem,,Duyster,Dutch,Baroque,1599,1635
+565,John James Audubon,John,James,Audubon,American,Naturalist,1785,1851
+566,Charles Towne,Charles,,Towne,English,Romantic,1763,1840
+567,Jean Auguste Ingres,Jean,Auguste,Ingres,French,Neoclassical,1780,1867
+568,Theo Van Doesburg,Theo,,Van Doesburg,Dutch,Futurist,1883,1931
+569,Adriaan De Lelie,Adriaan,,De Lelie,Dutch,Portraitist,1755,1820
+570,Constantin A. Westchiloff,Constantin,A,Westchiloff,Russian,Impressionist,1877,1945
+571,Théophile Steinlen,Theophile,Alexandre,Steinlen,French,Art Nouveau,1859,1923
+572,John Trumbull,John,,Trumbull,American,Neoclassical,1756,1843
+573,Alfred Sisley,Alfred,,Sisley,French,Impressionist,1839,1899
+574,Johannes Vermeer,Jan,,Vermeer,Dutch,Baroque,1632,1675
+575,Nicolaes Berchem,Nicolaes,,Berchem,Dutch,Baroque,1620,1683
+576,Roger De La Fresnaye,Roger,,De La Fresnaye,French,Cubist,1885,1925
+577,Kees Van Dongen,Kees,,Van Dongen,Dutch,Fauvist,1877,1968
+578,Thomas Lyde Hornbrook,Thomas,Lyde,Hornbrook,English,Marine Art,1780,1855
+579,Thomas Hovenden,Thomas,,Hovenden,American,Colonial,1840,1895
+580,Henri Manguin,Henri,,Manguin,French,Post-Impressionist,1874,1949
+581,John White Alexander,John,White,Alexander,American,Symbolist,1856,1915
+582,Charles Demuth,Charles,,Demuth,American,Modern Art,1883,1935
+583,Pompeo Girolamo Batoni,Pompeo,Girolamo,Batoni,Italian,Rococo,1708,1787
+584,Charles Sprague Pearce,Charles,Sprague,Pearce,American,Realist,1851,1914
+585,Suzanne Valadon,Suzanne,,Valadon,French,Post-Impressionist,1865,1938
+586,Gabrie¨l Metsu,Gabriel,,Metsu,Dutch,Baroque,1629,1667
+587,Georges Braque,Georges,,Braque,French,Cubist,1882,1963
+588,Caspar David Friedrich,Caspar,David,Friedrich,German,Romantic,1774,1840
+589,William Merritt Chase,William,Merritt,Chase,American,Impressionist,1849,1916
+590,Antoine Bouvard,Antoine,,Bouvard,French,Impressionist,1870,1956
+591,William P. Chappel,William,P,Chappel,American,Avant-Garde,1828,1887
+592,Aelbert Cuyp,Aelbert,,Cuyp,Dutch,Baroque,1620,1691
+593,Robert Henri,Robert,,Henri,American,Realist,1865,1929
+594,Isaak Levitan,Isaak,,Levitan,Russian,Realist,1860,1900
+595,Francois Boucher,Francois,,Boucher,French,Rococo,1703,1770
+596,Pieter Bruegel,Pieter,,Bruegel,Dutch,Renaissance,1525,1530
+597,Adriaen Thomasz. Key,Adriaen,Thomasz,Key,Dutch,Renaissance,1544,1589
+598,Edgar Degas,Edgar,,Degas,French,Impressionist,1834,1917
+599,Thomas Sully,Thomas,,Sully,American,Portraitist,1783,1872
+600,Antoine-Jean Gros,Antoine,Jean,Gros,French,Neoclassical,1771,1835
+601,George Romney,George,,Romney,English,Realist,1734,1802
+602,Francis Luis Mora,Francis,Luis,Mora,American,Realist,1874,1940
+603,George Stubbs,George,,Stubbs,English,Romantic,1724,1806
+604,Louis Vivin,Louis,,Vivin,French,Avant-Garde,1861,1936
+605,Dominic Serres,Dominic,,Serres,English,Marine Art,1722,1793
+606,Simon De Vlieger,Simon,,De Vlieger,Dutch,Marine Art,1600,1653
+607,Sir Anthony Van Dyck,Anthony,,Van Dyck,Flemish,Baroque,1599,1641
+608,James McNeill Whistler,James,Mcneill,Whistler,American,Impressionist,1834,1903
+609,John Singleton Copley,John,Singleton,Copley,American,Colonial,1738,1815
+610,Alfred Thompson Bricher,Alfred,Thompson,Bricher,American,Hudson River School,1837,1908
+611,Sir Edwin Landseer,Sir,Edwin,Landseer,English,Realist,1802,1873
+612,Katsushika Hokusai,Katsushika,,Hokusai,Japanese,Ukiyo-e,1760,1849
+613,John Everett Millais,John,Everett,Millais,English,Romantic,1829,1896
+614,Childe Hassam,Childe,,Hassam,American,Impressionist,1859,1935
+615,Abraham Mignon,Abraham,,Mignon,Dutch,Baroque,1640,1679
+616,Adèle Romany,Adele,,Romany,French,Portraitist,1769,1846
+617,Hendrik Voogd,Hendrik,,Voogd,Dutch,Landscape Art,1768,1839
+618,Paula Modersohn-Becker,Becker,Paula,Modersohn,German,Expressionist,1876,1907
+619,Sandro Botticelli,Sandro,,Botticelli,Italian,Early Renaissance,1445,1510
+620,Yves Tanguy,Yves,,Tanguy,French,Surrealist,1900,1955
+621,Adélaïde Labille-Guiard,Adelaide,Labille,Guiard,French,Neoclassical,1749,1803
+622,William Bradford,William,,Bradford,American,Marine Art,1823,1892
+623,Henry Moret,Henry,,Moret,French,Impressionist,1856,1913
+624,Theodore C. Steele,Theodore,C,Steele,American,Impressionist,1847,1926
+625,Gerard Ter Borch,Gerard,,Ter Borch,Dutch,Baroque,1617,1681
+626,John Ottis Adams,John,Ottis,Adams,American,Impressionist,1851,1927
+627,Titian,Tiziano,,Vecellio,Italian,High Renaissance,1485,1576
+628,Joachim Beuckelaer,Joachim,,Beuckelaer,Dutch,Renaissance,1533,1574
+629,Hans Dahl,Hans,,Dahl,Norwegian,Realist,1849,1937
+630,Juan Gris,Juan,,Gris,Spanish,Cubist,1887,1927
+631,Bartholomeus Van Der Helst,Bartholomeus,,Van der Helst,Dutch,Portraitist,1613,1670
+632,Eugene De Blaas,Eugene,,De Blaas,Austrian,Classicist,1843,1931
+633,Ivan Aivazovskiy,Ivan,,Aivazovskiy,Russian,Landscape Art,1817,1900
+634,Charles Caleb Ward,Charles,Caleb,Ward,Canadian,Realist,1811,1879
+635,Rosa Bonheur,Rosa,,Bonheur,French,Realist,1822,1899
+636,Carlo Brancaccio,Carlo,,Brancaccio,Italian,Impressionist,1861,1920
+637,William Michael Harnett,William,Michael,Harnett,American,Realist,1848,1892
+638,Jean-Baptiste Oudry,Jean,Baptiste,Oudry,French,Baroque,1686,1755
+639,George Caleb Bingham,George,Caleb,Bingham,American,Realist,1811,1879
+640,Thomas Jacques Somerscales,Thomas,Jacques,Somerscales,English,Marine Art,1842,1927
+641,Arthur Fitzwilliam Tait,Arthur,Fitzwilliam,Tait,American,Naturalist,1819,1905
+642,Jan Adam Kruseman,Jan,Adam,Kruseman,Dutch,Portraitist,1804,1862
+643,Frans Francken,Frans,,Francken,Flemish,Baroque,1581,1642
+644,Benjamin West,Benjamin,,West,American,Neoclassical,1738,1820
+645,Gustave Courbet,Gustave,,Courbet,French,Realist,1819,1877
+646,Louis Apol,Louis,,Apol,Dutch,Impressionist,1850,1936
+647,Simon Vouet,Simon,,Vouet,French,Baroque,1590,1649
+648,Jean-Francois Millet,Jean,Francois,Millet,French,Realist,1814,1875
+649,Maurice Utrillo,Maurice,,Utrillo,French,Realist,1883,1955
+650,Édouard Manet,Edouard,,Manet,French,Impressionist,1832,1883
+651,Jules Breton,Jules,,Breton,French,Realist,1827,1906
+652,Paul Kane,Paul,,Kane,Canadian,America West,1810,1871
+653,Émile Bernard,Emile,,Bernard,French,Symbolist,1868,1941
+654,Lev Feliksovich Lagorio,Lev,Feliksovich,Lagorio,Russian,Romantic,1827,1905
+655,Charles Cromwell Ingham,Charles,Cromwell,Ingham,Irish,Portraitist,1796,1863
+656,Wassily Kandinsky,Wassily,,Kandinsky,Russian,Expressionist,1866,1944
+657,Gerrit Berckheyde,Gerrit,,Berckheyde,Dutch,Rococo,1638,1698
+658,George P. A. Healy,George,P A,Healy,American,Portraitist,1813,1894
+659,Albert André,Albert,,Andre,French,Expressionist,1869,1954
+660,Georges Lemmen,Georges,,Lemmen,Belgian,Pointillist,1865,1916
+661,Peder Severin Kroyer,Peder,Severin,Kroyer,Danish,Impressionist,1851,1909
+662,Charles Courtney Curran,Charles,Courtney,Curran,American,Impressionist,1861,1942
+663,Sir George Clausen,Sir,George,Clausen,English,Realist,1852,1944
+664,Ludwig Deutsch,Ludwig,,Deutsch,Austrian,Orientalist,1855,1935
+665,Ludolf Backhuysen,Ludolf,,Backhuysen,Dutch,Marine Art,1631,1708
+666,Frederic Edwin Church,Frederic,Edwin,Church,American,Hudson River School,1826,1900
+667,Jean-Léon Gérôme,Jean,Leon,Gerome,French,Orientalist,1824,1904
+668,John Wollaston,John,,Wollaston,English,Rococo,1710,1775
+669,Ferdinand Hodler,Ferdinand,,Hodler,Swiss,Art Nouveau,1853,1918
+670,Vasiliy Polenov,Vasiliy,,Polenov,Russian,Landscape Art,1844,1927
+671,Thomas Waterman Wood,Thomas,Waterman,Wood,American,Colonial,1823,1903
+672,Benjamin Marshall,Benjamin,,Marshall,English,Romantic,1768,1835
+673,Théodore Géricault,Theodore,,Gericault,French,Romantic,1791,1824
+674,Claude-Joseph Vernet,Claude,Joseph,Vernet,French,Neoclassical,1714,1789
+675,Jan Brueghel,Jan,,Brueghel,Flemish,Renaissance,1568,1625
+676,Francois-Hubert Drouais,Francois,Hubert,Drouais,French,Neoclassical,1727,1775
+677,Vincent Van Gogh,Vincent,,Van Gogh,Dutch,Post-Impressionist,1853,1890
+678,Cecilia Beaux,Cecilia,,Beaux,American,Expressionist,1855,1942
+679,Kitagawa Utamaro,Kitagawa,,Utamaro,Japanese,Ukiyo-e,1754,1806
+680,John Frederick Herring,John,Frederick,Herring,English,Realist,1795,1865
+681,Francisco De Zurbarán,Francisco,,De Zurbaran,Spanish,Baroque,1598,1664
+682,Gwen John,Gwen,,John,English,Nabi,1876,1939
+683,George Frederic Watts,George,Frederic,Watts,English,Symbolist,1817,1904
+684,Carel Fabritius,Carel,,Fabritius,Dutch,Baroque,1622,1654
+685,Eduard Von Grützner,Eduard,,Von Grutzner,German,Rococo,1846,1925
+686,Matthew Pratt,Matthew,,Pratt,American,Colonial,1734,1805
+687,Carlo Carra,Carlo,,Carra,Italian,Futurist,1881,1966
+688,Franz Marc,Franz,,Marc,German,Expressionist,1880,1916
+689,Georges Seurat,Georges,,Seurat,French,Pointillist,1859,1891
+690,John Hoppner,John,,Hoppner,English,Neoclassical,1758,1810
+691,Fernand Léger,Fernand,,Leger,French,Cubist,1881,1955
+692,Bartolomé Esteban Murillo,Bartolome,Esteban,Murillo,Spanish,Baroque,1617,1682
+693,John Frederick Kensett,John,Frederick,Kensett,American,Hudson River School,1816,1872
+694,André Derain,Andre,,Derain,French,Fauvist,1880,1954
+695,Étienne Dinet,Etienne,,Dinet,French,Orientalist,1861,1929
+696,Henri Le Sidaner,Henri,,Le Sidaner,French,Post-Impressionist,1862,1939
+697,Reinier Nooms,Reinier,,Nooms,Dutch,Marine Art,1623,1664
+698,Benvenuto Garofalo,Benvenuto,,Garofalo,Italian,Renaissance,1481,1559
+699,Jean-Baptiste-Siméon Chardin,Jean,Simeon,Chardin,French,Rococo,1699,1779
+700,William Redmore Bigg,William,Redmore,Bigg,English,Neoclassical,1755,1828
+701,Giovanni Battista Tiepolo,Giovanni,Battista,Tiepolo,Italian,Rococo,1696,1770
+702,Louis Valtat,Louis,,Valtat,French,Fauvist,1869,1952
+703,Jacob Van Ruisdael,Jacob,Van,Ruisdael,Dutch,Baroque,1628,1682
+704,John Kane,John,,Kane,American,Folk,1860,1934
+705,Willem Bartel Van Der Kooi,Willem,Bartel,Van der Kooi,Dutch,Portraitist,1768,1836
+706,Anton Raphael Mengs,Anton,Raphael,Mengs,German,Neoclassical,1728,1779
+707,Laurent de La Hyre,Laurent,,De La Hyre,French,Baroque,1606,1656
+708,Alexei Von Jawlensky,Alexei,,Von Jawlensky,Russian,Expressionist,1864,1941
+709,Charles Brooking,Charles,,Brooking,English,Marine Art,1723,1759
+710,Paul Gabriël,Paul,,Gabriel,Dutch,Landscape Art,1828,1903
+711,Robert Delaunay,Robert,,Delaunay,French,Cubist,1885,1941
+712,Albert Bierstadt,Albert,,Bierstadt,American,Hudson River School,1830,1902
+713,Isaac Van Ostade,Isaac,,Van Ostade,Dutch,Baroque,1621,1649
+714,Francisco De Goya,Francisco,,De Goya,Spanish,Rococo,1746,1828
+715,Jean-Hippolyte Flandrin,Jean,Hippolyte,Flandrin,French,Neoclassical,1809,1864
+716,William Stanley Haseltine,William,Stanley,Haseltine,American,Hudson River School,1835,1900
+717,John Lynn,John,,Lynn,English,Marine Art,1826,1869
+718,Charles Willson Peale,Charles,Willson,Peale,American,Colonial,1741,1827
+719,Guido Reni,Guido,,Reni,Italian,Baroque,1575,1642
+720,Jacques-Louis David,Jacques,Louis,David,French,Neoclassical,1748,1825
+721,Ernest Lawson,Ernest,,Lawson,Canadian,Impressionist,1873,1939
+722,Fitz Hugh Lane,Fitz,Hugh,Lane,American,Hudson River School,1804,1865
+723,George Gardner Symons,George,Gardner,Symons,American,Impressionist,1863,1930
+724,Gustave Moreau,Gustave,,Moreau,French,Symbolist,1826,1898
+725,Santiago Rusiñol,Santiago,,Rusinol,Spanish,Post-Impressionist,1861,1931
+726,James Peale,James,,Peale,American,Colonial,1749,1831
+727,Geertgen tot Sint Jans,Geertgen,Tot,Sint Jans,Dutch,Renaissance,1465,1495
+728,Jan Van Goyen,Jan,,Van Goyen,Dutch,Baroque,1596,1656
+729,Willem Van De Velde,Willem,Van,De Velde,Dutch,Marine Art,1633,1707
+730,Pieter Claesz,Pieter,,Claesz,Dutch,Baroque,1597,1660
+731,Jean Ranc,Jean,,Ranc,French,Baroque,1674,1735
+732,Frans Hals,Frans,,Hals,Dutch,Baroque,1582,1666
+733,George Inness,George,,Inness,American,Hudson River School,1825,1894
+734,Edward Hicks,Edward,,Hicks,American,Colonial,1780,1849
+735,David Teniers,David,,Teniers,Flemish,Baroque,1610,1690
+736,Hendrick Ter Brugghen,Hendrick,,Ter Brugghen,Dutch,Baroque,1588,1629
+737,Nicolas Poussin,Nicolas,,Poussin,French,Baroque,1594,1665
+738,Cima Da Conegliano,Cima,,Da Conegliano,Italian,Early Renaissance,1459,1517
+739,Maurice De Vlaminck,Maurice,,De Vlaminck,French,Fauvist,1876,1958
+740,Horace Vernet,Horace,,Vernet,French,Orientalist,1789,1863
+741,Henri Edmond Cross,Henri,Edmond,Cross,French,Pointillist,1856,1910
+742,Georges D'Espagnat,Georges,,Despagnat,French,Post-Impressionist,1870,1950
+743,Sawrey Gilpin,Sawrey,,Gilpin,English,Realist,1733,1807
+744,Giovanni Boldini,Giovanni,,Boldini,Italian,Classicist,1842,1931
+745,Gustave Doré,Gustave,,Dore,French,Romantic,1832,1883
+746,Jean-Marc Nattier,Jean,Marc,Nattier,French,Rococo,1685,1766
+747,Jean-Francois Raffaelli,Jean,Francois,Raffaelli,French,Impressionist,1850,1924
+748,Francois Gérard,Francois,,Gerard,French,Neoclassical,1770,1837
+749,Pieter De Hooch,Pieter,,De Hooch,Dutch,Baroque,1629,1684
+750,Christian Rohlfs,Christian,,Rohlfs,German,Expressionist,1849,1938
+751,Jean-Baptiste Perronneau,Jean,Baptiste,Perronneau,French,Rococo,1715,1783
+752,Louis Comfort Tiffany,Louis,Comfort,Tiffany,American,Art Nouveau,1848,1933
+753,James McDougal Hart,James,Mcdougal,Hart,American,Hudson River School,1828,1901
+754,Franz Xavier Winterhalter,Franz,Xavier,Winterhalter,German,Classicist,1805,1873
+755,Sergei Vinogradov,Sergei,,Vinogradov,Russian,Impressionist,1864,1910
+756,Paul Sérusier,Paul,,Serusier,French,Post-Impressionist,1863,1927
+757,Albrecht Adam,Adam,,Albrecht,German,Baroque,1786,1862
+758,Karel Dujardin,Karel,,Dujardin,Dutch,Baroque,1622,1678
+759,Konstantin Gorbatov,Konstantin,,Gorbatov,Russian,Post-Impressionist,1876,1945
+760,Kasimir Malevich,Kasimir,,Malevich,Russian,Cubist,1878,1935
+761,Francis Picabia,Francis,,Picabia,French,Surrealist,1879,1953
+762,Jack Butler Yeats,Jack,Butler,Yeats,Irish,Expressionist,1871,1957
+763,Paul Signac,Paul,,Signac,French,Pointillist,1863,1935
+764,Sir Joshua Reynolds,Joshua,,Reynolds,English,Rococo,1723,1792
+765,Judith Leyster,Judith,,Leyster,Dutch,Baroque,1609,1660
+766,Pietro Longhi,Pietro,,Longhi,Italian,Rococo,1701,1785
+767,Pieter Jansz. Saenredam,Pieter,Jansz,Saenredam,Dutch,Baroque,1597,1665
+768,Caesar Van Everdingen,Caesar,Boetius,Van Everdingen,Dutch,Baroque,1616,1678
+769,Berthe Morisot,Berthe,,Morisot,French,Impressionist,1841,1895
+770,Mark Rothko,Mark,,Rotho,American,Modern Art,1903,1970
+771,Jacques Laurent Agasse,Jacques,Laurent,Agasse,Swiss,Romantic,1767,1849
+772,Spencer Frederick Gore,Spencer,Frederick,Gore,English,Expressionist,1878,1914
+773,Georges Rouault,Georges,,Rouault,French,Expressionist,1871,1958
+774,Diego Velázquez,Diego,,Velazquez,Spanish,Baroque,1599,1660
+775,Grant Wood,Grant,,Wood,American,Colonial,1891,1942
+776,Frederic Remington,Frederic,,Remington,American,American West,1861,1909
+777,Ambrosius Bosschaert,Ambrosius,,Bosschaert,Dutch,Baroque,1573,1621
+778,Raoul Dufy,Raoul,,Dufy,French,Fauvist,1877,1953
+779,Maurice Prendergast,Maurice,,Prendergast,American,Post-Impressionist,1858,1924
+780,Edwin Lord Weeks,Edwin,Lord,Weeks,American,Orientalist,1849,1903
+781,Giacomo Balla,Giacomo,,Balla,Italian,Futurist,1871,1958
+782,Paul Gauguin,Paul,,Gauguin,French,Post-Impressionist,1848,1903
+783,Rogier Van Der Weyden,Rogier,Van,der Weyden,Dutch,Northern Renaissance,1400,1464
+784,Jan Willem Pieneman,Jan,Willem,Pieneman,Dutch,Portraitist,1779,1853
+785,Lovis Corinth,Lovis,,Corinth,German,Expressionist,1858,1925
+786,Henri Fantin-Latour,Henri,Fantin,Latour,French,Realist,1836,1904
+787,Lorenzo Lotto,Lorenzo,,Lotto,Italian,High Renaissance,1480,1556
+788,John Cleveley,John,,Cleveley,English,Marine Art,1712,1777
+789,George Garrard,George,,Garrard,English,Realist,1760,1826
+790,William Trost Richards,William,Trost,Richards,American,Hudson River School,1833,1905
+791,John Singer Sargent,John,Singer,Sargent,American,Impressionist,1856,1925
+792,Edvard Munch,Edvard,,Munch,Norwegian,Expressionist,1863,1944
+793,Andrea Mantegna,Andrea,,Mantegna,Italian,Renaissance,1431,1506
+794,Winslow Homer,Winslow,,Homer,American,Realist,1836,1910
+795,Jan Van Eyck,Jan,Van,Eyck,Flemish,Northern Renaissance,1395,1441
+796,Joseph Blackburn,Joseph,,Blackburn,American,Rococo,1700,1780
+797,Philippe De Champaigne,Philippe,De,Champaigne,French,Baroque,1602,1674
+798,Ferdinand Bol,Ferdinand,,Bol,Dutch,Baroque,1616,1680
+799,Camille Bombois,Camille,,Bombois,French,Avant-Garde,1883,1970
+800,Amadeo De Souza-Cardoso,Amadeo,de Souza,Cardoso,Spanish,Cubist,1887,1918
+801,Ivan Shishkin,Ivan,,Shishkin,Russian,Romantic,1832,1898
+802,William Sidney Mount,William,Sidney,Mount,American,Realist,1807,1868
+803,John La Farge,John,,La Farge,American,Realist,1839,1924
+804,Sir Peter Lely,Sir,Peter,Lely,Dutch,Baroque,1618,1680
+805,Edward Henry Potthast,Edward,,Potthast,American,Impressionist,1857,1927
+806,Willem Claesz. Heda,Willem,Claesz,Heda,Dutch,Baroque,1594,1680
+807,Henri Rousseau,Henri,,Rousseau,French,Avant-Garde,1844,1910
+808,Alexey Savrasov,Alexey,,Savrasov,Russian,Landscape Art,1830,1897
+809,John Durand,John,,Durand,American,Colonial,1731,1805
+810,Frederick Carl Frieseke,Frederick,Carl,Frieseke,American,Impressionist,1874,1939
+811,John Russell,John,,Russell,English,Portraitist,1745,1806
+812,Jan Steen,Jan,,Steen,Dutch,Baroque,1626,1679
+813,Jean-Honoré Fragonard,Jean,Honore,Fragonard,French,Rococo,1732,1806
+814,Jan Van Huysum,Jan,,Van Huysum,Dutch,Rococo,1682,1749
+815,Leonardo Da Vinci,Leonardo,,Da Vinci,Italian,High Renaissance,1452,1519
+816,William James Glackens,William,,Glackens,American,Realist,1870,1938
+817,Lord Frederic Leighton,Lord,Frederic,Leighton,English,Classicist,1830,1896
+818,Jan Miense Molenaer,Jan,Miense,Molenaer,Dutch,Baroque,1610,1668
+819,Willem Maris,Willem,,Maris,Dutch,Naturalist,1844,1910
+820,Edmond Aman-Jean,Edmond,Francois Aman,Jean,French,Symbolist,1860,1935
+821,Maxime Maufra,Maxime,,Maufra,French,Impressionist,1863,1918
+822,William Hodges,William,,Hodges,English,Marine Art,1744,1797
+823,Alice Bailly,Alice,,Bailly,Swiss,Cubist,1872,1938
+824,Ernst Ludwig Kirchner,Ernst,Ludwig,Kirchner,German,Expressionist,1880,1938
+825,Félix Vallotton,Felix,,Vallotton,Swiss,Nabi,1865,1925
+826,Jean Baptiste Vanmour,Jean,Baptiste,Vanmour,Flemish,Orientalist,1671,1737
+827,Gustav Klimt,Gustav,,Klimt,Austrian,Art Nouveau,1862,1918
+828,Francis Augustus Silva,Francis,Augustus,Silva,American,Hudson River School,1835,1886
+829,Gustave Caillebotte,Gustave,,Caillebotte,French,Impressionist,1848,1894
+830,Giuseppe Arcimboldo,Giuseppe,,Arcimboldo,Italian,Mannerist,1530,1593
+831,Amedeo Modigliani,Amedeo,,Modigliani,Italian,Expressionist,1884,1920
+832,Gerard Van Honthorst,Gerard,Van,Honthorst,Dutch,Baroque,1590,1656
+833,John Wesley Jarvis,John,Wesley,Jarvis,American,Portraitist,1780,1840
+834,Eugène Delacroix,Eugene,,Delacroix,French,Romantic,1798,1863
+835,Enoch Wood Perry,Enoch,Wood,Perry,American,Realist,1831,1915
+836,Aristide Maillol,Aristide,,Maillol,French,Nabi,1861,1944
+837,Adolph Ulrich Wertmuller,Adolph,Ulrich,Wertmuller,Swiss,Portraitist,1751,1811
+838,Marie-Guillemine Benoist,Marie,Guillemine,Benoist,French,Neoclassical,1768,1826
+839,Georges De La Tour,Georges,,De La Tour,French,Baroque,1593,1652
+840,Eugène Girardet,Eugene,,Girardet,French,Orientalist,1853,1907
+841,Umberto Boccioni,Umberto,,Boccioni,Italian,Futurist,1882,1916
+842,Rachel Ruysch,Rachel,,Ruysch,Dutch,Baroque,1664,1750
+843,Egon Schiele,Egon,,Schiele,Austrian,Art Nouveau,1890,1918
+844,Gaston La Touche,Gaston,,La Touche,French,Post-Impressionist,1854,1913
+845,Sir Arthur Stockdale Cope,Arthur,Stockdale,Cope,English,Marine Art,1857,1940
+846,Gerrit Dou,Gerrit,,Dou,Dutch,Baroque,1613,1675
+847,Jean-Francois Portaels,Jean,Francois,Portaels,Belgian,Orientalist,1818,1895
+848,Hans Holbein,Hans,,Holbein,German,Northern Renaissance,1465,1524
+849,Jules Pascin,Jules,,Pascin,French,Expressionist,1885,1930
+850,Jean Béraud,Jean,,Beraud,French,Impressionist,1849,1935
+851,Giorgio Morandi,Giorgio,,Morandi,Italian,Futurist,1890,1964
+852,Léon Augustin Lhermitte,Leon,Augustin,Lhermitte,French,Realist,1844,1925
+853,Henri De Toulouse-Lautrec,Henri,De Toulouse,Lautrec,French,Post-Impressionist,1864,1901
+854,Theodor Von Hörmann,Theodor,,Von Hormann,Austrian,Impressionist,1840,1895
+855,Anders Zorn,Anders,,Zorn,Swiss,Realist,1860,1920
+856,Gilbert Stuart,Gilbert,,Stuart,American,Portraitist,1755,1828
+857,Martin Johnson Heade,Martin,Johnson,Heade,American,Hudson River School,1819,1904
+858,Paul Ranson,Paul,,Ranson,French,Nabi,1864,1909
+859,Jean Discart,Jean,,Discart,French,Orientalist,1856,1944
+860,Jan Portielje,Jan,,Portielje,Dutch,Classicist,1829,1908
+861,Jan Porcellis,Jan,,Porcellis,Flemish,Marine Art,1580,1632
+862,Charles-Francois Daubigny,Charles,Francois,Daubigny,French,Naturalist,1817,1878
+863,Oswald Achenbach,Oswald,,Achenbach,German,Realist,1827,1905
+864,Arthur Bowen Davies,Arthur,Bowen,Davies,American,Symbolist,1862,1928
+865,Buonarroti Michelangelo,Buonarroti,,Michelangelo,Italian,High Renaissance,1475,1564
+866,Théo Van Rysselberghe,Theo,,Van Rysselberghe,Belgian,Pointillist,1862,1926
+867,Cornelis Troost,Cornelis,,Troost,Dutch,Rococo,1696,1750
+868,Joshua Johnson,Joshua,,Johnson,American,Folk,1763,1824
+869,Pierre Auguste Cot,Pierre,Auguste,Cot,French,Classicist,1837,1883
+870,Caravaggio,Michelangelo,Merisi,Da Caravaggio,Italian,Baroque,1571,1610
+871,Konstantin A. Korovin,Konstantin,A,Korovin,Russian,Impressionist,1861,1939
+872,Paul Cézanne,Paul,,Cezanne,French,Post-Impressionist,1839,1906
+873,Paul Klee,Paul,,Klee,Swiss,Expressionist,1879,1940
+874,Jacob Cornelisz Van Oostsanen,Jacob,Cornelisz,Van Oostsanen,Dutch,Renaissance,1470,1533
+875,Jules Bastien-Lepage,Jules,Bastien,Lepage,French,Realist,1848,1884
+876,Salvador Dalí,Salvador,,Dali,Spanish,Surrealist,1901,1989
+877,Edgar William,Edgar,,William,American,Colonial,1870,1918
+878,Chaïm Soutine,Chaim,,Soutine,French,Expressionist,1893,1943
+879,Jean-Étienne Liotard,Jean,Etienne,Liotard,Swiss,Mannerist,1702,1789
+880,Robert William Vonnoh,Robert,William,Vonnoh,American,Impressionist,1858,1933
+881,Hendrick Avercamp,Hendrick,,Avercamp,Dutch,Baroque,1585,1634
+882,Gaston Bussière,Gaston,,Bussiere,French,Symbolist,1862,1928
+883,Thomas Eakins,Thomas,,Eakins,American,Realist,1844,1916
+884,Otto Mueller,Otto,,Mueller,German,Expressionist,1874,1930
+885,Lucas Cranach,Lucas,,Cranach,German,Northern Renaissance,1472,1553
+886,Paulus Potter,Paulus,,Potter,Dutch,Baroque,1625,1654
+887,Johan Barthold Jongkind,Johan,Barthold,Jongkind,Dutch,Impressionist,1819,1891
+888,John Vanderbank,John,,Vanderbank,English,Portraitist,1694,1739
+889,Richard Ansdell,Richard,,Ansdell,English,Naturalist,1815,1885
+890,Gabriele Münter,Gabriele,,Munter,German,Expressionist,1877,1962
+891,Orazio Gentileschi,Orazio,,Gentileschi,Italian,Baroque,1563,1639
+892,Nicholas Pocock,Nicholas,,Pocock,English,Marine Art,1741,1821
+893,Julian Alden Weir,Julian,Alden,Weir,American,Impressionist,1852,1919
+894,Jan Van Scorel,Jan,,Van Scorel,Dutch,Renaissance,1495,1562
+895,Joaquín Sorolla,Joaquin,,Sorolla,Spanish,Impressionist,1863,1923
+896,Anne Vallayer-Coster,Anne,Vallayer,Coster,French,Rococo,1744,1818
+897,Élisabeth Vigée-LeBrun,Elisabeth,Vigee,Le Brun,French,Neoclassical,1755,1842
+898,Joseph M. W. Turner,Joseph,Mallord William,Turner,English,Romantic,1775,1851
+899,William Adolphe Bouguereau,William,Adolphe,Bouguereau,French,Classicist,1825,1905
+900,Francesco Guardi,Francesco,,Guardi,Italian,Rococo,1712,1793
+901,John French Sloan,John,French,Sloan,American,Folk,1871,1951
+902,John Constable,John,,Constable,English,Romantic,1776,1837
+903,Armand Guillaumin,Guillaumin,,Armand,French,Impressionist,1841,1927
+904,Friedrich Von Amerling,Friedrich,,Von Amerling,Austrian,Classicist,1803,1887
+905,Max Pechstein,Max,,Pechstein,German,Expressionist,1881,1955
+906,Jean-Louis Forain,Jean,Louis,Forain,French,Impressionist,1852,1931
+907,Carl Larsson,Carl,,Larsson,Swiss,Post-Impressionist,1853,1919
+908,Jean-Antoine Watteau,Jean,Antoine,Watteau,French,Rococo,1684,1721
+909,Jan Both,Jan,,Both,Dutch,Baroque,1610,1652
+910,John William Godward,John,William,Godward,English,Classicist,1861,1922
+911,Jean Frédéric Bazille,Jean,Frederic,Bazille,French,Impressionist,1841,1870
+912,Pierre Bonnard,Pierre,,Bonnard,French,Nabi,1867,1947
+913,Edward Burne-Jones,Edward,Burne,Jones,English,Neoclassical,1833,1898
+914,Cornelis Van Haarlem,Cornelis,,Van Haarlem,Dutch,Baroque,1562,1638
+915,Daniel Ridgway Knight,Daniel,Ridgway,Knight,American,Realist,1839,1924
+916,Jean-Baptiste-Camille Corot,Jean,Baptiste Camille,Corot,French,Romantic,1796,1875
+917,Jan Toorop,Jan,,Toorop,Dutch,Symbolist,1858,1928
+918,Rembrandt Peale,Rembrandt,,Peale,American,Neoclassical,1778,1860
+919,Edmund Charles Tarbell,Edmund,Charles,Tarbell,American,Impressionist,1862,1938
+920,Rembrandt Van Rijn,Rembrandt,,Van Rijn,Dutch,Baroque,1606,1669

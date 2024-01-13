@@ -20,89 +20,89 @@ import ch.xxx.aidoclibchat.domain.model.dto.AmazonProductDto;
 import ch.xxx.aidoclibchat.domain.model.dto.ProductDto;
 import ch.xxx.aidoclibchat.domain.model.dto.SupermarketDto;
 import ch.xxx.aidoclibchat.domain.model.dto.ZipcodeDto;
-import ch.xxx.aidoclibchat.domain.model.entity.AmazonProduct;
-import ch.xxx.aidoclibchat.domain.model.entity.Product;
-import ch.xxx.aidoclibchat.domain.model.entity.Supermarket;
-import ch.xxx.aidoclibchat.domain.model.entity.Zipcode;
+import ch.xxx.aidoclibchat.domain.model.entity.Artist;
+import ch.xxx.aidoclibchat.domain.model.entity.Museum;
+import ch.xxx.aidoclibchat.domain.model.entity.MuseumHours;
+import ch.xxx.aidoclibchat.domain.model.entity.Work;
 
 @Component
 public class TableMapper {
-	public Zipcode map(ZipcodeDto dto) {
-		var entity = new Zipcode();
-		entity.setCity(dto.getCity());
-		entity.setLat(dto.getLat());
-		entity.setLgt(dto.getLgt());
-		entity.setState(dto.getState());
-		entity.setZipcode(dto.getZipcode());
-		entity.setZipcodetype(dto.getZipcodetype());
+	public Work map(ZipcodeDto dto) {
+		var entity = new Work();
+//		entity.setCity(dto.getCity());
+//		entity.setLat(dto.getLat());
+//		entity.setLgt(dto.getLgt());
+//		entity.setState(dto.getState());
+//		entity.setZipcode(dto.getZipcode());
+//		entity.setZipcodetype(dto.getZipcodetype());
 		return entity;
 	}
 
-	public Supermarket map(SupermarketDto dto) {
-		var entity = new Supermarket();
-		entity.setId(dto.getId());
-		entity.setPrice(dto.getPrice());
-		entity.setPrices(dto.getPrices());
-		entity.setZip(dto.getZip());
-		entity.setZips(dto.getZips());
+	public MuseumHours map(SupermarketDto dto) {
+		var entity = new MuseumHours();
+//		entity.setId(dto.getId());
+//		entity.setPrice(dto.getPrice());
+//		entity.setPrices(dto.getPrices());
+//		entity.setZip(dto.getZip());
+//		entity.setZips(dto.getZips());
 		return entity;
 	}
 
-	public Optional<Product> map(ProductDto dto) {
-		var myOpt = Optional.of(new Product());
+	public Optional<Museum> map(ProductDto dto) {
+		var myOpt = Optional.of(new Museum());
 		var entity = myOpt.get();
 		try {
-			entity.setCode(dto.getCode());
-			entity.setComments(dto.getComments());
-			entity.setCountry(dto.getCountry());
-			entity.setCountryS(dto.getCountryS());
-			entity.setDate(dto.getDate());
-			entity.setDay(dto.getDay());
-			entity.setDeviceid(dto.getDeviceid());
-			entity.setId(Long.parseLong(dto.getId()));
-			entity.setImputed(dto.getImputed() == 1);
-			entity.setMonth(dto.getMonth());
-			entity.setOtherskuitem(dto.getOtherskuitem());
-			entity.setPhoto(dto.getPhoto());
-			entity.setPrice(dto.getPrice());
-			entity.setPrice(dto.getPrice());
-			entity.setPriceOnline(dto.getPriceOnline());
-			entity.setPricetype(dto.getPricetype());
-			entity.setRetailer(dto.getRetailer());
-			entity.setRetailerS(dto.getRetailerS());
-			entity.setSaleOnline(Optional.ofNullable(dto.getSaleOnline()).stream().allMatch(myStr -> !myStr.isBlank()));
-			entity.setTime(dto.getTime());
-			entity.setYear(dto.getYear());
-			entity.setZipcode(dto.getZipcode());
+//			entity.setCode(dto.getCode());
+//			entity.setComments(dto.getComments());
+//			entity.setCountry(dto.getCountry());
+//			entity.setCountryS(dto.getCountryS());
+//			entity.setDate(dto.getDate());
+//			entity.setDay(dto.getDay());
+//			entity.setDeviceid(dto.getDeviceid());
+//			entity.setId(Long.parseLong(dto.getId()));
+//			entity.setImputed(dto.getImputed() == 1);
+//			entity.setMonth(dto.getMonth());
+//			entity.setOtherskuitem(dto.getOtherskuitem());
+//			entity.setPhoto(dto.getPhoto());
+//			entity.setPrice(dto.getPrice());
+//			entity.setPrice(dto.getPrice());
+//			entity.setPriceOnline(dto.getPriceOnline());
+//			entity.setPricetype(dto.getPricetype());
+//			entity.setRetailer(dto.getRetailer());
+//			entity.setRetailerS(dto.getRetailerS());
+//			entity.setSaleOnline(Optional.ofNullable(dto.getSaleOnline()).stream().allMatch(myStr -> !myStr.isBlank()));
+//			entity.setTime(dto.getTime());
+//			entity.setYear(dto.getYear());
+//			entity.setZipcode(dto.getZipcode());
 		} catch (Exception e) {
 			myOpt = Optional.empty();
 		}
 		return myOpt;
 	}
 	
-	public Optional<AmazonProduct> map(AmazonProductDto dto) {
-		var myOpt = Optional.of(new AmazonProduct());
+	public Optional<Artist> map(AmazonProductDto dto) {
+		var myOpt = Optional.of(new Artist());
 		var entity = myOpt.get();
 		try {
-			entity.setCategory(dto.getCategory());
-			entity.setCatId(dto.getCatId());
-			entity.setComments(dto.getComments());
-			entity.setDate(dto.getDate());
-			entity.setDateAmazon(dto.getDateAmazon());
-			entity.setDatediff(dto.getDatediff());
-			entity.setId(Long.parseLong(dto.getId()));
-			entity.setImputed(dto.getImputed() == 1);
-			entity.setMerchant(dto.getMerchant());
-			entity.setPrice(dto.getPrice());
-			entity.setPriceAmazon(dto.getPriceAmazon());
-			entity.setPriceOnline(dto.getPriceOnline());
-			entity.setPricetype(dto.getPricetype());
-			entity.setProductAmazon(dto.getProductAmazon());
-			entity.setPriceOnline(dto.getPriceOnline());
-			entity.setRetailerId(dto.getRetailerId());
-			entity.setRetailerS(dto.getRetailerS());
-			entity.setSaleOnline(dto.isSaleOnline() == 1);
-			entity.setUrl(dto.getUrl());
+//			entity.setCategory(dto.getCategory());
+//			entity.setCatId(dto.getCatId());
+//			entity.setComments(dto.getComments());
+//			entity.setDate(dto.getDate());
+//			entity.setDateAmazon(dto.getDateAmazon());
+//			entity.setDatediff(dto.getDatediff());
+//			entity.setId(Long.parseLong(dto.getId()));
+//			entity.setImputed(dto.getImputed() == 1);
+//			entity.setMerchant(dto.getMerchant());
+//			entity.setPrice(dto.getPrice());
+//			entity.setPriceAmazon(dto.getPriceAmazon());
+//			entity.setPriceOnline(dto.getPriceOnline());
+//			entity.setPricetype(dto.getPricetype());
+//			entity.setProductAmazon(dto.getProductAmazon());
+//			entity.setPriceOnline(dto.getPriceOnline());
+//			entity.setRetailerId(dto.getRetailerId());
+//			entity.setRetailerS(dto.getRetailerS());
+//			entity.setSaleOnline(dto.isSaleOnline() == 1);
+//			entity.setUrl(dto.getUrl());
 		}catch(Exception e) {
 			myOpt = Optional.empty();
 		}

@@ -16,27 +16,27 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import ch.xxx.aidoclibchat.domain.model.entity.AmazonProduct;
-import ch.xxx.aidoclibchat.domain.model.entity.AmazonProductRepository;
-import ch.xxx.aidoclibchat.domain.model.entity.Product;
-import ch.xxx.aidoclibchat.domain.model.entity.ProductRepository;
-import ch.xxx.aidoclibchat.domain.model.entity.Supermarket;
-import ch.xxx.aidoclibchat.domain.model.entity.SupermarketRepository;
-import ch.xxx.aidoclibchat.domain.model.entity.Zipcode;
-import ch.xxx.aidoclibchat.domain.model.entity.ZipcodeRepository;
+import ch.xxx.aidoclibchat.domain.model.entity.Artist;
+import ch.xxx.aidoclibchat.domain.model.entity.ArtistRepository;
+import ch.xxx.aidoclibchat.domain.model.entity.Museum;
+import ch.xxx.aidoclibchat.domain.model.entity.MuseumRepository;
+import ch.xxx.aidoclibchat.domain.model.entity.MuseumHours;
+import ch.xxx.aidoclibchat.domain.model.entity.MuseumHoursRepository;
+import ch.xxx.aidoclibchat.domain.model.entity.Work;
+import ch.xxx.aidoclibchat.domain.model.entity.WorkRepository;
 import jakarta.transaction.Transactional;
 import jakarta.transaction.Transactional.TxType;
 
 @Service
 @Transactional(value = TxType.REQUIRES_NEW)
 public class ImportService {
-	private final ZipcodeRepository zipcodeRepository;
-	private final SupermarketRepository supermarketRepository;
-	private final ProductRepository productRepository;
-	private final AmazonProductRepository amazonProductRepository;
+	private final WorkRepository zipcodeRepository;
+	private final MuseumHoursRepository supermarketRepository;
+	private final MuseumRepository productRepository;
+	private final ArtistRepository amazonProductRepository;
 
-	public ImportService(ZipcodeRepository zipcodeRepository, SupermarketRepository supermarketRepository,
-			ProductRepository productRepository, AmazonProductRepository amazonProductRepository) {
+	public ImportService(WorkRepository zipcodeRepository, MuseumHoursRepository supermarketRepository,
+			MuseumRepository productRepository, ArtistRepository amazonProductRepository) {
 		this.zipcodeRepository = zipcodeRepository;
 		this.supermarketRepository = supermarketRepository;
 		this.productRepository = productRepository;
@@ -50,8 +50,8 @@ public class ImportService {
 		this.zipcodeRepository.deleteAll();
 	}
 
-	public void saveAllData(List<Zipcode> zipcodes, List<Supermarket> supermarkets, List<Product> products,
-			List<AmazonProduct> amazonProducts) {
+	public void saveAllData(List<Work> zipcodes, List<MuseumHours> supermarkets, List<Museum> products,
+			List<Artist> amazonProducts) {
 		this.zipcodeRepository.saveAll(zipcodes);
 		this.supermarketRepository.saveAll(supermarkets);
 		this.productRepository.saveAll(products);

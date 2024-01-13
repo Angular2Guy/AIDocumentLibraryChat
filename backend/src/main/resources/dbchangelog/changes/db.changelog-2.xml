@@ -12,88 +12,87 @@
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 	<changeSet author="angular2guy" id="9">
-		<createTable tableName="zipcode">
-			<column name="zipcode" type="varchar(8)">
+		<createTable tableName="artist">
+			<column name="id" type="bigint">
 				<constraints primaryKey="true" />
 			</column>
-			<column name="zipcodetype" type="varchar(15)">
-				<constraints
-					notNullConstraintName="zipcode_zipcodetype_notnull"
-					nullable="false" />
-			</column>
-			<column name="city" type="varchar(50)" />
-			<column name="state" type="varchar(10)" />
-			<column name="lat" type="double" defaultValue="0.0" />
-			<column name="lgt" type="double" defaultValue="0.0" />
+			<column name="full_name" type="varchar(120)" />
+			<column name="first_name" type="varchar(50)" />
+			<column name="middle_name" type="varchar(50)" />
+			<column name="last_name" type="varchar(70)" />
+			<column name="nationality" type="varchar(40)" />
+			<column name="style" type="varchar(50)" />
+			<column name="birth" type="int" />
+			<column name="death" type="int" />
 		</createTable>
 	</changeSet>
 	<!-- <changeSet author="angular2guy" id="5"> <createSequence sequenceName="document_seq" 
 		incrementBy="50" startValue="1000" /> </changeSet> -->
 	<changeSet id="10" author="angular2guy">
-		<createTable tableName="supermarket">
+		<createTable tableName="museum">
 			<column name="id" type="bigint">
 				<constraints primaryKey="true" />
 			</column>
-			<column name="price" type="double" />
-			<column name="zip" type="varchar(8)">
-				<constraints nullable="false"
-					foreignKeyName="fk_zipcode_zipcode" references="zipcode(zipcode)" />
-			</column>
-			<column name="prices" type="int" />
-			<column name="zips" type="int" />
+			<column name="name" type="varchar(50)" />
+			<column name="address" type="varchar(70)" />
+			<column name="city" type="varchar(50)" />
+			<column name="state" type="varchar(50)" />
+			<column name="postal" type="varchar(10)" />
+			<column name="country" type="varchar(50)" />
+			<column name="phone" type="varchar(30)" />
+			<column name="url" type="varchar(256)" />
 		</createTable>
 	</changeSet>
 	<changeSet id="11" author="angular2guy">
-		<createTable tableName="product">
-			<column name="id" type="bigint">
-				<constraints primaryKey="true" />
+		<createTable tableName="museum_hours">
+			<column name="museum_id" type="bigint">
+				<constraints nullable="false"
+					foreignKeyName="fk_museum_hours_museum_id" references="museum(id)" />
 			</column>
-			<column name="country" type="varchar(25)" />
-			<column name="retailer" type="bigint" />
-			<column name="retailer_s" type="varchar(25)" />
-			<column name="date" type="date" />
-			<column name="day" type="int" />
-			<column name="month" type="int" />
-			<column name="year" type="int" />
-			<column name="price" type="double" />
-			<column name="price_online" type="double" />
-			<column name="imputed" type="boolean" defaultValueBoolean="false"/>
-			<column name="deviceid" type="varchar(30)" />
-			<column name="time" type="varchar(10)" />
-			<column name="zipcode" type="varchar(12)"/>
-			<column name="photo" type="varchar(50)" />
-			<column name="otherskuitem" type="varchar(40)" />
-			<column name="comments" type="varchar(255)" />
-			<column name="pricetype" type="varchar(50)" />
-			<column name="code" type="varchar(15)" />
-			<column name="sale_online" type="boolean"
-				defaultValueBoolean="false" />
-			<column name="country_s" type="varchar(25)" />
+			<column name="day" type="varchar(10)" />
+			<column name="open" type="varchar(12)" />
+			<column name="close" type="varchar(12)" />
 		</createTable>
 	</changeSet>
 	<changeSet id="12" author="angular2guy">
-		<createTable tableName="amazon_product">
+		<createTable tableName="work">
 			<column name="id" type="bigint">
 				<constraints primaryKey="true" />
 			</column>
-			<column name="date_amazon" type="date" />
-			<column name="date" type="date" />
-			<column name="price" type="double" />
-			<column name="price_online" type="double" />
-			<column name="price_amazon" type="double" />
-			<column name="sale_online" type="boolean" />
-			<column name="product_online" type="varchar(512)" />
-			<column name="product_amazon" type="varchar(512)" />
-			<column name="merchant" type="varchar(512)" />
-			<column name="url" type="varchar(512)" />
-			<column name="imputed" type="boolean" defaultValueBoolean="false"/>
-			<column name="comments" type="varchar(255)" />
-			<column name="pricetype" type="varchar(50)" />
-			<column name="datediff" type="int" />
-			<column name="cat_id" type="int" />
-			<column name="category" type="varchar(50)" />
-			<column name="retailer_id" type="bigint"/>
-			<column name="retailer_s" type="varchar(50)" />
+			<column name="name" type="varchar(80)" />
+			<column name="artist_id" type="bigint">
+				<constraints nullable="false"
+					foreignKeyName="fk_work_artist_id" references="artist(id)" />
+			</column>
+			<column name="style" type="varchar(40)" />
+			<column name="museum_id" type="bigint">
+				<constraints nullable="false"
+					foreignKeyName="fk_work_museum_id" references="museum(id)" />
+			</column>
+			<column name="width" type="int" />
+			<column name="height" type="int" />
+		</createTable>
+	</changeSet>
+	<changeSet id="13" author="angular2guy">
+		<createTable tableName="subject">
+			<column name="work_id" type="bigint" />
+			<column name="subject" type="varchar(50)" />
+		</createTable>
+	</changeSet>
+	<changeSet id="14" author="angular2guy">
+		<createTable tableName="work_link">
+			<column name="work_id" type="bigint" />
+			<column name="name" type="varchar(80)" />
+			<column name="artist_id" type="bigint">
+				<constraints nullable="false"
+					foreignKeyName="fk_work_link_artist_id" references="artist(id)" />
+			</column>
+			<column name="style" type="varchar(40)" />
+			<column name="museum_id" type="bigint">
+				<constraints nullable="false"
+					foreignKeyName="fk_work_museum_id" references="museum(id)" />
+			</column>
+			<column name="image_link" type="varchar(256)" />
 		</createTable>
 	</changeSet>
 </databaseChangeLog>

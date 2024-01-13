@@ -28,10 +28,10 @@ import ch.xxx.aidoclibchat.domain.model.dto.AmazonProductDto;
 import ch.xxx.aidoclibchat.domain.model.dto.ProductDto;
 import ch.xxx.aidoclibchat.domain.model.dto.SupermarketDto;
 import ch.xxx.aidoclibchat.domain.model.dto.ZipcodeDto;
-import ch.xxx.aidoclibchat.domain.model.entity.AmazonProduct;
-import ch.xxx.aidoclibchat.domain.model.entity.Product;
-import ch.xxx.aidoclibchat.domain.model.entity.Supermarket;
-import ch.xxx.aidoclibchat.domain.model.entity.Zipcode;
+import ch.xxx.aidoclibchat.domain.model.entity.Artist;
+import ch.xxx.aidoclibchat.domain.model.entity.Museum;
+import ch.xxx.aidoclibchat.domain.model.entity.MuseumHours;
+import ch.xxx.aidoclibchat.domain.model.entity.Work;
 import ch.xxx.aidoclibchat.usecase.mapping.TableMapper;
 
 @Component
@@ -45,7 +45,7 @@ public class ImportRestClient implements ImportClient {
 		this.csvMapper.registerModule(new JavaTimeModule());
 	}
 
-	public List<Zipcode> importZipcodes() {
+	public List<Work> importZipcodes() {
 		RestClient restClient = RestClient.create();
 		String result = restClient.get().uri(
 				"https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/retailData/zipcodes.csv")
@@ -64,7 +64,7 @@ public class ImportRestClient implements ImportClient {
 		return zipcodes;
 	}
 
-	public List<Supermarket> importSupermarkets() {
+	public List<MuseumHours> importSupermarkets() {
 		RestClient restClient = RestClient.create();
 		String result = restClient.get().uri(
 				"https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/retailData/supermarket-1day-45zips.csv")
@@ -72,7 +72,7 @@ public class ImportRestClient implements ImportClient {
 		return this.mapString(result, SupermarketDto.class).stream().map(myDto -> this.tableMapper.map(myDto)).toList();
 	}
 
-	public List<AmazonProduct> importAmazonProducts() {
+	public List<Artist> importAmazonProducts() {
 		RestClient restClient = RestClient.create();
 		String result = restClient.get().uri(
 				"https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/retailData/amazon_compare.csv")
@@ -81,7 +81,7 @@ public class ImportRestClient implements ImportClient {
 				.filter(Optional::isPresent).map(Optional::get).toList();
 	}
 
-	public List<Product> importProducts() {
+	public List<Museum> importProducts() {
 		RestClient restClient = RestClient.create();
 		String result = restClient.get().uri(
 				"https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/retailData/online_offline_ALL_clean.csv")

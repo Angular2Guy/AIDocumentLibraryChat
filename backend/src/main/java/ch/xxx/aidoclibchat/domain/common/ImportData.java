@@ -14,11 +14,11 @@ package ch.xxx.aidoclibchat.domain.common;
 
 import java.util.List;
 
-import ch.xxx.aidoclibchat.domain.model.entity.AmazonProduct;
-import ch.xxx.aidoclibchat.domain.model.entity.Product;
-import ch.xxx.aidoclibchat.domain.model.entity.Supermarket;
-import ch.xxx.aidoclibchat.domain.model.entity.Zipcode;
+import ch.xxx.aidoclibchat.domain.model.entity.Artist;
+import ch.xxx.aidoclibchat.domain.model.entity.Museum;
+import ch.xxx.aidoclibchat.domain.model.entity.MuseumHours;
+import ch.xxx.aidoclibchat.domain.model.entity.Work;
 
-public record ImportData(List<Zipcode> zipcodes, List<Supermarket> supermarkets, List<Product> products, List<AmazonProduct> amazonProducts) {
+public record ImportData(List<Work> zipcodes, List<MuseumHours> supermarkets, List<Museum> products, List<Artist> amazonProducts) {
 
 }
