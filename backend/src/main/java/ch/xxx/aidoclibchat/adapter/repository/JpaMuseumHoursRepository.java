@@ -15,7 +15,8 @@ package ch.xxx.aidoclibchat.adapter.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import ch.xxx.aidoclibchat.domain.model.entity.MuseumHours;
+import ch.xxx.aidoclibchat.domain.model.entity.MuseumHoursId;
 
-public interface JpaMuseumHoursRepository extends JpaRepository<MuseumHours, Long> {
+public interface JpaMuseumHoursRepository extends JpaRepository<MuseumHours, MuseumHoursId> {
 
 }
