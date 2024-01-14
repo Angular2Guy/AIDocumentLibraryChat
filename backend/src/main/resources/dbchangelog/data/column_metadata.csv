@@ -24,3 +24,15 @@ id,column_name,column_description,column_primary_key,reference_table_name,refere
 23,museum_id,id of the museum in the museum table,false,museum,id,3
 24,width,the width of the art work,false,,,3
 25,height,the height of the art work,false,,,3
+26,museum_id,a id part of the table,true,,,4
+27,day,the day as a id part of the table,true,,,4
+28,open,the opening time of the museum,false,,,4
+29,close,the closing time of the museum,false,,,4
+30,work_id,the primary key of the table,true,work,id,5
+31,subject,the subject of the art work,false,,,5
+32,work_id,the primary key of the table,true,work,id,5
+33,name,the name of the art work,false,,,5
+34,artist_id,id of the artist in the artist table,false,artist,id,5
+35,style,style of the art work,false,,,5
+36,museum_id,id of the museum in the museum table,false,museum,id,5
+37,image_link,the href tag for the link to the image of the art work,false,,,5
