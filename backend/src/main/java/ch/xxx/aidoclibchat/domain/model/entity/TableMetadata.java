@@ -27,6 +27,7 @@ public class TableMetadata {
     private Long id;
 	private String tableName;
 	private String tableDescription;
+	private String tableDdl;
     @OneToMany(mappedBy="tableMetadata")
     private Set<ColumnMetadata> columnMetadata;
     
@@ -53,5 +54,11 @@ public class TableMetadata {
 	}
 	public void setColumnMetadata(Set<ColumnMetadata> columnMetadata) {
 		this.columnMetadata = columnMetadata;
+	}
+	public String getTableDdl() {
+		return tableDdl;
+	}
+	public void setTableDdl(String tableDdl) {
+		this.tableDdl = tableDdl;
 	}
 }

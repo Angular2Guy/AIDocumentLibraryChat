@@ -111,6 +111,7 @@
 			</column>
 			<column name="table_name" type="varchar(40)"/>
 			<column name="table_description" type="varchar(1024)"/>
+			<column name="table_ddl" type="varchar(8192)"/>
 		</createTable>
 	</changeSet>
 	<changeSet author="angular2guy" id="17"> 
@@ -123,6 +124,7 @@
 			</column>
 			<column name="column_name" type="varchar(40)"/>
 			<column name="column_description" type="varchar(1024)"/>
+			<column name="column_primary_key" type="boolean"/>
 			<column name="reference_table_name" type="varchar(40)"/>
 			<column name="reference_table_column" type="varchar(1024)"/>
 			<column name="table_metadata_id" type="bigint">

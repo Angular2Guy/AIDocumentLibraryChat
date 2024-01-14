@@ -26,6 +26,7 @@ public class ColumnMetadata {
     private Long id;
     private String columnName;
     private String columnDescription;
+    private boolean columnPrimaryKey;
     private String referenceTableName;
     private String referenceTableColumn;
     @ManyToOne
@@ -67,5 +68,11 @@ public class ColumnMetadata {
 	}
 	public void setTableMetadata(TableMetadata tableMetadata) {
 		this.tableMetadata = tableMetadata;
+	}
+	public boolean isColumnPrimaryKey() {
+		return columnPrimaryKey;
+	}
+	public void setColumnPrimaryKey(boolean columnPrimaryKey) {
+		this.columnPrimaryKey = columnPrimaryKey;
 	}
 }
