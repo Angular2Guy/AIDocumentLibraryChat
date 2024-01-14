@@ -12,5 +12,9 @@
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 	<changeSet id="init-data" author="angular2guy" runOnChange="true">
+		<loadUpdateData file="data/table_metadata.csv" tableName="table_metadata" primaryKey="id"
+			relativeToChangelogFile="true" />
+		<loadUpdateData file="data/column_metadata.csv" tableName="column_metadata" primaryKey="id"
+			relativeToChangelogFile="true" />
     </changeSet>
 </databaseChangeLog>    
