@@ -16,9 +16,11 @@ import java.util.List;
 
 import org.springframework.ai.document.Document;
 
+import ch.xxx.aidoclibchat.domain.common.MetaData;
+
 public interface DocumentVsRepository {
 	void add(List<Document> documents);
-	List<Document> retrieve(String query, int k, double threshold);
-	List<Document> retrieve(String query, int k);
-	List<Document> retrieve(String query);
+	List<Document> retrieve(String query, MetaData.DataType dataType, int k, double threshold);
+	List<Document> retrieve(String query, MetaData.DataType dataType, int k);
+	List<Document> retrieve(String query, MetaData.DataType dataType);
 }

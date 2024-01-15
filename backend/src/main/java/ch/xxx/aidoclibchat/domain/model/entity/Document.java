@@ -14,7 +14,7 @@ package ch.xxx.aidoclibchat.domain.model.entity;
 
 import java.util.Arrays;
 
-import ch.xxx.aidoclibchat.domain.common.DocumentType;
+import ch.xxx.aidoclibchat.domain.common.MetaData.DocumentType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

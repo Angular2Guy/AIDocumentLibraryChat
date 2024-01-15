@@ -12,8 +12,10 @@
  */
 package ch.xxx.aidoclibchat.domain.model.entity;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface TableMetadataRepository {
 	Optional<TableMetadata> findById(Long id);
+	List<TableMetadata> findAllWithColumns();
 }

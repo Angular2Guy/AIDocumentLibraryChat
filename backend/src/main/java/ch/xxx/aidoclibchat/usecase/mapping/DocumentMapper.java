@@ -20,7 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import ch.xxx.aidoclibchat.domain.common.DocumentType;
+import ch.xxx.aidoclibchat.domain.common.MetaData.DocumentType;
 import ch.xxx.aidoclibchat.domain.exceptions.DocumentException;
 import ch.xxx.aidoclibchat.domain.model.dto.AiResult;
 import ch.xxx.aidoclibchat.domain.model.dto.DocumentDto;

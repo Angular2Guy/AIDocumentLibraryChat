@@ -25,6 +25,8 @@ import ch.xxx.aidoclibchat.domain.model.entity.Artist;
 import ch.xxx.aidoclibchat.domain.model.entity.Museum;
 import ch.xxx.aidoclibchat.domain.model.entity.MuseumHours;
 import ch.xxx.aidoclibchat.domain.model.entity.Subject;
+import ch.xxx.aidoclibchat.domain.model.entity.TableMetadata;
+import ch.xxx.aidoclibchat.domain.model.entity.TableMetadataRepository;
 import ch.xxx.aidoclibchat.domain.model.entity.Work;
 import ch.xxx.aidoclibchat.domain.model.entity.WorkLink;
 import jakarta.transaction.Transactional;
@@ -35,10 +37,12 @@ public class TableService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TableService.class);
 	private final ImportClient importClient;
 	private final ImportService importService;
+	private final TableMetadataRepository tableMetadataRepository;
 	
-	public TableService(ImportClient importClient, ImportService importService) {
+	public TableService(ImportClient importClient, ImportService importService,TableMetadataRepository tableMetadataRepository) {
 		this.importClient = importClient;				
 		this.importService = importService;
+		this.tableMetadataRepository = tableMetadataRepository;
 	}
 	
 	@Async
@@ -59,5 +63,9 @@ public class TableService {
 		this.importService.saveAllData(works, museumHours, museums, artists, subjects, workLinks);
 		LOGGER.info("Data saved in {}ms", new Date().getTime() - saveStart.getTime());
 		LOGGER.info("Import done in {}ms.", new Date().getTime() - start.getTime());
+	}
+	
+	public void updateEmbeddings() {
+		List<TableMetadata> tablesWithColumns = this.tableMetadataRepository.findAllWithColumns();
 	}
 }

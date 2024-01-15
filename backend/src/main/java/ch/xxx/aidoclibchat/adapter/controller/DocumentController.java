@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import ch.xxx.aidoclibchat.domain.common.DocumentType;
+import ch.xxx.aidoclibchat.domain.common.MetaData.DocumentType;
 import ch.xxx.aidoclibchat.domain.model.dto.DocumentDto;
 import ch.xxx.aidoclibchat.domain.model.dto.DocumentSearchDto;
 import ch.xxx.aidoclibchat.domain.model.dto.SearchDto;

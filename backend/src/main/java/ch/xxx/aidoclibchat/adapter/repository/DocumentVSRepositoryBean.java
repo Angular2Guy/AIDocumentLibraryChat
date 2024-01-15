@@ -19,32 +19,44 @@ import org.springframework.ai.embedding.EmbeddingClient;
 import org.springframework.ai.vectorstore.PgVectorStore;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.ai.vectorstore.filter.Filter;
+import org.springframework.ai.vectorstore.filter.Filter.ExpressionType;
+import org.springframework.ai.vectorstore.filter.Filter.Key;
+import org.springframework.ai.vectorstore.filter.Filter.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import ch.xxx.aidoclibchat.domain.common.MetaData;
 import ch.xxx.aidoclibchat.domain.model.entity.DocumentVsRepository;
 
 @Repository
-public class DocumentVSRepositoryBean implements DocumentVsRepository {    
-    private final VectorStore vectorStore;
-    
-	public DocumentVSRepositoryBean(JdbcTemplate jdbcTemplate, EmbeddingClient embeddingClient) {				
+public class DocumentVSRepositoryBean implements DocumentVsRepository {	
+	private final VectorStore vectorStore;
+
+	public DocumentVSRepositoryBean(JdbcTemplate jdbcTemplate, EmbeddingClient embeddingClient) {
 		this.vectorStore = new PgVectorStore(jdbcTemplate, embeddingClient);
 	}
-	
+
 	public void add(List<Document> documents) {
 		this.vectorStore.add(documents);
 	}
-	
-	public List<Document> retrieve(String query, int k, double threshold) {
-		return this.vectorStore.similaritySearch(SearchRequest.query(query).withTopK(k).withSimilarityThreshold(threshold));
+
+	public List<Document> retrieve(String query, MetaData.DataType dataType, int k, double threshold) {
+		return this.vectorStore.similaritySearch(SearchRequest.query(query)
+				.withFilterExpression(
+						new Filter.Expression(ExpressionType.EQ, new Key(MetaData.ID), new Value(dataType.toString())))
+				.withTopK(k).withSimilarityThreshold(threshold));
 	}
-	
-	public List<Document> retrieve(String query, int k) {
-		return this.vectorStore.similaritySearch(SearchRequest.query(query).withTopK(k));
+
+	public List<Document> retrieve(String query, MetaData.DataType dataType, int k) {
+		return this.vectorStore.similaritySearch(SearchRequest.query(query)
+				.withFilterExpression(
+						new Filter.Expression(ExpressionType.EQ, new Key(MetaData.ID), new Value(dataType.toString())))
+				.withTopK(k));
 	}
-	
-	public List<Document> retrieve(String query) {
-		return this.vectorStore.similaritySearch(SearchRequest.query(query));
+
+	public List<Document> retrieve(String query, MetaData.DataType dataType) {
+		return this.vectorStore.similaritySearch(SearchRequest.query(query).withFilterExpression(
+				new Filter.Expression(ExpressionType.EQ, new Key(MetaData.ID), new Value(dataType.toString()))));
 	}
 }

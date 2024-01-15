@@ -12,4 +12,10 @@
  */
 package ch.xxx.aidoclibchat.domain.common;
 
-public enum DocumentType { PDF, HTML, TEXT, XML, UNKNOWN }
+public class MetaData {
+	public enum DataType { DOCUMENT, TABLE, COLUMN };
+	public enum DocumentType { PDF, HTML, TEXT, XML, UNKNOWN };
+	public static final String ID = "id";
+	public static final String DATATYPE = "datatype";
+	public static final String DISTANCE = "distance";
+}

@@ -12,6 +12,7 @@
  */
 package ch.xxx.aidoclibchat.adapter.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
@@ -30,5 +31,9 @@ public class TableMetadataRepositoryBean implements TableMetadataRepository  {
 	@Override
 	public Optional<TableMetadata> findById(Long id) {
 		return this.jpaTableMetadata.findById(id);
+	}
+	
+	public List<TableMetadata> findAllWithColumns() {
+		return this.jpaTableMetadata.findAllWithColumns();
 	}
 }

@@ -12,7 +12,7 @@
  */
 package ch.xxx.aidoclibchat.domain.model.dto;
 
-import ch.xxx.aidoclibchat.domain.common.DocumentType;
+import ch.xxx.aidoclibchat.domain.common.MetaData.DocumentType;
 
 public class DocumentDto {
     private Long id;

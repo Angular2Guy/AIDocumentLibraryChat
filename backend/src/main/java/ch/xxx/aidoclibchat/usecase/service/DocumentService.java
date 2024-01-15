@@ -36,7 +36,8 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
-import ch.xxx.aidoclibchat.domain.common.DataType;
+import ch.xxx.aidoclibchat.domain.common.MetaData;
+import ch.xxx.aidoclibchat.domain.common.MetaData.DataType;
 import ch.xxx.aidoclibchat.domain.model.dto.AiResult;
 import ch.xxx.aidoclibchat.domain.model.dto.SearchDto;
 import ch.xxx.aidoclibchat.domain.model.entity.Document;
@@ -49,9 +50,6 @@ import jakarta.transaction.Transactional;
 @Transactional
 public class DocumentService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DocumentService.class);
-	private static final String ID = "id";
-	private static final String DATATYPE = "datatype";
-	private static final String DISTANCE = "distance";
 	private final DocumentRepository documentRepository;
 	private final DocumentVsRepository documentVsRepository;
 	private final ChatClient chatClient;
@@ -93,8 +91,8 @@ public class DocumentService {
 						.stream().map(myStr -> new TikaDocumentAndContent(myDocument1, myStr)))
 				.map(myTikaRecord -> new org.springframework.ai.document.Document(myTikaRecord.content(),
 						myTikaRecord.document().getMetadata()))
-				.peek(myDocument1 -> myDocument1.getMetadata().put(ID, myDocument.getId().toString()))
-				.peek(myDocument1 -> myDocument1.getMetadata().put(DATATYPE, DataType.DOCUMENT.toString())).toList();
+				.peek(myDocument1 -> myDocument1.getMetadata().put(MetaData.ID, myDocument.getId().toString()))
+				.peek(myDocument1 -> myDocument1.getMetadata().put(MetaData.DATATYPE, MetaData.DataType.DOCUMENT.toString())).toList();
 
 		LOGGER.info("Name: {}, size: {}, chunks: {}", document.getDocumentName(), document.getDocumentContent().length,
 				aiDocuments.size());
@@ -105,19 +103,19 @@ public class DocumentService {
 
 	public AiResult queryDocuments(SearchDto searchDto) {
 		// LOGGER.info("SearchType: {}", searchDto.getSearchType());
-		var similarDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString(),
-				searchDto.getResultAmount() * 10);
+		var similarDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString(), MetaData.DataType.DOCUMENT,
+				searchDto.getResultAmount());
 		// LOGGER.info("Documents: {}", similarDocuments.size());
 		var mostSimilarDocs = similarDocuments.stream()
-				.filter(myDoc -> myDoc.getMetadata().get(DATATYPE).equals(DataType.DOCUMENT.toString()))
-				.sorted((myDocA, myDocB) -> ((Float) myDocA.getMetadata().get(DISTANCE))
-						.compareTo(((Float) myDocB.getMetadata().get(DISTANCE))))
+				.filter(myDoc -> myDoc.getMetadata().get(MetaData.DATATYPE).equals(DataType.DOCUMENT.toString()))
+				.sorted((myDocA, myDocB) -> ((Float) myDocA.getMetadata().get(MetaData.DISTANCE))
+						.compareTo(((Float) myDocB.getMetadata().get(MetaData.DISTANCE))))
 				.limit(searchDto.getResultAmount())
 				.toList();
 		var mostSimilar = mostSimilarDocs.stream().findFirst();
 		var documentChunks = mostSimilar.stream()
 				.flatMap(mySimilar -> similarDocuments.stream()
-						.filter(mySimilar1 -> mySimilar1.getMetadata().get(ID).equals(mySimilar.getMetadata().get(ID))))
+						.filter(mySimilar1 -> mySimilar1.getMetadata().get(MetaData.ID).equals(mySimilar.getMetadata().get(MetaData.ID))))
 				.toList();
 		Message systemMessage = switch (searchDto.getSearchType()) {
 		case SearchDto.SearchType.DOCUMENT ->
@@ -132,14 +130,14 @@ public class DocumentService {
 		LOGGER.info("AI response time: {}ms",
 				ZonedDateTime.of(LocalDateTime.now(), ZoneId.systemDefault()).toInstant().toEpochMilli()
 						- ZonedDateTime.of(start, ZoneId.systemDefault()).toInstant().toEpochMilli());
-		var documents = mostSimilar.stream().map(myGen -> myGen.getMetadata().get(ID))
+		var documents = mostSimilar.stream().map(myGen -> myGen.getMetadata().get(MetaData.ID))
 				.filter(myId -> Optional.ofNullable(myId).stream().allMatch(myId1 -> (myId1 instanceof String)))
 				.map(myId -> Long.parseLong(((String) myId))).map(this.documentRepository::findById)
 				.filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
 		var docIds = mostSimilarDocs.stream()
 				.filter(myDoc -> !mostSimilar.stream()
-						.anyMatch(myDoc1 -> myDoc1.getMetadata().get(ID).equals(myDoc.getMetadata().get(ID))))
-				.map(myDoc -> myDoc.getMetadata().get(ID)).filter(myId -> myId instanceof String)
+						.anyMatch(myDoc1 -> myDoc1.getMetadata().get(MetaData.ID).equals(myDoc.getMetadata().get(MetaData.ID))))
+				.map(myDoc -> myDoc.getMetadata().get(MetaData.ID)).filter(myId -> myId instanceof String)
 				.map(idStr -> Long.valueOf((String) idStr)).toList();
 		documents.addAll(this.documentRepository.findAllById(docIds));
 
