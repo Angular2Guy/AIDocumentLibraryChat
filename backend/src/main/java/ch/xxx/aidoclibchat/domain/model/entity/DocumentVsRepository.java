@@ -23,4 +23,6 @@ public interface DocumentVsRepository {
 	List<Document> retrieve(String query, MetaData.DataType dataType, int k, double threshold);
 	List<Document> retrieve(String query, MetaData.DataType dataType, int k);
 	List<Document> retrieve(String query, MetaData.DataType dataType);
+	List<Document> findAllTableDocuments();
+	void deleteByIds(List<String> ids);
 }

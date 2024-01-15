@@ -14,10 +14,12 @@ package ch.xxx.aidoclibchat.usecase.service;
 
 import java.util.List;
 
+import org.springframework.ai.document.Document;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.aidoclibchat.domain.model.entity.Artist;
 import ch.xxx.aidoclibchat.domain.model.entity.ArtistRepository;
+import ch.xxx.aidoclibchat.domain.model.entity.DocumentVsRepository;
 import ch.xxx.aidoclibchat.domain.model.entity.Museum;
 import ch.xxx.aidoclibchat.domain.model.entity.MuseumRepository;
 import ch.xxx.aidoclibchat.domain.model.entity.Subject;
@@ -40,16 +42,18 @@ public class ImportService {
 	private final ArtistRepository artistRepository;
 	private final SubjectRepository subjectRepository;
 	private final WorkLinkRepository workLinkRepository;
+	private final DocumentVsRepository documentVsRepository;
 	
 
 	public ImportService(WorkRepository zipcodeRepository, MuseumHoursRepository supermarketRepository,WorkLinkRepository workLinkRepository,
-			MuseumRepository productRepository, ArtistRepository amazonProductRepository, SubjectRepository subjectRepository) {
+			MuseumRepository productRepository, ArtistRepository amazonProductRepository, SubjectRepository subjectRepository,DocumentVsRepository documentVsRepository) {
 		this.workRepository = zipcodeRepository;
 		this.museumHoursRepository = supermarketRepository;
 		this.museumRepository = productRepository;
 		this.artistRepository = amazonProductRepository;
 		this.subjectRepository = subjectRepository;
 		this.workLinkRepository = workLinkRepository;
+		this.documentVsRepository = documentVsRepository;
 	}
 
 	public void deleteData() {
@@ -69,5 +73,13 @@ public class ImportService {
 		this.museumHoursRepository.saveAll(museumHours);
 		this.subjectRepository.saveAll(subjects);
 		this.workLinkRepository.saveAll(workLinks);
+	}
+	
+	public List<Document> findAllTableDocuments() {
+		return this.documentVsRepository.findAllTableDocuments();
+	}
+	
+	public void deleteByIds(List<String> ids) {
+		this.documentVsRepository.deleteByIds(ids);
 	}
 }
