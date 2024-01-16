@@ -24,6 +24,8 @@ import ch.xxx.aidoclibchat.domain.model.entity.Museum;
 import ch.xxx.aidoclibchat.domain.model.entity.MuseumRepository;
 import ch.xxx.aidoclibchat.domain.model.entity.Subject;
 import ch.xxx.aidoclibchat.domain.model.entity.SubjectRepository;
+import ch.xxx.aidoclibchat.domain.model.entity.TableMetadata;
+import ch.xxx.aidoclibchat.domain.model.entity.TableMetadataRepository;
 import ch.xxx.aidoclibchat.domain.model.entity.MuseumHours;
 import ch.xxx.aidoclibchat.domain.model.entity.MuseumHoursRepository;
 import ch.xxx.aidoclibchat.domain.model.entity.Work;
@@ -43,9 +45,10 @@ public class ImportService {
 	private final SubjectRepository subjectRepository;
 	private final WorkLinkRepository workLinkRepository;
 	private final DocumentVsRepository documentVsRepository;
+	private final TableMetadataRepository tableMetadataRepository;
 	
 
-	public ImportService(WorkRepository zipcodeRepository, MuseumHoursRepository supermarketRepository,WorkLinkRepository workLinkRepository,
+	public ImportService(WorkRepository zipcodeRepository, MuseumHoursRepository supermarketRepository,WorkLinkRepository workLinkRepository,TableMetadataRepository tableMetadataRepository,
 			MuseumRepository productRepository, ArtistRepository amazonProductRepository, SubjectRepository subjectRepository,DocumentVsRepository documentVsRepository) {
 		this.workRepository = zipcodeRepository;
 		this.museumHoursRepository = supermarketRepository;
@@ -54,6 +57,7 @@ public class ImportService {
 		this.subjectRepository = subjectRepository;
 		this.workLinkRepository = workLinkRepository;
 		this.documentVsRepository = documentVsRepository;
+		this.tableMetadataRepository = tableMetadataRepository;
 	}
 
 	public void deleteData() {
@@ -81,5 +85,13 @@ public class ImportService {
 	
 	public void deleteByIds(List<String> ids) {
 		this.documentVsRepository.deleteByIds(ids);
+	}
+	
+	public List<TableMetadata> findAllWithColumns() {
+		return this.tableMetadataRepository.findAllWithColumns();
+	}
+	
+	public void addDocuments(List<Document> documents) {
+		this.documentVsRepository.add(documents);
 	}
 }
