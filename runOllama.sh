@@ -5,3 +5,4 @@ docker stop ollama
 #docker exec -it ollama ollama run orca2:13b
 docker exec -it ollama ollama run stable-beluga:13bc
 #docker exec -it ollama ollama run falcon:40b
+#docker exec -it ollama bash

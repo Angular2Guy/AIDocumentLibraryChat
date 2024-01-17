@@ -22,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import ch.xxx.aidoclibchat.domain.common.MetaData.DocumentType;
 import ch.xxx.aidoclibchat.domain.exceptions.DocumentException;
-import ch.xxx.aidoclibchat.domain.model.dto.AiResult;
+import ch.xxx.aidoclibchat.domain.model.dto.AiDocumentResult;
 import ch.xxx.aidoclibchat.domain.model.dto.DocumentDto;
 import ch.xxx.aidoclibchat.domain.model.dto.DocumentSearchDto;
 import ch.xxx.aidoclibchat.domain.model.entity.Document;
@@ -81,7 +81,7 @@ public class DocumentMapper {
 		return this.toDto(entity, true);
 	}
 
-	public DocumentSearchDto toDto(AiResult aiResult) {
+	public DocumentSearchDto toDto(AiDocumentResult aiResult) {
 		var dto = new DocumentSearchDto();
 		dto.setDocuments(aiResult.documents().stream().map(this::toDtoNoContent).toList());
 		dto.setResultStrings(aiResult.generations().stream().map(Generation::getContent).toList());

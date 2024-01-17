@@ -38,7 +38,7 @@ import org.springframework.stereotype.Service;
 
 import ch.xxx.aidoclibchat.domain.common.MetaData;
 import ch.xxx.aidoclibchat.domain.common.MetaData.DataType;
-import ch.xxx.aidoclibchat.domain.model.dto.AiResult;
+import ch.xxx.aidoclibchat.domain.model.dto.AiDocumentResult;
 import ch.xxx.aidoclibchat.domain.model.dto.SearchDto;
 import ch.xxx.aidoclibchat.domain.model.entity.Document;
 import ch.xxx.aidoclibchat.domain.model.entity.DocumentRepository;
@@ -101,7 +101,7 @@ public class DocumentService {
 				.map(myContent -> Integer.valueOf(myContent.length).longValue()).findFirst().orElse(0L);
 	}
 
-	public AiResult queryDocuments(SearchDto searchDto) {
+	public AiDocumentResult queryDocuments(SearchDto searchDto) {
 		// LOGGER.info("SearchType: {}", searchDto.getSearchType());
 		var similarDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString(), MetaData.DataType.DOCUMENT,
 				searchDto.getResultAmount());
@@ -141,7 +141,7 @@ public class DocumentService {
 				.map(idStr -> Long.valueOf((String) idStr)).toList();
 		documents.addAll(this.documentRepository.findAllById(docIds));
 
-		return new AiResult(searchDto.getSearchString(), response.getGenerations(), documents);
+		return new AiDocumentResult(searchDto.getSearchString(), response.getGenerations(), documents);
 	}
 
 	private Message getSystemMessage(List<org.springframework.ai.document.Document> similarDocuments, int tokenLimit,

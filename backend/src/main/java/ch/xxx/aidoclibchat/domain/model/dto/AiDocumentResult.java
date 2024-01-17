@@ -18,6 +18,6 @@ import org.springframework.ai.chat.Generation;
 
 import ch.xxx.aidoclibchat.domain.model.entity.Document;
 
-public record AiResult(String searchString, List<Generation> generations, List<Document> documents) {
+public record AiDocumentResult(String searchString, List<Generation> generations, List<Document> documents) {
 
 }
