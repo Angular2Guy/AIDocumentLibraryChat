@@ -47,7 +47,7 @@ public class DocumentVSRepositoryBean implements DocumentVsRepository {
 	public List<Document> retrieve(String query, DataType dataType, int k, double threshold) {
 		return this.vectorStore.similaritySearch(SearchRequest.query(query)
 				.withFilterExpression(
-						new Filter.Expression(ExpressionType.EQ, new Key(MetaData.ID), new Value(dataType.toString())))
+						new Filter.Expression(ExpressionType.EQ, new Key(MetaData.DATATYPE), new Value(dataType.toString())))
 				.withTopK(k).withSimilarityThreshold(threshold));
 	}
 
@@ -55,22 +55,22 @@ public class DocumentVSRepositoryBean implements DocumentVsRepository {
 	public List<Document> retrieve(String query, DataType dataType, int k) {
 		return this.vectorStore.similaritySearch(SearchRequest.query(query)
 				.withFilterExpression(
-						new Filter.Expression(ExpressionType.EQ, new Key(MetaData.ID), new Value(dataType.toString())))
+						new Filter.Expression(ExpressionType.EQ, new Key(MetaData.DATATYPE), new Value(dataType.toString())))
 				.withTopK(k));
 	}
 
 	@Override
 	public List<Document> retrieve(String query, DataType dataType) {
 		return this.vectorStore.similaritySearch(SearchRequest.query(query).withFilterExpression(
-				new Filter.Expression(ExpressionType.EQ, new Key(MetaData.ID), new Value(dataType.toString()))));
+				new Filter.Expression(ExpressionType.EQ, new Key(MetaData.DATATYPE), new Value(dataType.toString()))));
 	}
 
 	@Override
 	public List<Document> findAllTableDocuments() {
 		return this.vectorStore.similaritySearch(SearchRequest.defaults().withSimilarityThresholdAll().withTopK(Integer.MAX_VALUE).withFilterExpression(new Filter.Expression(
 				ExpressionType.OR,
-				new Filter.Expression(ExpressionType.EQ, new Key(MetaData.ID), new Value(DataType.COLUMN.toString())),
-				new Filter.Expression(ExpressionType.EQ, new Key(MetaData.ID), new Value(DataType.TABLE.toString())))));
+				new Filter.Expression(ExpressionType.EQ, new Key(MetaData.DATATYPE), new Value(DataType.COLUMN.toString())),
+				new Filter.Expression(ExpressionType.EQ, new Key(MetaData.DATATYPE), new Value(DataType.TABLE.toString())))));
 	}
 	
 	@Override

@@ -13,7 +13,7 @@
 package ch.xxx.aidoclibchat.domain.model.dto;
 
 public class SearchDto {
-	public enum SearchType {PARAGRAPH, DOCUMENT}
+	public enum SearchType {PARAGRAPH, DOCUMENT, TABLE}
 	private String searchString;
 	private SearchType searchType;
 	private int resultAmount;

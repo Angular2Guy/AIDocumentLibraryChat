@@ -19,14 +19,17 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.ai.chat.ChatClient;
 import org.springframework.ai.document.Document;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.aidoclibchat.domain.client.ImportClient;
 import ch.xxx.aidoclibchat.domain.common.MetaData;
+import ch.xxx.aidoclibchat.domain.model.dto.SearchDto;
 import ch.xxx.aidoclibchat.domain.model.entity.Artist;
 import ch.xxx.aidoclibchat.domain.model.entity.ColumnMetadata;
+import ch.xxx.aidoclibchat.domain.model.entity.DocumentVsRepository;
 import ch.xxx.aidoclibchat.domain.model.entity.Museum;
 import ch.xxx.aidoclibchat.domain.model.entity.MuseumHours;
 import ch.xxx.aidoclibchat.domain.model.entity.Subject;
@@ -41,12 +44,31 @@ public class TableService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TableService.class);
 	private final ImportClient importClient;
 	private final ImportService importService;
+	private final DocumentVsRepository documentVsRepository;
+	private final ChatClient chatClient;
+	private final String systemPrompt = "You're assisting with questions about documents in a catalog.\n"
+			+ "Use the information from the DOCUMENTS section to provide accurate answers.\n"
+			+ "If unsure, simply state that you don't know.\n" + "\n" + "DOCUMENTS:\n" + "{documents}";
 
-	public TableService(ImportClient importClient, ImportService importService) {
+	private final String ollamaPrompt = "You're assisting with questions about documents in a catalog.\n"
+			+ "Use the information from the DOCUMENTS section to provide accurate answers.\n"
+			+ "If unsure, simply state that you don't know.\n \n" + " {prompt} \n \n" + "DOCUMENTS:\n" + "{documents}";
+
+	public TableService(ImportClient importClient, ImportService importService, ChatClient chatClient,DocumentVsRepository documentVsRepository) {
 		this.importClient = importClient;
 		this.importService = importService;
+		this.chatClient = chatClient;
+		this.documentVsRepository = documentVsRepository;
 	}
 
+	public void searchTables(SearchDto searchDto) {
+		var tableDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString(),
+				MetaData.DataType.TABLE, searchDto.getResultAmount());
+		var columnDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString(),
+				MetaData.DataType.COLUMN, searchDto.getResultAmount());
+		
+	}
+	
 	@Async
 	public void importData() {
 		var start = new Date();
