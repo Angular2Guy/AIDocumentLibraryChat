@@ -66,7 +66,8 @@ public class TableService {
 				MetaData.DataType.TABLE, searchDto.getResultAmount());
 		var columnDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString(),
 				MetaData.DataType.COLUMN, searchDto.getResultAmount());
-		
+		tableDocuments.forEach(myDoc -> LOGGER.info("name: {}, distance: {}", myDoc.getMetadata().get(MetaData.DATANAME), myDoc.getMetadata().get(MetaData.DISTANCE)));
+		columnDocuments.forEach(myDoc -> LOGGER.info("name: {}, distance: {}", myDoc.getMetadata().get(MetaData.DATANAME), myDoc.getMetadata().get(MetaData.DISTANCE)));
 	}
 	
 	@Async

@@ -14,8 +14,11 @@ package ch.xxx.aidoclibchat.adapter.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import ch.xxx.aidoclibchat.domain.model.dto.SearchDto;
+import ch.xxx.aidoclibchat.domain.model.dto.SearchDto.SearchType;
 import ch.xxx.aidoclibchat.usecase.mapping.TableMapper;
 import ch.xxx.aidoclibchat.usecase.service.TableService;
 
@@ -33,6 +36,16 @@ public class TableController {
 	@GetMapping("/import")
 	public boolean importData() {
 		this.tableService.importData();
+		return true;
+	}
+	
+	@GetMapping("/search")
+	public boolean searchTables(@RequestParam(name = "query") String query) {
+		var searchDto = new SearchDto();
+		searchDto.setResultAmount(50);
+		searchDto.setSearchString(query);
+		searchDto.setSearchType(SearchType.TABLE);
+		this.tableService.searchTables(searchDto);
 		return true;
 	}
 }
