@@ -45,17 +45,17 @@ public class DocumentVSRepositoryBean implements DocumentVsRepository {
 
 	@Override
 	public List<Document> retrieve(String query, DataType dataType, int k, double threshold) {
-		return this.vectorStore.similaritySearch(SearchRequest.query(query)
-				.withFilterExpression(
-						new Filter.Expression(ExpressionType.EQ, new Key(MetaData.DATATYPE), new Value(dataType.toString())))
-				.withTopK(k).withSimilarityThreshold(threshold));
+		return this.vectorStore
+				.similaritySearch(SearchRequest
+						.query(query).withFilterExpression(new Filter.Expression(ExpressionType.EQ,
+								new Key(MetaData.DATATYPE), new Value(dataType.toString())))
+						.withTopK(k).withSimilarityThreshold(threshold));
 	}
 
 	@Override
 	public List<Document> retrieve(String query, DataType dataType, int k) {
-		return this.vectorStore.similaritySearch(SearchRequest.query(query)
-				.withFilterExpression(
-						new Filter.Expression(ExpressionType.EQ, new Key(MetaData.DATATYPE), new Value(dataType.toString())))
+		return this.vectorStore.similaritySearch(SearchRequest.query(query).withFilterExpression(
+				new Filter.Expression(ExpressionType.EQ, new Key(MetaData.DATATYPE), new Value(dataType.toString())))
 				.withTopK(k));
 	}
 
@@ -67,12 +67,18 @@ public class DocumentVSRepositoryBean implements DocumentVsRepository {
 
 	@Override
 	public List<Document> findAllTableDocuments() {
-		return this.vectorStore.similaritySearch(SearchRequest.defaults().withSimilarityThresholdAll().withTopK(Integer.MAX_VALUE).withFilterExpression(new Filter.Expression(
-				ExpressionType.OR,
-				new Filter.Expression(ExpressionType.EQ, new Key(MetaData.DATATYPE), new Value(DataType.COLUMN.toString())),
-				new Filter.Expression(ExpressionType.EQ, new Key(MetaData.DATATYPE), new Value(DataType.TABLE.toString())))));
+		return this.vectorStore
+				.similaritySearch(SearchRequest.defaults().withSimilarityThresholdAll().withTopK(Integer.MAX_VALUE)
+						.withFilterExpression(new Filter.Expression(ExpressionType.OR,
+								new Filter.Expression(ExpressionType.EQ, new Key(MetaData.DATATYPE),
+										new Value(DataType.COLUMN.toString())),
+								new Filter.Expression(ExpressionType.OR,
+										new Filter.Expression(ExpressionType.EQ, new Key(MetaData.DATATYPE),
+												new Value(DataType.TABLE.toString())),
+										new Filter.Expression(ExpressionType.EQ, new Key(MetaData.DATATYPE),
+												new Value(DataType.ROW.toString()))))));
 	}
-	
+
 	@Override
 	public void deleteByIds(List<String> ids) {
 		this.vectorStore.delete(ids);

@@ -67,10 +67,17 @@ public class TableService {
 				searchDto.getResultAmount());
 		var columnDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString(), MetaData.DataType.COLUMN,
 				searchDto.getResultAmount());
+		var rowDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString(), MetaData.DataType.ROW,
+				searchDto.getResultAmount());
+		LOGGER.info("Table: ");
 		tableDocuments.forEach(myDoc -> LOGGER.info("name: {}, distance: {}",
 				myDoc.getMetadata().get(MetaData.DATANAME), myDoc.getMetadata().get(MetaData.DISTANCE)));
+		LOGGER.info("Column: ");
 		columnDocuments.forEach(myDoc -> LOGGER.info("name: {}, distance: {}",
 				myDoc.getMetadata().get(MetaData.DATANAME), myDoc.getMetadata().get(MetaData.DISTANCE)));
+		LOGGER.info("Row: ");
+		rowDocuments.forEach(myDoc -> LOGGER.info("name: {}, distance: {}", myDoc.getMetadata().get(MetaData.DATANAME),
+				myDoc.getMetadata().get(MetaData.DISTANCE)));
 	}
 
 	@Async
