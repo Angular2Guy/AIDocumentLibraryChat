@@ -137,6 +137,7 @@ public class DocumentVSRepositoryBean implements DocumentVsRepository {
 			return IntStream.range(0, floatArray.length).mapToDouble(i -> floatArray[i]).boxed().toList();
 		}
 
+		@SuppressWarnings("unchecked")
 		private Map<String, Object> toMap(PGobject pgObject) {
 
 			String source = pgObject.getValue();
