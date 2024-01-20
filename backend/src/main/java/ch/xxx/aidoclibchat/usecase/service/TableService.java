@@ -76,7 +76,7 @@ public class TableService {
 		columnDocuments.forEach(myDoc -> LOGGER.info("name: {}, distance: {}",
 				myDoc.getMetadata().get(MetaData.DATANAME), myDoc.getMetadata().get(MetaData.DISTANCE)));
 		LOGGER.info("Row: ");
-		rowDocuments.forEach(myDoc -> LOGGER.info("name: {}, distance: {}", myDoc.getMetadata().get(MetaData.DATANAME),
+		rowDocuments.forEach(myDoc -> LOGGER.info("name: {}, content: {}, distance: {}", myDoc.getMetadata().get(MetaData.DATANAME), myDoc.getContent(),
 				myDoc.getMetadata().get(MetaData.DISTANCE)));
 	}
 
