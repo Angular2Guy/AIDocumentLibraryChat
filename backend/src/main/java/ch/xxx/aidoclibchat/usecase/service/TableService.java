@@ -131,7 +131,7 @@ public class TableService {
 		var result = new Document(work.getStyle());
 		result.getMetadata().put(MetaData.ID, work.getId());
 		result.getMetadata().put(MetaData.DATATYPE, MetaData.DataType.ROW.toString());
-		result.getMetadata().put(MetaData.DATANAME, "subject");
+		result.getMetadata().put(MetaData.DATANAME, "style");
 		return result;
 	}
 
