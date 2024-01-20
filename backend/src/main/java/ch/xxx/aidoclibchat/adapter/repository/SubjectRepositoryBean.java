@@ -14,6 +14,8 @@ package ch.xxx.aidoclibchat.adapter.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import ch.xxx.aidoclibchat.domain.model.entity.Subject;
@@ -36,5 +38,10 @@ public class SubjectRepositoryBean implements SubjectRepository {
 	@Override
 	public void deleteAll() {
 		this.jpaSubjectRepository.deleteAll();
+	}
+	
+	@Override
+	public Page<Subject> findAll(Pageable pageable) {
+		return this.jpaSubjectRepository.findAll(pageable);
 	}
 }

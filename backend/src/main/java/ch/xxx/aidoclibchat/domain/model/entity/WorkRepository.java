@@ -14,7 +14,11 @@ package ch.xxx.aidoclibchat.domain.model.entity;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 public interface WorkRepository {
 	List<Work> saveAll(Iterable<Work> entities);
 	void deleteAll();
+	Page<Work> findAll(Pageable pageable);
 }

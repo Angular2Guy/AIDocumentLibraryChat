@@ -14,7 +14,7 @@ package ch.xxx.aidoclibchat.domain.common;
 
 public class MetaData {
 	public enum DataType {
-		DOCUMENT, TABLE, COLUMN
+		DOCUMENT, TABLE, COLUMN, ROW
 	};
 
 	public enum DocumentType {

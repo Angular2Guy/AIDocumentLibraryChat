@@ -15,6 +15,7 @@ package ch.xxx.aidoclibchat.usecase.service;
 import java.util.List;
 
 import org.springframework.ai.document.Document;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.aidoclibchat.domain.model.entity.Artist;
@@ -93,5 +94,13 @@ public class ImportService {
 	
 	public void addDocuments(List<Document> documents) {
 		this.documentVsRepository.add(documents);
+	}
+	
+	public List<Subject> findAllSubjects() {
+		return this.subjectRepository.findAll(Pageable.ofSize(1000)).toList();		
+	}
+	
+	public List<Work> findAllWorks() {
+		return this.workRepository.findAll(Pageable.ofSize(1000)).toList();
 	}
 }

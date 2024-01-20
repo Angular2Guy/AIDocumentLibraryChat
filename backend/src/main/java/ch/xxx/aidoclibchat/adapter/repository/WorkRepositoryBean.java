@@ -14,6 +14,8 @@ package ch.xxx.aidoclibchat.adapter.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import ch.xxx.aidoclibchat.domain.model.entity.Work;
@@ -21,19 +23,24 @@ import ch.xxx.aidoclibchat.domain.model.entity.WorkRepository;
 
 @Repository
 public class WorkRepositoryBean implements WorkRepository {
-	private final JpaWorkRepository jpaZipcodeRepository;
+	private final JpaWorkRepository jpaWorkRepository;
 	
 	public WorkRepositoryBean(JpaWorkRepository jpaZipcodeRepository) {
-		this.jpaZipcodeRepository = jpaZipcodeRepository;
+		this.jpaWorkRepository = jpaZipcodeRepository;
 	}
 	
 	@Override
 	public List<Work> saveAll(Iterable<Work> entities) {
-		return this.jpaZipcodeRepository.saveAll(entities);
+		return this.jpaWorkRepository.saveAll(entities);
 	}
 	
 	@Override
 	public void deleteAll() {
-		this.jpaZipcodeRepository.deleteAll();
+		this.jpaWorkRepository.deleteAll();
+	}
+	
+	@Override
+	public Page<Work> findAll(Pageable pageable) {
+		return this.jpaWorkRepository.findAll(pageable);
 	}
 }

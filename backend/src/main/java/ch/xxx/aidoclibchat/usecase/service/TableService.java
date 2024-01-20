@@ -54,7 +54,8 @@ public class TableService {
 			+ "Use the information from the DOCUMENTS section to provide accurate answers.\n"
 			+ "If unsure, simply state that you don't know.\n \n" + " {prompt} \n \n" + "DOCUMENTS:\n" + "{documents}";
 
-	public TableService(ImportClient importClient, ImportService importService, ChatClient chatClient,DocumentVsRepository documentVsRepository) {
+	public TableService(ImportClient importClient, ImportService importService, ChatClient chatClient,
+			DocumentVsRepository documentVsRepository) {
 		this.importClient = importClient;
 		this.importService = importService;
 		this.chatClient = chatClient;
@@ -62,14 +63,16 @@ public class TableService {
 	}
 
 	public void searchTables(SearchDto searchDto) {
-		var tableDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString(),
-				MetaData.DataType.TABLE, searchDto.getResultAmount());
-		var columnDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString(),
-				MetaData.DataType.COLUMN, searchDto.getResultAmount());
-		tableDocuments.forEach(myDoc -> LOGGER.info("name: {}, distance: {}", myDoc.getMetadata().get(MetaData.DATANAME), myDoc.getMetadata().get(MetaData.DISTANCE)));
-		columnDocuments.forEach(myDoc -> LOGGER.info("name: {}, distance: {}", myDoc.getMetadata().get(MetaData.DATANAME), myDoc.getMetadata().get(MetaData.DISTANCE)));
+		var tableDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString(), MetaData.DataType.TABLE,
+				searchDto.getResultAmount());
+		var columnDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString(), MetaData.DataType.COLUMN,
+				searchDto.getResultAmount());
+		tableDocuments.forEach(myDoc -> LOGGER.info("name: {}, distance: {}",
+				myDoc.getMetadata().get(MetaData.DATANAME), myDoc.getMetadata().get(MetaData.DISTANCE)));
+		columnDocuments.forEach(myDoc -> LOGGER.info("name: {}, distance: {}",
+				myDoc.getMetadata().get(MetaData.DATANAME), myDoc.getMetadata().get(MetaData.DISTANCE)));
 	}
-	
+
 	@Async
 	public void importData() {
 		var start = new Date();
@@ -89,19 +92,48 @@ public class TableService {
 		LOGGER.info("Data saved in {}ms", new Date().getTime() - saveStart.getTime());
 		var embeddingsStart = new Date();
 		this.updateEmbeddings();
-		LOGGER.info("Embeddings updated in {}ms",new Date().getTime() - embeddingsStart.getTime());
+		LOGGER.info("Embeddings updated in {}ms", new Date().getTime() - embeddingsStart.getTime());
 		LOGGER.info("Import done in {}ms.", new Date().getTime() - start.getTime());
 	}
 
 	private void updateEmbeddings() {
+		var columnStart = new Date();
 		List<String> ids = this.importService.findAllTableDocuments().stream().map(myDocument -> myDocument.getId())
 				.toList();
 		this.importService.deleteByIds(ids);
 		List<TableMetadata> tablesWithColumns = this.importService.findAllWithColumns();
 		Stream<Document> columns = tablesWithColumns.stream().flatMap(myTable -> myTable.getColumnMetadata().stream())
 				.map(this::map);
-		List<Document> allDocs =  Stream.concat(tablesWithColumns.stream().map(this::map), columns).toList();
-		this.importService.addDocuments(allDocs);		
+		List<Document> allDocs = Stream.concat(tablesWithColumns.stream().map(this::map), columns).toList();
+		this.importService.addDocuments(allDocs);
+		LOGGER.info("Column Embeddings updated {}ms", new Date().getTime() - columnStart.getTime());
+		var rowStart = new Date();
+		List<Document> rowDocs = Stream.concat(
+				this.importService.findAllSubjects().stream()
+						.filter(mySubject -> Optional.ofNullable(mySubject.getSubject()).stream()
+								.allMatch(mySubjectStr -> !mySubjectStr.isBlank()))
+						.map(this::map),
+				this.importService.findAllWorks().stream().filter(myWork -> Optional.ofNullable(myWork.getStyle())
+						.stream().allMatch(myStyle -> !myStyle.isBlank())).map(this::map))
+				.toList();
+		this.importService.addDocuments(rowDocs);
+		LOGGER.info("Row Embeddings updated {}ms", new Date().getTime() - rowStart.getTime());
+	}
+
+	private Document map(Work work) {
+		var result = new Document(work.getStyle());
+		result.getMetadata().put(MetaData.ID, work.getId());
+		result.getMetadata().put(MetaData.DATATYPE, MetaData.DataType.ROW.toString());
+		result.getMetadata().put(MetaData.DATANAME, "subject");
+		return result;
+	}
+
+	private Document map(Subject subject) {
+		var result = new Document(subject.getSubject());
+		result.getMetadata().put(MetaData.ID, subject.getWorkId());
+		result.getMetadata().put(MetaData.DATATYPE, MetaData.DataType.ROW.toString());
+		result.getMetadata().put(MetaData.DATANAME, "subject");
+		return result;
 	}
 
 	private Document map(ColumnMetadata columnMetadata) {
@@ -116,7 +148,7 @@ public class TableService {
 				.findFirst().ifPresent(myStr -> result.getMetadata().put(MetaData.REFERENCE_COLUMN, myStr));
 		return result;
 	}
-	
+
 	private Document map(TableMetadata tableMetadata) {
 		var result = new Document(tableMetadata.getTableDescription());
 		result.getMetadata().put(MetaData.ID, tableMetadata.getId().toString());
