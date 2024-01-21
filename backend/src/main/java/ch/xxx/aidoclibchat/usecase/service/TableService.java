@@ -17,6 +17,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
@@ -39,8 +42,10 @@ import ch.xxx.aidoclibchat.domain.model.entity.Museum;
 import ch.xxx.aidoclibchat.domain.model.entity.MuseumHours;
 import ch.xxx.aidoclibchat.domain.model.entity.Subject;
 import ch.xxx.aidoclibchat.domain.model.entity.TableMetadata;
+import ch.xxx.aidoclibchat.domain.model.entity.TableMetadataRepository;
 import ch.xxx.aidoclibchat.domain.model.entity.Work;
 import ch.xxx.aidoclibchat.domain.model.entity.WorkLink;
+import ch.xxx.aidoclibchat.domain.utils.StreamHelpers;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -50,6 +55,7 @@ public class TableService {
 	private final ImportClient importClient;
 	private final ImportService importService;
 	private final DocumentVsRepository documentVsRepository;
+	private final TableMetadataRepository tableMetadataRepository;
 	private final ChatClient chatClient;
 	private final String systemPrompt = "You are a Postgres expert. Given an input question, create a "
 			+ "syntactically correct Postgres query to run, then look at the results "
@@ -73,11 +79,12 @@ public class TableService {
 	private String activeProfile;
 
 	public TableService(ImportClient importClient, ImportService importService, ChatClient chatClient,
-			DocumentVsRepository documentVsRepository) {
+			TableMetadataRepository tableMetadataRepository, DocumentVsRepository documentVsRepository) {
 		this.importClient = importClient;
 		this.importService = importService;
 		this.chatClient = chatClient;
 		this.documentVsRepository = documentVsRepository;
+		this.tableMetadataRepository = tableMetadataRepository;
 	}
 
 	public void searchTables(SearchDto searchDto) {
@@ -87,35 +94,62 @@ public class TableService {
 				searchDto.getResultAmount());
 		var rowDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString(), MetaData.DataType.ROW,
 				searchDto.getResultAmount());
-		
-		LOGGER.info("Table: "); tableDocuments.forEach(myDoc ->
-		LOGGER.info("name: {}, distance: {}",
-		myDoc.getMetadata().get(MetaData.DATANAME),
-		myDoc.getMetadata().get(MetaData.DISTANCE))); LOGGER.info("Column: ");
+		LOGGER.info("Table: ");
+		tableDocuments.forEach(myDoc -> LOGGER.info("name: {}, distance: {}",
+				myDoc.getMetadata().get(MetaData.DATANAME), myDoc.getMetadata().get(MetaData.DISTANCE)));
+		LOGGER.info("Column: ");
 		columnDocuments.forEach(myDoc -> LOGGER.info("name: {}, distance: {}",
-		myDoc.getMetadata().get(MetaData.DATANAME),
-		myDoc.getMetadata().get(MetaData.DISTANCE))); LOGGER.info("Row: ");
-		rowDocuments.forEach( myDoc ->
-		LOGGER.info("name: {}, content: {}, distance: {}",
-		myDoc.getMetadata().get(MetaData.DATANAME), myDoc.getContent(),
-		myDoc.getMetadata().get(MetaData.DISTANCE)));
-		
+				myDoc.getMetadata().get(MetaData.DATANAME), myDoc.getMetadata().get(MetaData.DISTANCE)));
+		LOGGER.info("Row: ");
+		rowDocuments.forEach(
+				myDoc -> LOGGER.info("name: {}, content: {}, distance: {}", myDoc.getMetadata().get(MetaData.DATANAME),
+						myDoc.getContent(), myDoc.getMetadata().get(MetaData.DISTANCE)));
+
 		/*
-		Float minRowDistance = rowDocuments.stream()
-				.map(myDoc -> (Float) myDoc.getMetadata().getOrDefault(MetaData.DISTANCE, 1.0f)).sorted().findFirst()
-				.orElse(1.0f);
-		LOGGER.info("MinRowDistance: {}", minRowDistance);
-		var sortedRowDocs = rowDocuments.stream().sorted(this.compareDistance()).toList();
-		var sortedColumnDocs = columnDocuments.stream().sorted(this.compareDistance()).toList();
-		var sortedTableDocs = tableDocuments.stream().sorted(this.compareDistance()).toList();
-		SystemPromptTemplate systemPromptTemplate = this.activeProfile.contains("ollama")
-				? new SystemPromptTemplate(minRowDistance > 0.25 ? this.ollamaPrompt : this.ollamaPrompt + columnMatch)
-				: new SystemPromptTemplate(minRowDistance > 0.25 ? this.systemPrompt : this.systemPrompt + columnMatch);
-		
-		//sortedColumnDocs.stream().filter(myColDoc -> myColDoc.getMetadata().get(MetaData.))
-		Message systemMessage = systemPromptTemplate.createMessage(Map.of("columns", "documentStr", "schemas", "prompt",
-				"prompt", "prompt", "joinColumn", "prompt", "joinTable", "prompt", "columnValue", "prompt"));
-				*/
+		 * final Float minRowDistance = rowDocuments.stream() .map(myDoc -> (Float)
+		 * myDoc.getMetadata().getOrDefault(MetaData.DISTANCE,
+		 * 1.0f)).sorted().findFirst() .orElse(1.0f); LOGGER.info("MinRowDistance: {}",
+		 * minRowDistance); var sortedRowDocs =
+		 * rowDocuments.stream().sorted(this.compareDistance()).toList(); var
+		 * sortedColumnDocs =
+		 * columnDocuments.stream().sorted(this.compareDistance()).toList(); var
+		 * sortedTableDocs =
+		 * tableDocuments.stream().sorted(this.compareDistance()).toList();
+		 * SystemPromptTemplate systemPromptTemplate =
+		 * this.activeProfile.contains("ollama") ? new
+		 * SystemPromptTemplate(minRowDistance > 0.25 ? this.ollamaPrompt :
+		 * this.ollamaPrompt + columnMatch) : new SystemPromptTemplate(minRowDistance >
+		 * 0.25 ? this.systemPrompt : this.systemPrompt + columnMatch); List<Document>
+		 * filteredColDocs = sortedColumnDocs.stream() .filter(myRowDoc ->
+		 * sortedTableDocs.stream().limit(2) .anyMatch(myTableDoc ->
+		 * myTableDoc.getMetadata().get(MetaData.TABLE_NAME)
+		 * .equals(myRowDoc.getMetadata().get(MetaData.TABLE_NAME))))
+		 * .filter(StreamHelpers .distinctByKey(myRowDoc -> ((String)
+		 * myRowDoc.getMetadata().get(MetaData.DATANAME)))) .limit(2).toList();
+		 * Set<String> columnNames = filteredColDocs.stream() .map(myDoc -> ((String)
+		 * myDoc.getMetadata().get(MetaData.DATANAME))).collect(Collectors.toSet());
+		 * List<Long> tableMetadataIds = filteredColDocs.stream() .map(myDoc -> ((Long)
+		 * myDoc.getMetadata().get(MetaData.ID))).distinct().toList(); record
+		 * TableNameSchema(String name, String schema) { } List<TableNameSchema>
+		 * tableRecords =
+		 * this.tableMetadataRepository.findAllById(tableMetadataIds).stream()
+		 * .map(tableMetaData -> new TableNameSchema(tableMetaData.getTableName(),
+		 * tableMetaData.getTableDdl())) .toList(); final AtomicReference<String>
+		 * joinColumn = new AtomicReference<String>(""); final AtomicReference<String>
+		 * joinTable = new AtomicReference<String>(""); final AtomicReference<String>
+		 * columnValue = new AtomicReference<String>("");
+		 * sortedRowDocs.stream().filter(myDoc -> minRowDistance <=
+		 * 0.25).findFirst().ifPresent(myRowDoc -> { joinTable.set(((String)
+		 * myRowDoc.getMetadata().get(MetaData.TABLE_NAME))); joinColumn.set(((String)
+		 * myRowDoc.getMetadata().get(MetaData.DATANAME)));
+		 * columnValue.set(myRowDoc.getContent()); }); Message systemMessage =
+		 * systemPromptTemplate .createMessage(Map.of("columns",
+		 * columnNames.stream().collect(Collectors.joining(",")), "schemas",
+		 * tableRecords.stream().map(myRecord ->
+		 * myRecord.schema()).collect(Collectors.joining(";\n\n")), "prompt",
+		 * searchDto.getSearchString(), "joinColumn", joinColumn.get(), "joinTable",
+		 * joinTable.get(), "columnValue", columnValue.get()));
+		 */
 	}
 
 	private Comparator<? super Document> compareDistance() {

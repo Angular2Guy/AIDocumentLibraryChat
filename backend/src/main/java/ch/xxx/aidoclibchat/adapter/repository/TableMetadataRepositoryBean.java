@@ -33,7 +33,13 @@ public class TableMetadataRepositoryBean implements TableMetadataRepository  {
 		return this.jpaTableMetadata.findById(id);
 	}
 	
+	@Override
 	public List<TableMetadata> findAllWithColumns() {
 		return this.jpaTableMetadata.findAllWithColumns();
+	}
+	
+	@Override
+	public List<TableMetadata> findAllById(Iterable<Long> ids) {
+		return this.jpaTableMetadata.findAllById(ids);
 	}
 }
