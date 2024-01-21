@@ -24,6 +24,7 @@ public class MetaData {
 	public static final String ID = "id";
 	public static final String DATATYPE = "datatype";
 	public static final String DATANAME = "dataname";
+	public static final String TABLE_NAME = "tablename";
 	public static final String DISTANCE = "distance";
 	public static final String REFERENCE_COLUMN = "referenceColumn";
 	public static final String REFERENCE_TABLE = "referenceTable";
