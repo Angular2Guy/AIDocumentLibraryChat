@@ -19,4 +19,5 @@ public interface TableMetadataRepository {
 	Optional<TableMetadata> findById(Long id);
 	List<TableMetadata> findAllWithColumns();
 	List<TableMetadata> findAllById(Iterable<Long> ids);
+	List<TableMetadata> findByTableName(String tableName);
 }

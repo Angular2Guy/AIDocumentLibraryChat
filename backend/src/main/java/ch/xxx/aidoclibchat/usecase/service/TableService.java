@@ -60,18 +60,12 @@ public class TableService {
 	private final DocumentVsRepository documentVsRepository;
 	private final TableMetadataRepository tableMetadataRepository;
 	private final ChatClient chatClient;
-	private final String systemPrompt = "You are a Postgres expert. Given an input question, create a "
-			+ "syntactically correct Postgres query to run, then look at the results "
-			+ "of the query and return the answer to the input question.\n"
-			+ "Unless the user specifies in the question a specific number of "
-			+ "examples to obtain, query for at most 5 results using the LIMIT clause "
-			+ "as per Postgres. You can order the results to return the most " + "informative data in the database.\n"
-			+ "Never query for all columns from a table. You must query only the "
-			+ "columns that are needed to answer the question. Wrap each column name "
-			+ "in double quotes (\") to denote them as delimited identifiers.\n"
-			+ "Pay attention to use only the column names you can see in the tables "
-			+ "below. Be careful to not query for columns that do not exist. Also, "
-			+ "pay attention to which column is in which table.\n"
+	private final String systemPrompt = "You are a Postgres expert. Given an input question, create syntactically correct Postgres query."
+			+ " Unless the user  specifies in the question a specific number of examples to  obtain, query for at most 5 results using the LIMIT clause "
+			+ " as per Postgres. You can order the results to return the  most informative data in the database. Never query for all  columns from a table. "
+			+ " You must query only the columns that  are needed to answer the question. Wrap each column name in  double quotes to denote them as delimited identifiers. "
+			+ " Pay attention to use only the column names you can see in the tables below. Be careful to not query for columns that do not  exist. "
+			+ " Also, pay attention to which column is in which table. "
 			+ "Pay attention to use date('now') function to get the current date, "
 			+ "if the question involves \"today\".\n\n" + "\n" + "Include these columns in the query: {columns}\n"
 			+ "Only use the following tables:\n\n" + "{schemas}\n";
@@ -129,12 +123,13 @@ public class TableService {
 		Set<String> columnNames = filteredColDocs.stream()
 				.map(myDoc -> ((String) myDoc.getMetadata().get(MetaData.DATANAME))).collect(Collectors.toSet());
 		List<Long> tableMetadataIds = filteredColDocs.stream()
-				.map(myDoc -> ((String) myDoc.getMetadata().get(MetaData.ID))).map(myId -> Long.parseLong(myId)).distinct().toList();
+				.map(myDoc -> ((String) myDoc.getMetadata().get(MetaData.ID))).map(myId -> Long.parseLong(myId))
+				.distinct().toList();
 		record TableNameSchema(String name, String schema) {
 		}
 		List<TableNameSchema> tableRecords = this.tableMetadataRepository.findAllById(tableMetadataIds).stream()
 				.map(tableMetaData -> new TableNameSchema(tableMetaData.getTableName(), tableMetaData.getTableDdl()))
-				.toList();
+				.collect(Collectors.toList());
 		final AtomicReference<String> joinColumn = new AtomicReference<String>("");
 		final AtomicReference<String> joinTable = new AtomicReference<String>("");
 		final AtomicReference<String> columnValue = new AtomicReference<String>("");
@@ -142,6 +137,11 @@ public class TableService {
 			joinTable.set(((String) myRowDoc.getMetadata().get(MetaData.TABLE_NAME)));
 			joinColumn.set(((String) myRowDoc.getMetadata().get(MetaData.DATANAME)));
 			columnValue.set(myRowDoc.getContent());
+			this.tableMetadataRepository.findByTableName(((String) myRowDoc.getMetadata().get(MetaData.TABLE_NAME)))
+					.stream()
+					.map(myTableMetadata -> new TableNameSchema(myTableMetadata.getTableName(),
+							myTableMetadata.getTableDdl()))
+					.findFirst().ifPresent(myRecord -> tableRecords.add(myRecord));
 		});
 		Message systemMessage = systemPromptTemplate
 				.createMessage(Map.of("columns", columnNames.stream().collect(Collectors.joining(",")), "schemas",
@@ -150,11 +150,12 @@ public class TableService {
 						joinTable.get(), "columnValue", columnValue.get()));
 		UserMessage userMessage = new UserMessage(searchDto.getSearchString());
 		Prompt prompt = new Prompt(List.of(systemMessage, userMessage));
-		
+
 		var chatStart = new Date();
 		ChatResponse response = chatClient.generate(prompt);
 		LOGGER.info("AI response time: {}ms", new Date().getTime() - chatStart.getTime());
-		LOGGER.info("AI response: {}", response.getGenerations().stream().map(myGen -> myGen.getContent()).collect(Collectors.joining(",")));		
+		LOGGER.info("AI response: {}",
+				response.getGenerations().stream().map(myGen -> myGen.getContent()).collect(Collectors.joining(",")));
 	}
 
 	private Comparator<? super Document> compareDistance() {

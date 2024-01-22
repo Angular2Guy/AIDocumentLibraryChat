@@ -42,4 +42,8 @@ public class TableMetadataRepositoryBean implements TableMetadataRepository  {
 	public List<TableMetadata> findAllById(Iterable<Long> ids) {
 		return this.jpaTableMetadata.findAllById(ids);
 	}
+	@Override
+	public List<TableMetadata> findByTableName(String tableName) {
+		return this.jpaTableMetadata.findByTableName(tableName);
+	}
 }

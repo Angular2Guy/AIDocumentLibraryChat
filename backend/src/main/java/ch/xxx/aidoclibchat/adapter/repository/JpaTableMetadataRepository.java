@@ -21,5 +21,6 @@ import ch.xxx.aidoclibchat.domain.model.entity.TableMetadata;
 
 public interface JpaTableMetadataRepository extends JpaRepository<TableMetadata, Long> {
 	@Query("select t from TableMetadata t join fetch t.columnMetadata")
-	public List<TableMetadata> findAllWithColumns();
+	List<TableMetadata> findAllWithColumns();
+	List<TableMetadata> findByTableName(String tableName);
 }
