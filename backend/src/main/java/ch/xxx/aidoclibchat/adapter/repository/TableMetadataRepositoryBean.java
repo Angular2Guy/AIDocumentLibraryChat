@@ -12,6 +12,7 @@
  */
 package ch.xxx.aidoclibchat.adapter.repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,7 +44,7 @@ public class TableMetadataRepositoryBean implements TableMetadataRepository  {
 		return this.jpaTableMetadata.findAllById(ids);
 	}
 	@Override
-	public List<TableMetadata> findByTableName(String tableName) {
-		return this.jpaTableMetadata.findByTableName(tableName);
+	public List<TableMetadata> findByTableNameIn(Collection<String> tableNames) {
+		return this.jpaTableMetadata.findByTableNameIn(tableNames);
 	}
 }

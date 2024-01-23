@@ -12,6 +12,7 @@
  */
 package ch.xxx.aidoclibchat.adapter.repository;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,5 +23,5 @@ import ch.xxx.aidoclibchat.domain.model.entity.TableMetadata;
 public interface JpaTableMetadataRepository extends JpaRepository<TableMetadata, Long> {
 	@Query("select t from TableMetadata t join fetch t.columnMetadata")
 	List<TableMetadata> findAllWithColumns();
-	List<TableMetadata> findByTableName(String tableName);
+	List<TableMetadata> findByTableNameIn(Collection<String> tableNames);
 }
