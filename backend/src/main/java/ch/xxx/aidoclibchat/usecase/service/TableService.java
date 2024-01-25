@@ -12,10 +12,8 @@
  */
 package ch.xxx.aidoclibchat.usecase.service;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -28,11 +26,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.ChatClient;
 import org.springframework.ai.chat.ChatResponse;
-import org.springframework.ai.document.Document;
-import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.ai.chat.prompt.SystemPromptTemplate;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
+import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.chat.prompt.SystemPromptTemplate;
+import org.springframework.ai.document.Document;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -73,12 +71,11 @@ public class TableService {
 			+ " Also, pay attention to which column is in which table. \n"
 			+ " Pay attention to use date('now') function to get the current date, if the question involves \"today\". \n"
 			+ " Create only the sql query. \n" + " Include these columns in the query: {columns} \n"
-			+ " Only use the following tables: {schemas};\n";
+			+ " Only use the following tables: {schemas};\n "
+			+ " %s \n";
 
 	private final String ollamaPrompt = systemPrompt + " Question: {prompt} \n";
-	// private final String columnMatch = " Join this column: {joinColumn} of this
-	// table: {joinTable} where the column has this value: {columnValue}\n";
-	private final String columnMatch = "";
+	 private final String columnMatch = " Join this column: {joinColumn} of this table: {joinTable} where the column has this value: {columnValue}\n";
 	@Value("${spring.profiles.active:}")
 	private String activeProfile;
 
@@ -120,8 +117,8 @@ public class TableService {
 		var sortedColumnDocs = columnDocuments.stream().sorted(this.compareDistance()).toList();
 		var sortedTableDocs = tableDocuments.stream().sorted(this.compareDistance()).toList();
 		SystemPromptTemplate systemPromptTemplate = this.activeProfile.contains("ollama")
-				? new SystemPromptTemplate(minRowDistance > 0.25 ? this.ollamaPrompt : this.ollamaPrompt + columnMatch)
-				: new SystemPromptTemplate(minRowDistance > 0.25 ? this.systemPrompt : this.systemPrompt + columnMatch);
+				? new SystemPromptTemplate(minRowDistance > 0.25 ? String.format(this.ollamaPrompt, "") : String.format(this.ollamaPrompt, columnMatch))
+				: new SystemPromptTemplate(minRowDistance > 0.25 ? String.format(this.systemPrompt, "") : String.format(this.systemPrompt, columnMatch));
 		List<Document> filteredColDocs = sortedColumnDocs.stream()
 				.filter(myRowDoc -> sortedTableDocs.stream().limit(2)
 						.anyMatch(myTableDoc -> myTableDoc.getMetadata().get(MetaData.TABLE_NAME)
