@@ -29,10 +29,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.ChatClient;
 import org.springframework.ai.chat.ChatResponse;
 import org.springframework.ai.document.Document;
-import org.springframework.ai.prompt.Prompt;
-import org.springframework.ai.prompt.SystemPromptTemplate;
-import org.springframework.ai.prompt.messages.Message;
-import org.springframework.ai.prompt.messages.UserMessage;
+import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.chat.prompt.SystemPromptTemplate;
+import org.springframework.ai.chat.messages.Message;
+import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -162,8 +162,8 @@ public class TableService {
 		Prompt prompt = new Prompt(List.of(systemMessage, userMessage));
 //		LOGGER.info("Prompt: {}", prompt.getContents());
 		var chatStart = new Date();
-		ChatResponse response = chatClient.generate(prompt);
-		String chatResult = response.getGenerations().stream().map(myGen -> myGen.getContent())
+		ChatResponse response = chatClient.call(prompt);
+		String chatResult = response.getResults().stream().map(myGen -> myGen.getOutput().getContent())
 				.collect(Collectors.joining(","));
 		LOGGER.info("AI response time: {}ms", new Date().getTime() - chatStart.getTime());
 		LOGGER.info("AI response: {}", chatResult);
