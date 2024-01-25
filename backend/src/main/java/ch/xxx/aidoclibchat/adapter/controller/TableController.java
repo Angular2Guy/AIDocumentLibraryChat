@@ -12,6 +12,9 @@
  */
 package ch.xxx.aidoclibchat.adapter.controller;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -40,12 +43,12 @@ public class TableController {
 	}
 	
 	@GetMapping("/search")
-	public boolean searchTables(@RequestParam(name = "query") String query) {
+	public List<Map<String,String>> searchTables(@RequestParam(name = "query") String query) {
 		var searchDto = new SearchDto();
 		searchDto.setResultAmount(50);
 		searchDto.setSearchString(query);
 		searchDto.setSearchType(SearchType.TABLE);
-		this.tableService.searchTables(searchDto);
-		return true;
+		List<Map<String, String>> result = this.tableMapper.map(this.tableService.searchTables(searchDto));
+		return result;
 	}
 }

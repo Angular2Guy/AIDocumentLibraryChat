@@ -12,8 +12,10 @@
  */
 package ch.xxx.aidoclibchat.usecase.service;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -32,6 +34,8 @@ import org.springframework.ai.prompt.SystemPromptTemplate;
 import org.springframework.ai.prompt.messages.Message;
 import org.springframework.ai.prompt.messages.UserMessage;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -60,33 +64,36 @@ public class TableService {
 	private final DocumentVsRepository documentVsRepository;
 	private final TableMetadataRepository tableMetadataRepository;
 	private final ChatClient chatClient;
+	private final JdbcTemplate jdbcTemplate;
 	private final String systemPrompt = "You are a Postgres expert. Given an input question, create syntactically correct Postgres query. \n"
 			+ " Unless the user  specifies in the question a specific number of examples to  obtain, query for at most 5 results using the LIMIT clause \n"
 			+ " as per Postgres. You can order the results to return the  most informative data in the database. Never query for all  columns from a table. \n"
 			+ " You must query only the columns that  are needed to answer the question. Wrap each column name in  double quotes to denote them as delimited identifiers. \n"
-			+ " Pay attention to use only the column names you can see in the tables below. Be careful to not query for columns that do not  exist. \n"
+			+ " Pay attention to use only the column names you can see in the tables below. Be careful to not query for columns that do not exist. \n"
 			+ " Also, pay attention to which column is in which table. \n"
 			+ " Pay attention to use date('now') function to get the current date, if the question involves \"today\". \n"
-			+ " Return only the sql query. \n"
-			+ " Include these columns in the query: {columns} \n" 
+			+ " Create only the sql query. \n" + " Include these columns in the query: {columns} \n"
 			+ " Only use the following tables: {schemas};\n";
 
 	private final String ollamaPrompt = systemPrompt + " Question: {prompt} \n";
-	//private final String columnMatch = " Join this column: {joinColumn} of this table: {joinTable} where the column has this value: {columnValue}\n";	
+	// private final String columnMatch = " Join this column: {joinColumn} of this
+	// table: {joinTable} where the column has this value: {columnValue}\n";
 	private final String columnMatch = "";
 	@Value("${spring.profiles.active:}")
 	private String activeProfile;
 
 	public TableService(ImportClient importClient, ImportService importService, ChatClient chatClient,
-			TableMetadataRepository tableMetadataRepository, DocumentVsRepository documentVsRepository) {
+			JdbcTemplate jdbcTemplate, TableMetadataRepository tableMetadataRepository,
+			DocumentVsRepository documentVsRepository) {
 		this.importClient = importClient;
 		this.importService = importService;
 		this.chatClient = chatClient;
 		this.documentVsRepository = documentVsRepository;
 		this.tableMetadataRepository = tableMetadataRepository;
+		this.jdbcTemplate = jdbcTemplate;
 	}
 
-	public void searchTables(SearchDto searchDto) {
+	public SqlRowSet searchTables(SearchDto searchDto) {
 		var tableDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString(), MetaData.DataType.TABLE,
 				searchDto.getResultAmount());
 		var columnDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString(), MetaData.DataType.COLUMN,
@@ -150,14 +157,19 @@ public class TableService {
 						tableRecords.stream().map(myRecord -> myRecord.schema()).collect(Collectors.joining(";")),
 						"prompt", searchDto.getSearchString(), "joinColumn", joinColumn.get(), "joinTable",
 						joinTable.get(), "columnValue", columnValue.get()));
-		UserMessage userMessage = this.activeProfile.contains("ollama") ? new UserMessage(systemMessage.getContent()) : new UserMessage(searchDto.getSearchString());
+		UserMessage userMessage = this.activeProfile.contains("ollama") ? new UserMessage(systemMessage.getContent())
+				: new UserMessage(searchDto.getSearchString());
 		Prompt prompt = new Prompt(List.of(systemMessage, userMessage));
 //		LOGGER.info("Prompt: {}", prompt.getContents());
-		var chatStart = new Date();		
+		var chatStart = new Date();
 		ChatResponse response = chatClient.generate(prompt);
+		String chatResult = response.getGenerations().stream().map(myGen -> myGen.getContent())
+				.collect(Collectors.joining(","));
 		LOGGER.info("AI response time: {}ms", new Date().getTime() - chatStart.getTime());
-		LOGGER.info("AI response: {}",
-				response.getGenerations().stream().map(myGen -> myGen.getContent()).collect(Collectors.joining(",")));
+		LOGGER.info("AI response: {}", chatResult);
+		String sqlQuery = chatResult.split(";")[0];
+		SqlRowSet rowSet = this.jdbcTemplate.queryForRowSet(sqlQuery);
+		return rowSet;
 	}
 
 	private Comparator<? super Document> compareDistance() {

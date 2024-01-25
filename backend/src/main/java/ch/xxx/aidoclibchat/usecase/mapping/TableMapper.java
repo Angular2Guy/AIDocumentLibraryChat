@@ -12,6 +12,13 @@
  */
 package ch.xxx.aidoclibchat.usecase.mapping;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import ch.xxx.aidoclibchat.domain.model.dto.ArtistDto;
@@ -94,5 +101,17 @@ public class TableMapper {
 		entity.setStyle(dto.getStyle());
 		entity.setWorkId(dto.getWorkId());
 		return entity;
+	}
+	
+	public List<Map<String,String>> map(SqlRowSet rowSet) {
+		List<Map<String, String>> result = new ArrayList();
+		while (rowSet.next()) {
+			Map<String, String> myRow = List.of(rowSet.getMetaData().getColumnNames()).stream()
+					.map(myCol -> Map.entry(myCol,
+							Optional.ofNullable(rowSet.getObject(myCol)).map(myOb -> myOb.toString()).orElse("")))
+					.collect(Collectors.toMap(myEntry -> myEntry.getKey(), myEntry -> myEntry.getValue()));
+			result.add(myRow);
+		}
+		return result;
 	}
 }
