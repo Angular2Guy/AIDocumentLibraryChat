@@ -125,7 +125,7 @@ public class DocumentService {
 			this.getSystemMessage(mostSimilar.stream().toList(), this.documentTokenLimit, searchDto.getSearchString());
 		default -> this.getSystemMessage(documentChunks, this.documentTokenLimit, searchDto.getSearchString());
 		};
-		UserMessage userMessage = new UserMessage(searchDto.getSearchString());
+		UserMessage userMessage = this.activeProfile.contains("ollama") ? new UserMessage(systemMessage.getContent()) : new UserMessage(searchDto.getSearchString());
 		Prompt prompt = new Prompt(List.of(systemMessage, userMessage));
 		LocalDateTime start = LocalDateTime.now();
 		ChatResponse response = chatClient.call(prompt);

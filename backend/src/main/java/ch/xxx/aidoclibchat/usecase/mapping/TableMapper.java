@@ -104,7 +104,7 @@ public class TableMapper {
 	}
 	
 	public List<Map<String,String>> map(SqlRowSet rowSet) {
-		List<Map<String, String>> result = new ArrayList();
+		List<Map<String, String>> result = new ArrayList<>();
 		while (rowSet.next()) {
 			Map<String, String> myRow = List.of(rowSet.getMetaData().getColumnNames()).stream()
 					.map(myCol -> Map.entry(myCol,
