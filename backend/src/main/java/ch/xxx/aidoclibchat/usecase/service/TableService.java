@@ -165,6 +165,7 @@ public class TableService {
 		LOGGER.info("AI response time: {}ms", new Date().getTime() - chatStart.getTime());
 		LOGGER.info("AI response: {}", chatResult);
 		String sqlQuery = chatResult.split(";")[0];
+		sqlQuery = sqlQuery.substring(sqlQuery.toLowerCase().indexOf("select"));
 		SqlRowSet rowSet = this.jdbcTemplate.queryForRowSet(sqlQuery);
 		return rowSet;
 	}
