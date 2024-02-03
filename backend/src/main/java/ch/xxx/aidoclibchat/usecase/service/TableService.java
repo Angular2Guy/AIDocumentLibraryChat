@@ -57,7 +57,7 @@ import jakarta.transaction.Transactional;
 @Transactional
 public class TableService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TableService.class);
-	private static final Double MAX_ROW_DISTANCE = 0.35;
+	private static final Double MAX_ROW_DISTANCE = 0.45;
 	private final ImportClient importClient;
 	private final ImportService importService;
 	private final DocumentVsRepository documentVsRepository;
@@ -71,7 +71,10 @@ public class TableService {
 			+ " Pay attention to use only the column names you can see in the tables below. Be careful to not query for columns that do not exist. \n"
 			+ " Also, pay attention to which column is in which table. \n"
 			+ " Pay attention to use date('now') function to get the current date, if the question involves \"today\". \n"
-			+ " Create only the sql query. \n" + " Include these columns in the query: {columns} \n"
+			+ " Prefix the selected column names with the table name. Make sure all tables of the columns are added to the from clause. \n"
+			+ " Make sure the column names are from the right table. Exclude all columns without table entry in the from clause. \n"
+			+ " Create only the sql query. \n" 
+			+ " Include these columns in the query: {columns} \n"
 			+ " Only use the following tables: {schemas};\n "
 			+ " %s \n";
 
@@ -121,12 +124,12 @@ public class TableService {
 				? new SystemPromptTemplate(minRowDistance > MAX_ROW_DISTANCE ? String.format(this.ollamaPrompt, "") : String.format(this.ollamaPrompt, columnMatch))
 				: new SystemPromptTemplate(minRowDistance > MAX_ROW_DISTANCE ? String.format(this.systemPrompt, "") : String.format(this.systemPrompt, columnMatch));
 		List<Document> filteredColDocs = sortedColumnDocs.stream()
-				.filter(myRowDoc -> sortedTableDocs.stream().limit(2)
+				.filter(myRowDoc -> sortedTableDocs.stream().limit(3)
 						.anyMatch(myTableDoc -> myTableDoc.getMetadata().get(MetaData.TABLE_NAME)
 								.equals(myRowDoc.getMetadata().get(MetaData.TABLE_NAME))))
 				.filter(StreamHelpers
 						.distinctByKey(myRowDoc -> ((String) myRowDoc.getMetadata().get(MetaData.DATANAME))))
-				.limit(2).toList();
+				.limit(5).toList();
 		Set<String> columnNames = filteredColDocs.stream()
 				.map(myDoc -> ((String) myDoc.getMetadata().get(MetaData.DATANAME))).collect(Collectors.toSet());
 		List<String> tableMetadataTableNames = filteredColDocs.stream()
