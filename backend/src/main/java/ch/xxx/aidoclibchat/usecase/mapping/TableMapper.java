@@ -57,7 +57,7 @@ public class TableMapper {
 		entity.setMuseumHoursId(new MuseumHoursId(dto.getMuseumId(), dto.getDay()));
 		return entity;
 	}
-	
+
 	public Museum map(MuseumDto dto) {
 		var entity = new Museum();
 		entity.setAddress(dto.getAddress());
@@ -71,7 +71,7 @@ public class TableMapper {
 		entity.setUrl(dto.getUrl());
 		return entity;
 	}
-	
+
 	public Artist map(ArtistDto dto) {
 		var entity = new Artist();
 		entity.setBirth(dto.getBirth());
@@ -85,14 +85,14 @@ public class TableMapper {
 		entity.setStyle(dto.getStyle());
 		return entity;
 	}
-	
+
 	public Subject map(SubjectDto dto) {
 		var entity = new Subject();
 		entity.setSubject(dto.getSubject());
 		entity.setWorkId(dto.getWorkId());
 		return entity;
 	}
-	
+
 	public WorkLink map(WorkLinkDto dto) {
 		var entity = new WorkLink();
 		entity.setArtistId(dto.getArtistId());
@@ -103,8 +103,8 @@ public class TableMapper {
 		entity.setWorkId(dto.getWorkId());
 		return entity;
 	}
-	
-	public List<Map<String,String>> map(SqlRowSet rowSet) {
+
+	public List<Map<String, String>> map(SqlRowSet rowSet) {
 		List<Map<String, String>> result = new ArrayList<>();
 		while (rowSet.next()) {
 			final AtomicInteger atomicIndex = new AtomicInteger(0);
@@ -117,8 +117,8 @@ public class TableMapper {
 		}
 		return result;
 	}
-	
+
 	private String createPropertyName(String columnName, SqlRowSet rowSet, AtomicInteger atomicIndex) {
-		return columnName.contains("_") ? columnName : rowSet.getMetaData().getTableName(atomicIndex.get())+"_"+ columnName;
+		return columnName.contains("_") ? columnName : "" + atomicIndex.get() + "_" + columnName;
 	}
 }

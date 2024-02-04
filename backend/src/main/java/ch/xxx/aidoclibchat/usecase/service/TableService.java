@@ -168,14 +168,14 @@ public class TableService {
 		String chatResult = response.getResults().stream().map(myGen -> myGen.getOutput().getContent())
 				.collect(Collectors.joining(","));
 		LOGGER.info("AI response time: {}ms", new Date().getTime() - chatStart.getTime());
-		LOGGER.info("AI response: {}", chatResult);
+//		LOGGER.info("AI response: {}", chatResult);
 		String sqlQuery = chatResult;  //.split(";")[0];
 		//sqlQuery = sqlQuery.indexOf("''sql") < 0 ? sqlQuery : sqlQuery.substring(sqlQuery.indexOf("''sql"));
 		sqlQuery = sqlQuery.indexOf("'''") < 0 ? sqlQuery : sqlQuery.substring(sqlQuery.indexOf("'''")+3);
 		sqlQuery = sqlQuery.indexOf("```") < 0 ? sqlQuery : sqlQuery.substring(sqlQuery.indexOf("```")+3);
 		sqlQuery = sqlQuery.indexOf("\"\"\"") < 0 ? sqlQuery : sqlQuery.substring(sqlQuery.indexOf("\"\"\"")+3);
 		sqlQuery = sqlQuery.substring(sqlQuery.toLowerCase().indexOf("select"));
-		sqlQuery = sqlQuery.substring(0, sqlQuery.indexOf(";"));
+		sqlQuery = sqlQuery.indexOf(";") < 0 ? sqlQuery : sqlQuery.substring(0, sqlQuery.indexOf(";")+1);
 		LOGGER.info("Sql query: {}", sqlQuery);
 		SqlRowSet rowSet = this.jdbcTemplate.queryForRowSet(sqlQuery);
 		return rowSet;
