@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -106,12 +107,18 @@ public class TableMapper {
 	public List<Map<String,String>> map(SqlRowSet rowSet) {
 		List<Map<String, String>> result = new ArrayList<>();
 		while (rowSet.next()) {
+			final AtomicInteger atomicIndex = new AtomicInteger(0);
 			Map<String, String> myRow = List.of(rowSet.getMetaData().getColumnNames()).stream()
-					.map(myCol -> Map.entry(myCol,
+					.map(myCol -> Map.entry(this.createPropertyName(myCol, rowSet, atomicIndex),
 							Optional.ofNullable(rowSet.getObject(myCol)).map(myOb -> myOb.toString()).orElse("")))
+					.peek(x -> atomicIndex.set(atomicIndex.get() + 1))
 					.collect(Collectors.toMap(myEntry -> myEntry.getKey(), myEntry -> myEntry.getValue()));
 			result.add(myRow);
 		}
 		return result;
+	}
+	
+	private String createPropertyName(String columnName, SqlRowSet rowSet, AtomicInteger atomicIndex) {
+		return columnName.contains("_") ? columnName : rowSet.getMetaData().getTableName(atomicIndex.get())+"_"+ columnName;
 	}
 }
