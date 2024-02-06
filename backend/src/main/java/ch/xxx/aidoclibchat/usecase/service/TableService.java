@@ -64,22 +64,25 @@ public class TableService {
 	private final TableMetadataRepository tableMetadataRepository;
 	private final ChatClient chatClient;
 	private final JdbcTemplate jdbcTemplate;
-	private final String systemPrompt = "You are a Postgres expert. Given an input question, create syntactically correct Postgres query. \n"
-			+ " Unless the user  specifies in the question a specific number of examples to  obtain, query for at most 5 results using the LIMIT clause \n"
-			+ " as per Postgres. You can order the results to return the  most informative data in the database. Never query for all  columns from a table. \n"
-			+ " You must query only the columns that  are needed to answer the question. Wrap each column name in  double quotes to denote them as delimited identifiers. \n"
-			+ " Pay attention to use only the column names you can see in the tables below. Be careful to not query for columns that do not exist. \n"
-			+ " Also, pay attention to which column is in which table. \n"
-			+ " Pay attention to use date('now') function to get the current date, if the question involves \"today\". \n"
-			+ " Prefix the selected column names with the table name. Make sure all tables of the columns are added to the from clause. \n"
-			+ " Make sure the column names are from the right table. Exclude all columns without table entry in the from clause. \n"
-			+ " Create only the sql query. Remove any comment, explaination or other code. \n" 
-			+ " Include these columns in the query: {columns} \n"
-			+ " Only use the following tables: {schemas};\n "
-			+ " %s \n";
+	private final String systemPrompt = """
+			 You are a Postgres expert. Given an input question, create syntactically correct Postgres query. \n
+			 Unless the user  specifies in the question a specific number of examples to  obtain, query for at most 5 results using the LIMIT clause \n
+			 as per Postgres. You can order the results to return the  most informative data in the database. Never query for all  columns from a table. \n
+			 You must query only the columns that  are needed to answer the question. Wrap each column name in  double quotes to denote them as delimited identifiers. \n
+			 Pay attention to use only the column names you can see in the tables below. Be careful to not query for columns that do not exist. \n
+			 Also, pay attention to which column is in which table. \n
+			 Pay attention to use date('now') function to get the current date, if the question involves \"today\". \n
+			 Prefix the selected column names with the table name. Make sure all tables of the columns are added to the from clause. \n
+			 Make sure the column names are from the right table. Exclude all columns without table entry in the from clause. \n
+			 Create only the sql query. Remove any comment or explaination. \n
+			 If unsure, simply state that you don't know. \n
+			 Include these columns in the query: {columns} \n
+			 Only use the following tables: {schemas};\n
+			 %s \n
+			""";
 
 	private final String ollamaPrompt = systemPrompt + " Question: {prompt} \n";
-	 private final String columnMatch = " Join this column: {joinColumn} of this table: {joinTable} where the column has this value: {columnValue}\n";
+	private final String columnMatch = " Join this column: {joinColumn} of this table: {joinTable} where the column has this value: {columnValue}\n";
 	@Value("${spring.profiles.active:}")
 	private String activeProfile;
 
@@ -121,8 +124,10 @@ public class TableService {
 		var sortedColumnDocs = columnDocuments.stream().sorted(this.compareDistance()).toList();
 		var sortedTableDocs = tableDocuments.stream().sorted(this.compareDistance()).toList();
 		SystemPromptTemplate systemPromptTemplate = this.activeProfile.contains("ollama")
-				? new SystemPromptTemplate(minRowDistance > MAX_ROW_DISTANCE ? String.format(this.ollamaPrompt, "") : String.format(this.ollamaPrompt, columnMatch))
-				: new SystemPromptTemplate(minRowDistance > MAX_ROW_DISTANCE ? String.format(this.systemPrompt, "") : String.format(this.systemPrompt, columnMatch));
+				? new SystemPromptTemplate(minRowDistance > MAX_ROW_DISTANCE ? String.format(this.ollamaPrompt, "")
+						: String.format(this.ollamaPrompt, columnMatch))
+				: new SystemPromptTemplate(minRowDistance > MAX_ROW_DISTANCE ? String.format(this.systemPrompt, "")
+						: String.format(this.systemPrompt, columnMatch));
 		List<Document> filteredColDocs = sortedColumnDocs.stream()
 				.filter(myRowDoc -> sortedTableDocs.stream().limit(3)
 						.anyMatch(myTableDoc -> myTableDoc.getMetadata().get(MetaData.TABLE_NAME)
@@ -169,14 +174,13 @@ public class TableService {
 				.collect(Collectors.joining(","));
 		LOGGER.info("AI response time: {}ms", new Date().getTime() - chatStart.getTime());
 //		LOGGER.info("AI response: {}", chatResult);
-		String sqlQuery = chatResult;  //.split(";")[0];
-		//sqlQuery = sqlQuery.indexOf("''sql") < 0 ? sqlQuery : sqlQuery.substring(sqlQuery.indexOf("''sql"));
-		sqlQuery = sqlQuery.indexOf("'''") < 0 ? sqlQuery : sqlQuery.substring(sqlQuery.indexOf("'''")+3);
-		sqlQuery = sqlQuery.indexOf("```") < 0 ? sqlQuery : sqlQuery.substring(sqlQuery.indexOf("```")+3);
-		sqlQuery = sqlQuery.indexOf("\"\"\"") < 0 ? sqlQuery : sqlQuery.substring(sqlQuery.indexOf("\"\"\"")+3);
-		sqlQuery = sqlQuery.substring(sqlQuery.toLowerCase().indexOf("select"));
-		sqlQuery = sqlQuery.indexOf(";") < 0 ? sqlQuery : sqlQuery.substring(0, sqlQuery.indexOf(";")+1);
-		LOGGER.info("Sql query: {}", sqlQuery);
+		String sqlQuery = chatResult; // .split(";")[0];
+		sqlQuery = sqlQuery.indexOf("'''") < 0 ? sqlQuery : sqlQuery.substring(sqlQuery.indexOf("'''") + 3);
+		sqlQuery = sqlQuery.indexOf("```") < 0 ? sqlQuery : sqlQuery.substring(sqlQuery.indexOf("```") + 3);
+		sqlQuery = sqlQuery.indexOf("\"\"\"") < 0 ? sqlQuery : sqlQuery.substring(sqlQuery.indexOf("\"\"\"") + 3);
+		sqlQuery = sqlQuery.toLowerCase().indexOf("select") < 0 ? sqlQuery : sqlQuery.substring(sqlQuery.toLowerCase().indexOf("select"));
+		sqlQuery = sqlQuery.indexOf(";") < 0 ? sqlQuery : sqlQuery.substring(0, sqlQuery.indexOf(";") + 1);
+		LOGGER.info("Sql query: {}", sqlQuery);		
 		SqlRowSet rowSet = this.jdbcTemplate.queryForRowSet(sqlQuery);
 		return rowSet;
 	}

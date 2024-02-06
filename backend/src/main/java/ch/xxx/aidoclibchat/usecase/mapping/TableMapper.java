@@ -107,10 +107,10 @@ public class TableMapper {
 	public List<Map<String, String>> map(SqlRowSet rowSet) {
 		List<Map<String, String>> result = new ArrayList<>();
 		while (rowSet.next()) {
-			final AtomicInteger atomicIndex = new AtomicInteger(0);
+			final AtomicInteger atomicIndex = new AtomicInteger(1);
 			Map<String, String> myRow = List.of(rowSet.getMetaData().getColumnNames()).stream()
 					.map(myCol -> Map.entry(this.createPropertyName(myCol, rowSet, atomicIndex),
-							Optional.ofNullable(rowSet.getObject(myCol)).map(myOb -> myOb.toString()).orElse("")))
+							Optional.ofNullable(rowSet.getObject(atomicIndex.get())).map(myOb -> myOb.toString()).orElse("")))
 					.peek(x -> atomicIndex.set(atomicIndex.get() + 1))
 					.collect(Collectors.toMap(myEntry -> myEntry.getKey(), myEntry -> myEntry.getValue()));
 			result.add(myRow);

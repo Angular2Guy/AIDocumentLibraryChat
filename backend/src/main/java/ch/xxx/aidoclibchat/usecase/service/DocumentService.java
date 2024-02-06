@@ -53,13 +53,17 @@ public class DocumentService {
 	private final DocumentRepository documentRepository;
 	private final DocumentVsRepository documentVsRepository;
 	private final ChatClient chatClient;
-	private final String systemPrompt = "You're assisting with questions about documents in a catalog.\n"
-			+ "Use the information from the DOCUMENTS section to provide accurate answers.\n"
-			+ "If unsure, simply state that you don't know.\n" + "\n" + "DOCUMENTS:\n" + "{documents}";
+	private final String systemPrompt = """
+			You're assisting with questions about documents in a catalog.\n 
+			Use the information from the DOCUMENTS section to provide accurate answers.\n 
+			If unsure, simply state that you don't know.\n" + "\n" + "DOCUMENTS:\n" + "{documents} 
+			""";
 
-	private final String ollamaPrompt = "You're assisting with questions about documents in a catalog.\n"
-			+ "Use the information from the DOCUMENTS section to provide accurate answers.\n"
-			+ "If unsure, simply state that you don't know.\n \n" + " {prompt} \n \n" + "DOCUMENTS:\n" + "{documents}";
+	private final String ollamaPrompt = """ 
+			You're assisting with questions about documents in a catalog.\n 
+			Use the information from the DOCUMENTS section to provide accurate answers.\n 
+			If unsure, simply state that you don't know.\n \n" + " {prompt} \n \n" + "DOCUMENTS:\n" + "{documents} 
+			""";
 
 	@Value("${embedding-token-limit:1000}")
 	private Integer embeddingTokenLimit;
