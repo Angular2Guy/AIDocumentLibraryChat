@@ -74,7 +74,7 @@ public class TableService {
 			 Pay attention to use date('now') function to get the current date, if the question involves \"today\". \n
 			 Prefix the selected column names with the table name. Make sure all tables of the columns are added to the from clause. \n
 			 Make sure the column names are from the right table. Exclude all columns without table entry in the from clause. \n
-			 Create only the sql query. Remove any comment or explaination. \n
+			 Create only the Sql query. Remove any comment or explanation. \n
 			 If unsure, simply state that you don't know. \n
 			 Include these columns in the query: {columns} \n
 			 Only use the following tables: {schemas};\n
@@ -173,7 +173,7 @@ public class TableService {
 		String chatResult = response.getResults().stream().map(myGen -> myGen.getOutput().getContent())
 				.collect(Collectors.joining(","));
 		LOGGER.info("AI response time: {}ms", new Date().getTime() - chatStart.getTime());
-//		LOGGER.info("AI response: {}", chatResult);
+		LOGGER.info("AI response: {}", chatResult);
 		String sqlQuery = chatResult; // .split(";")[0];
 		sqlQuery = sqlQuery.indexOf("'''") < 0 ? sqlQuery : sqlQuery.substring(sqlQuery.indexOf("'''") + 3);
 		sqlQuery = sqlQuery.indexOf("```") < 0 ? sqlQuery : sqlQuery.substring(sqlQuery.indexOf("```") + 3);
