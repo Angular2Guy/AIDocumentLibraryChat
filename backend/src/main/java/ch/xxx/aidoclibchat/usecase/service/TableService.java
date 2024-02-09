@@ -104,16 +104,16 @@ public class TableService {
 		var columnDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString(), MetaData.DataType.COLUMN,
 				searchDto.getResultAmount());
 		List<String> rowSearchStrs = new ArrayList<>();
-//		if(searchDto.getSearchString().split("[ -.;,]").length > 5) {			
-//			var tokens = List.of(searchDto.getSearchString().split("[ -.;,]"));		
-//			for(int i = 0;i<tokens.size();i = i+3) {
-//				rowSearchStrs.add(tokens.size() <= i + 3 ? "" : tokens.subList(i, tokens.size() >= i +6 ? i+6 : i + tokens.size()).stream().collect(Collectors.joining(" ")));
-//			}
-//		}
-//		var rowDocuments = rowSearchStrs.stream().filter(myStr -> !myStr.isBlank()) .flatMap(myStr -> this.documentVsRepository.retrieve(myStr, MetaData.DataType.ROW,
-//				searchDto.getResultAmount()).stream()).toList();
-		var rowDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString(), MetaData.DataType.ROW,
-				searchDto.getResultAmount());
+		if(searchDto.getSearchString().split("[ -.;,]").length > 5) {			
+			var tokens = List.of(searchDto.getSearchString().split("[ -.;,]"));		
+			for(int i = 0;i<tokens.size();i = i+3) {
+				rowSearchStrs.add(tokens.size() <= i + 3 ? "" : tokens.subList(i, tokens.size() >= i +6 ? i+6 : tokens.size()).stream().collect(Collectors.joining(" ")));
+			}
+		}
+		var rowDocuments = rowSearchStrs.stream().filter(myStr -> !myStr.isBlank()) .flatMap(myStr -> this.documentVsRepository.retrieve(myStr, MetaData.DataType.ROW,
+				searchDto.getResultAmount()).stream()).toList();
+//		var rowDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString(), MetaData.DataType.ROW,
+//				searchDto.getResultAmount());
 
 //		LOGGER.info("Table: ");
 //		tableDocuments.forEach(myDoc -> LOGGER.info("name: {}, distance: {}",
