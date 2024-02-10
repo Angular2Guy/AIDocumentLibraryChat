@@ -58,7 +58,7 @@ import jakarta.transaction.Transactional;
 @Transactional
 public class TableService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TableService.class);
-	private static final Double MAX_ROW_DISTANCE = 0.45;
+	private static final Double MAX_ROW_DISTANCE = 0.30;
 	private final ImportClient importClient;
 	private final ImportService importService;
 	private final DocumentVsRepository documentVsRepository;

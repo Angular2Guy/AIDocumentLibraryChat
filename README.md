@@ -11,7 +11,7 @@ Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, S
 
 ## Articles
 * [Making Spring AI and OpenAI GPT useful with RAG on your own Documents](https://angular2guy.wordpress.com/2023/11/19/making-spring-ai-and-openai-gpt-useful-with-rag-on-your-own-documents/)
-* [Using Spring AI with Ollama for a local AI model](https://angular2guy.wordpress.com/2023/12/17/using-spring-ai-with-ollama-for-a-local-ai-model/)
+* [Implementing RAG With Spring AI and Ollama Using Local AI/LLM Models](https://angular2guy.wordpress.com/2023/12/17/using-spring-ai-with-ollama-for-a-local-ai-model/)
 
 ## Features
 1. It shows the list of the documents.
