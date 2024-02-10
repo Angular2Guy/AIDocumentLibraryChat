@@ -10,20 +10,19 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Routes } from '@angular/router';
+import { TestBed } from '@angular/core/testing';
 
-export const routes: Routes = [
-  {
-    path: "doclist",
-    loadChildren: () => import("./doc-list").then((mod) => mod.DOCLIST),
-  },
-  {
-    path: "docsearch",
-    loadChildren: () => import("./doc-search").then((mod) => mod.DOCSEARCH),
-  },
-  {
-    path: "tablesearch",
-    loadChildren: () => import("./table-search").then((mod) => mod.TABLESEARCH),
-  },
-  { path: "**", redirectTo: "doclist" },
-];
+import { TableService } from './table.service';
+
+describe('TableService', () => {
+  let service: TableService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(TableService);
+  });
+
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+});

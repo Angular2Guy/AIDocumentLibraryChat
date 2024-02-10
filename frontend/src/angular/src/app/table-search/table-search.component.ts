@@ -10,20 +10,17 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Routes } from '@angular/router';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { TableService } from '../service/table.service';
 
-export const routes: Routes = [
-  {
-    path: "doclist",
-    loadChildren: () => import("./doc-list").then((mod) => mod.DOCLIST),
-  },
-  {
-    path: "docsearch",
-    loadChildren: () => import("./doc-search").then((mod) => mod.DOCSEARCH),
-  },
-  {
-    path: "tablesearch",
-    loadChildren: () => import("./table-search").then((mod) => mod.TABLESEARCH),
-  },
-  { path: "**", redirectTo: "doclist" },
-];
+@Component({
+  selector: 'app-table-search',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './table-search.component.html',
+  styleUrl: './table-search.component.scss'
+})
+export class TableSearchComponent {
+	constructor(private tableService: TableService) { }
+}

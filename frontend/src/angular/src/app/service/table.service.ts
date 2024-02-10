@@ -10,20 +10,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Routes } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 
-export const routes: Routes = [
-  {
-    path: "doclist",
-    loadChildren: () => import("./doc-list").then((mod) => mod.DOCLIST),
-  },
-  {
-    path: "docsearch",
-    loadChildren: () => import("./doc-search").then((mod) => mod.DOCSEARCH),
-  },
-  {
-    path: "tablesearch",
-    loadChildren: () => import("./table-search").then((mod) => mod.TABLESEARCH),
-  },
-  { path: "**", redirectTo: "doclist" },
-];
+@Injectable({
+  providedIn: 'root'
+})
+export class TableService {
+
+  constructor(private httpClient: HttpClient) { }
+}

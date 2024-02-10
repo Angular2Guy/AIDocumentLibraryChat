@@ -1,5 +1,5 @@
 /**
- *    Copyright 2023 Sven Loesekann
+ *    Copyright 2018 Sven Loesekann
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
@@ -10,20 +10,4 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Routes } from '@angular/router';
-
-export const routes: Routes = [
-  {
-    path: "doclist",
-    loadChildren: () => import("./doc-list").then((mod) => mod.DOCLIST),
-  },
-  {
-    path: "docsearch",
-    loadChildren: () => import("./doc-search").then((mod) => mod.DOCSEARCH),
-  },
-  {
-    path: "tablesearch",
-    loadChildren: () => import("./table-search").then((mod) => mod.TABLESEARCH),
-  },
-  { path: "**", redirectTo: "doclist" },
-];
+export * from "./table-search.routes";
