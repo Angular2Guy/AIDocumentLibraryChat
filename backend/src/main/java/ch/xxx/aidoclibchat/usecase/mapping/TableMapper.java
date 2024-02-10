@@ -26,6 +26,7 @@ import ch.xxx.aidoclibchat.domain.model.dto.ArtistDto;
 import ch.xxx.aidoclibchat.domain.model.dto.MuseumDto;
 import ch.xxx.aidoclibchat.domain.model.dto.MuseumHoursDto;
 import ch.xxx.aidoclibchat.domain.model.dto.SubjectDto;
+import ch.xxx.aidoclibchat.domain.model.dto.TableSearchDto;
 import ch.xxx.aidoclibchat.domain.model.dto.WorkDto;
 import ch.xxx.aidoclibchat.domain.model.dto.WorkLinkDto;
 import ch.xxx.aidoclibchat.domain.model.entity.Artist;
@@ -104,7 +105,7 @@ public class TableMapper {
 		return entity;
 	}
 
-	public List<Map<String, String>> map(SqlRowSet rowSet) {
+	public TableSearchDto map(SqlRowSet rowSet, String question) {
 		List<Map<String, String>> result = new ArrayList<>();
 		while (rowSet.next()) {
 			final AtomicInteger atomicIndex = new AtomicInteger(1);
@@ -114,8 +115,8 @@ public class TableMapper {
 					.peek(x -> atomicIndex.set(atomicIndex.get() + 1))
 					.collect(Collectors.toMap(myEntry -> myEntry.getKey(), myEntry -> myEntry.getValue()));
 			result.add(myRow);
-		}
-		return result;
+		}		
+		return new TableSearchDto(question, result);
 	}
 
 	private String createPropertyName(String columnName, SqlRowSet rowSet, AtomicInteger atomicIndex) {

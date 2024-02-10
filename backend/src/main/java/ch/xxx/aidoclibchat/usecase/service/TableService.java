@@ -67,8 +67,8 @@ public class TableService {
 	private final JdbcTemplate jdbcTemplate;
 	private final String systemPrompt = """
 			 You are a Postgres expert. Given an input question, create syntactically correct Postgres query. \n
-			 Unless the user  specifies in the question a specific number of examples to  obtain, query for at most 5 results using the LIMIT clause \n
-			 as per Postgres. You can order the results to return the  most informative data in the database. Never query for all  columns from a table. \n
+			 Unless the user  specifies in the question a specific number of examples to  obtain, query for at most 100 results using the LIMIT clause \n
+			 as per Postgres. You order the results to return the  most informative data in the database. Never query for all  columns from a table. \n
 			 You must query only the columns that  are needed to answer the question. Wrap each column name in  double quotes to denote them as delimited identifiers. \n
 			 Pay attention to use only the column names you can see in the tables below. Be careful to not query for columns that do not exist. \n
 			 Also, pay attention to which column is in which table. \n
@@ -112,8 +112,6 @@ public class TableService {
 		}
 		var rowDocuments = rowSearchStrs.stream().filter(myStr -> !myStr.isBlank()) .flatMap(myStr -> this.documentVsRepository.retrieve(myStr, MetaData.DataType.ROW,
 				searchDto.getResultAmount()).stream()).toList();
-//		var rowDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString(), MetaData.DataType.ROW,
-//				searchDto.getResultAmount());
 
 //		LOGGER.info("Table: ");
 //		tableDocuments.forEach(myDoc -> LOGGER.info("name: {}, distance: {}",

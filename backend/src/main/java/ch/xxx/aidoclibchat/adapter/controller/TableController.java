@@ -12,16 +12,16 @@
  */
 package ch.xxx.aidoclibchat.adapter.controller;
 
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ch.xxx.aidoclibchat.domain.model.dto.SearchDto;
 import ch.xxx.aidoclibchat.domain.model.dto.SearchDto.SearchType;
+import ch.xxx.aidoclibchat.domain.model.dto.TableSearchDto;
 import ch.xxx.aidoclibchat.usecase.mapping.TableMapper;
 import ch.xxx.aidoclibchat.usecase.service.TableService;
 
@@ -43,12 +43,24 @@ public class TableController {
 	}
 	
 	@GetMapping("/search")
-	public List<Map<String,String>> searchTables(@RequestParam(name = "query") String query) {
+	public TableSearchDto getSearchTables(@RequestParam(name = "query") String query) {
+		var searchDto = createSearchDto(query);
+		TableSearchDto result = this.tableMapper.map(this.tableService.searchTables(searchDto), query);
+		return result;
+	}
+
+	private SearchDto createSearchDto(String query) {
 		var searchDto = new SearchDto();
 		searchDto.setResultAmount(50);
 		searchDto.setSearchString(query);
 		searchDto.setSearchType(SearchType.TABLE);
-		List<Map<String, String>> result = this.tableMapper.map(this.tableService.searchTables(searchDto));
+		return searchDto;
+	}
+	
+	@PostMapping("/search")
+	public TableSearchDto postSearchTables(@RequestBody TableSearchDto tableSearchDto) {
+		var searchDto = createSearchDto(tableSearchDto.getQuestion());
+		TableSearchDto result = this.tableMapper.map(this.tableService.searchTables(searchDto), tableSearchDto.getQuestion());
 		return result;
 	}
 }
