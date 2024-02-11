@@ -33,4 +33,10 @@
 	  <div i18n="@@docSearchBePatient">Please be patient. {{ (msWorking / 1000) | number: '1.3'}} sec.</div>
 	  </div>	
   </div>
+} 
+@if(requestFailed) {
+  <h2 class="error-msg" i18n="@@docSearchRequestFailed">Ai Request Failed. Please try again.</h2>
+}
+@if(searchResult && searchResult?.resultList?.length && searchResult.resultList.length > 0) {
+	{{ searchResult | json }}
 }
