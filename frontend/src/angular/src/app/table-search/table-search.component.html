@@ -1,1 +1,36 @@
-<p>table-search works!</p>
+<mat-toolbar color="primary" class="custom-toolbar">
+  <div class="toolbar-content">
+    <div i18n="@@tableSearchHeading">Table Search</div>
+    <div class="example-fill-remaining-space"></div>
+    <div>
+      <button mat-flat-button color="primary" (click)="showList()" i18n="@@list">
+        List
+      </button>
+    </div>
+    <div>
+      <button mat-flat-button color="primary" (click)="logout()" i18n="@@logout">
+        Logout
+      </button>
+    </div>
+  </div>
+</mat-toolbar>
+<div class="search-bar">
+	<mat-form-field class="example-full-width">
+		<mat-label i18n="@@search">Search</mat-label>
+		<textarea matInput [formControl]="searchValueControl"></textarea>
+	</mat-form-field>
+	<div class="search-button-box">
+		<button mat-flat-button color="primary" class="search-button" (click)="search()" [disabled]="searchValueControl.invalid" i18n="@@search">
+        	Search
+      	</button>
+    </div>	
+</div>
+@if(searching) {
+  <div class="spinner-container">	
+  <div class="spinner-box">
+	  <mat-spinner></mat-spinner>
+	  <div i18n="@@docSearchWorking">The AI is working on the answer.</div>
+	  <div i18n="@@docSearchBePatient">Please be patient. {{ (msWorking / 1000) | number: '1.3'}} sec.</div>
+	  </div>	
+  </div>
+}
