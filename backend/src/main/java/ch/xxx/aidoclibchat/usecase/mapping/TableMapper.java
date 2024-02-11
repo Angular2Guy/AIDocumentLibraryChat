@@ -116,7 +116,7 @@ public class TableMapper {
 					.collect(Collectors.toMap(myEntry -> myEntry.getKey(), myEntry -> myEntry.getValue()));
 			result.add(myRow);
 		}		
-		return new TableSearchDto(question, result);
+		return new TableSearchDto(question, result, 100);
 	}
 
 	private String createPropertyName(String columnName, SqlRowSet rowSet, AtomicInteger atomicIndex) {
