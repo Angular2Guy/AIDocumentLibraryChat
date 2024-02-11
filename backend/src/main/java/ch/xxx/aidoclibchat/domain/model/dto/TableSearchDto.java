@@ -18,12 +18,14 @@ import java.util.Map;
 public class TableSearchDto {
 	private String question;
 	private List<Map<String, String>> resultList;
+	private int resultAmount;
 	
 	public TableSearchDto() { }
 
-	public TableSearchDto(String question, List<Map<String, String>> resultList) {
+	public TableSearchDto(String question, List<Map<String, String>> resultList, int resultAmount) {
 		this.question = question;
 		this.resultList = resultList;
+		this.resultAmount = resultAmount;
 	}
 	
 	public String getQuestion() {
@@ -37,5 +39,12 @@ public class TableSearchDto {
 	}
 	public void setResultList(List<Map<String, String>> resultList) {
 		this.resultList = resultList;
+	}
+	public int getResultAmount() {
+		return resultAmount;
+	}
+
+	public void setResultAmount(int resultAmount) {
+		this.resultAmount = resultAmount;
 	}
 }

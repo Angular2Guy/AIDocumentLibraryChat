@@ -21,7 +21,9 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {FormControl, FormsModule,ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'; 
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, catchError, interval, map, of, tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {TableSearch} from '../model/table-search';
 
 @Component({
   selector: 'app-table-search',
@@ -36,12 +38,31 @@ export class TableSearchComponent {
 	protected searching = false;
 	protected requestFailed = false;
 	protected msWorking = 0;
+	protected searchResult: TableSearch | null = null;
 	private repeatSub: Subscription | null = null;
 	
 	constructor(private destroyRef: DestroyRef, private router: Router, private tableService: TableService) { }
 	
 	protected search(): void {
-		console.log('search');
+		this.searchResult = null;
+		const startDate = new Date();
+		this.msWorking = 0;
+		this.searching = true;
+		this.requestFailed = false;
+		this.repeatSub?.unsubscribe();
+		this.repeatSub = interval(100).pipe(map(() => new Date()), takeUntilDestroyed(this.destroyRef)).subscribe(newDate => this.msWorking = newDate.getTime() - startDate.getTime());
+		this.searchResult = {question: this.searchValueControl.value, resultList: [], resultAmount: 100} as TableSearch;
+		this.tableService.postTableSearch(this.searchResult)
+				  .pipe(takeUntilDestroyed(this.destroyRef), tap(() => this.searching = false), tap(() => this.repeatSub?.unsubscribe()), catchError(error => {
+			  console.log(error);
+			  this.requestFailed = true;
+			  this.searching = false;
+			  return of({question: this.searchValueControl.value, resultAmount: 0, resultList: []} as TableSearch);
+		  }))
+		  .subscribe(result => {
+			  this.searchResult = result;
+			  console.log(this.searchResult);
+			  });
 	}
 	
 	protected showList(): void {

@@ -10,19 +10,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { TableSearch } from '../model/table-search';
-
-@Injectable({
-  providedIn: 'root'
-})
-export class TableService {
-
-  constructor(private httpClient: HttpClient) { }
-  
-  postTableSearch(tableSearch: TableSearch): Observable<TableSearch> {
-	  return this.httpClient.post<TableSearch>('/rest/table/search', tableSearch);
-  }
+export interface TableSearch {
+	question: string;
+	resultList: Map<string,string>[];
+	resultAmount: number; 
 }
