@@ -182,7 +182,7 @@ public class TableService {
 				.collect(Collectors.joining(","));
 		LOGGER.info("AI response time: {}ms", new Date().getTime() - chatStart.getTime());
 		LOGGER.info("AI response: {}", chatResult);
-		String sqlQuery = chatResult; // .split(";")[0];
+		String sqlQuery = chatResult; 
 		sqlQuery = sqlQuery.indexOf("'''") < 0 ? sqlQuery : sqlQuery.substring(sqlQuery.indexOf("'''") + 3);
 		sqlQuery = sqlQuery.indexOf("```") < 0 ? sqlQuery : sqlQuery.substring(sqlQuery.indexOf("```") + 3);
 		sqlQuery = sqlQuery.indexOf("\"\"\"") < 0 ? sqlQuery : sqlQuery.substring(sqlQuery.indexOf("\"\"\"") + 3);

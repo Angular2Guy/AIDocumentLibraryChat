@@ -12,6 +12,6 @@
  */
 export interface TableSearch {
 	question: string;
-	resultList: Map<string,string>[];
+	resultList?: Map<string,string>[];
 	resultAmount: number; 
 }
