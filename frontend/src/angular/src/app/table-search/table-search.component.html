@@ -29,14 +29,24 @@
   <div class="spinner-container">	
   <div class="spinner-box">
 	  <mat-spinner></mat-spinner>
-	  <div i18n="@@docSearchWorking">The AI is working on the answer.</div>
-	  <div i18n="@@docSearchBePatient">Please be patient. {{ (msWorking / 1000) | number: '1.3'}} sec.</div>
+	  <div i18n="@@searchWorking">The AI is working on the answer.</div>
+	  <div i18n="@@searchBePatient">Please be patient. {{ (msWorking / 1000) | number: '1.3'}} sec.</div>
 	  </div>	
   </div>
 } 
 @if(requestFailed) {
-  <h2 class="error-msg" i18n="@@docSearchRequestFailed">Ai Request Failed. Please try again.</h2>
+  <h2 class="error-msg" i18n="@@searchRequestFailed">Ai Request Failed. Please try again.</h2>
 }
 @if(searchResult && searchResult.resultList?.length) {
-	{{ searchResult | json }}
+<table mat-table [dataSource]="columnData">
+  
+  <ng-container *ngFor="let disCol of columnNames" matColumnDef="{{disCol}}">
+    <th mat-header-cell *matHeaderCellDef>{{disCol}}</th>
+    <td mat-cell *matCellDef="let element">{{element.get(disCol)}}</td>
+  </ng-container>
+
+
+  <tr mat-header-row *matHeaderRowDef="columnNames"></tr>
+  <tr mat-row *matRowDef="let row; columns: columnNames"></tr>
+</table>	
 }

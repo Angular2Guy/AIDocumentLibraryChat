@@ -39,7 +39,10 @@ export class TableSearchComponent {
 	protected requestFailed = false;
 	protected msWorking = 0;
 	protected searchResult: TableSearch | null = null;
+	protected columnData: Map<string,string>[] = [];
+	protected columnNames = new Set<string>();
 	private repeatSub: Subscription | null = null;
+	//private myJson = '{"question":"show the artworks name and the name of the museum that have the style Realism and the subject of portraits","resultList":[{"1_name":"Portrait of Margaret in Skating Costume","2_name":"Philadelphia Museum of Art"},{"1_name":"Portrait of Mary Adeline Williams","2_name":"Philadelphia Museum of Art"},{"1_name":"Portrait of a Little Girl","2_name":"Philadelphia Museum of Art"},{"1_name":"Portrait of Mrs. Frank Hamilton Cushing","2_name":"Philadelphia Museum of Art"},{"1_name":"Portrait of Walt Whitman","2_name":"Philadelphia Museum of Art"},{"1_name":"The Portrait of Miss Helen Parker","2_name":"Philadelphia Museum of Art"},{"1_name":"The Thinker, Portrait of Louis N. Kenton","2_name":"The Metropolitan Museum of Art"},{"1_name":"Portrait of a Man","2_name":"The Metropolitan Museum of Art"},{"1_name":"Portrait of a Woman (Emily Bertie Pott)","2_name":"The Metropolitan Museum of Art"},{"1_name":"Portrait of Lady Grantham","2_name":"Philadelphia Museum of Art"},{"1_name":"Portrait of Marianne Holbech","2_name":"Philadelphia Museum of Art"},{"1_name":"Portrait of Master Ward","2_name":"The Prado Museum"},{"1_name":"Madame Proudhon","2_name":"Musée d Orsay"},{"1_name":"Portrait of Mlle C. D","2_name":"Musée d Orsay"},{"1_name":"Portrait of a Man","2_name":"National Gallery of Art"},{"1_name":"Portrait of Louise-Antoinette Feuardent","2_name":"The J. Paul Getty Museum"},{"1_name":"Portrait of Frieda Schiff","2_name":"The Metropolitan Museum of Art"},{"1_name":"Portrait of Richard Palmer","2_name":"Los Angeles County Museum of Art"},{"1_name":"Marie-Yolande de Fitz-James","2_name":"Cleveland Museum Of Art"},{"1_name":"The Oboe Player, Portrait of Benjamin Sharp","2_name":"Philadelphia Museum of Art"}],"resultAmount":100}';
 	
 	constructor(private destroyRef: DestroyRef, private router: Router, private tableService: TableService) { }
 	
@@ -61,7 +64,9 @@ export class TableSearchComponent {
 		  }))
 		  .subscribe(result => {
 			  this.searchResult = result;
-			  console.log(this.searchResult);
+			  this.columnData = !result?.resultList ? this.columnData : result.resultList;
+			  this.columnNames = this.getColumnNames(result);
+			  //console.log(this.searchResult);
 			  });
 	}
 	
@@ -70,6 +75,28 @@ export class TableSearchComponent {
 	}
 	
 	protected logout(): void {
+		//this.searchResult = JSON.parse(this.myJson) as TableSearch;
+	    //this.columnData = !this.searchResult?.resultList ? this.columnData : this.searchResult.resultList;
+	    //this.columnNames = this.getColumnNames(this.searchResult);
+	    //this.columnData.forEach(myMap => this.columnNames.forEach(myName => console.log(myMap.get(myName))));
+	    //console.log(this.columnData);
 		console.log('logout');
+	}
+	
+	private getColumnNames(tableSearch: TableSearch): Set<string> {
+		const result = new Set<string>();
+		this.columnData = [];
+		const myList = !tableSearch?.resultList ? [] : tableSearch.resultList;  
+		myList.forEach((value) => {
+			//console.log(value);
+			const myMap = new Map<string,string>();
+			Object.entries(value).forEach((entry) => {
+				//console.log(`${entry}`);
+				result.add(entry[0]);
+				myMap.set(entry[0],entry[1]);				
+				});
+			this.columnData.push(myMap);
+		});
+		return result;
 	}
 }

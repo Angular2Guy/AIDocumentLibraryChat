@@ -35,18 +35,18 @@
   <div class="spinner-container">	
   <div class="spinner-box">
 	  <mat-spinner></mat-spinner>
-	  <div i18n="@@docSearchWorking">The AI is working on the answer.</div>
-	  <div i18n="@@docSearchBePatient">Please be patient. {{ (msWorking / 1000) | number: '1.3'}} sec.</div>
+	  <div i18n="@@searchWorking">The AI is working on the answer.</div>
+	  <div i18n="@@searchBePatient">Please be patient. {{ (msWorking / 1000) | number: '1.3'}} sec.</div>
 	  </div>	
   </div>
 }
 @if(requestFailed) {
-  <h2 class="error-msg" i18n="@@docSearchRequestFailed">Ai Request Failed. Please try again.</h2>
+  <h2 class="error-msg" i18n="@@searchRequestFailed">Ai Request Failed. Please try again.</h2>
 }
 @for(searchResultStr of searchResult?.resultStrings; track searchResult?.resultStrings) {
   <div>	  
 	  <ul>
-		  <li i18n="@@docSearchResultDocument">Result Document:</li>
+		  <li i18n="@@searchResultDocument">Result Document:</li>
 		  <ul>
 			  <li i18n="@@link">Link: <a mat-button href="/rest/document/content/{{!!searchResult && searchResult.documents[$index].id}}" target="_blank">{{!!searchResult && searchResult.documents[$index].documentName}}</a></li>
 			  <li>{{searchResultStr}}</li>

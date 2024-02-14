@@ -1,0 +1,3 @@
+http://localhost:8080/rest/table/search?query=show+the+artworks+name+and+the+name+of+the+museum+that+have+the+style+Realism+and+the+subject+of+Portraits
+http://localhost:8080/rest/table/search?query=show+the+artworks+name+and+the+name+of+the+museum+that+have+the+style+Realism
+http://localhost:8080/rest/table/search?query=count+the+artworks+of+the+museum+with+name+Metropolitan+Museum+of+art+that+have+the+style+Realism+and+the+subject+of+Portraits
