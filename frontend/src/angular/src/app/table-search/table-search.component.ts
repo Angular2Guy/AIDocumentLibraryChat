@@ -70,6 +70,10 @@ export class TableSearchComponent {
 			  });
 	}
 	
+	protected importData(): void {
+		console.log('importData');
+	}
+	
 	protected showList(): void {
 		this.router.navigate(['/doclist']);
 	}
