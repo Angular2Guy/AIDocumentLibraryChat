@@ -24,11 +24,12 @@ import { Router } from '@angular/router';
 import { Subscription, catchError, interval, map, of, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {TableSearch} from '../model/table-search';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-table-search',
   standalone: true,
-  imports: [CommonModule,MatToolbarModule,MatButtonModule,MatTableModule,MatInputModule,
+  imports: [CommonModule,MatToolbarModule,MatButtonModule,MatTableModule,MatInputModule,MatTooltipModule,
   	MatFormFieldModule,FormsModule,ReactiveFormsModule,MatProgressSpinnerModule],
   templateUrl: './table-search.component.html',
   styleUrl: './table-search.component.scss'
