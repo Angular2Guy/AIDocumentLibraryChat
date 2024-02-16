@@ -198,7 +198,6 @@ public class TableService {
 				.compareTo(((Float) myDocB.getMetadata().get(MetaData.DISTANCE)));
 	}
 
-	@Async
 	public void importData() {
 		var start = new Date();
 		LOGGER.info("Import started.");

@@ -25,4 +25,8 @@ export class TableService {
   postTableSearch(tableSearch: TableSearch): Observable<TableSearch> {
 	  return this.httpClient.post<TableSearch>('/rest/table/search', tableSearch);
   }
+  
+  getDataImport(): Observable<boolean> {
+	  return this.httpClient.get<boolean>('/rest/table/import');
+  }
 }

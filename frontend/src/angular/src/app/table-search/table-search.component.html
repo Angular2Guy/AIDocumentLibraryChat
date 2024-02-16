@@ -2,7 +2,10 @@
   <div class="toolbar-content">
     <div i18n="@@tableSearchHeading">Table Search</div>
     <div class="example-fill-remaining-space"></div>
-    <div>
+    <div class="import-container">
+      @if(importing) {      
+      	<mat-spinner color="accent" diameter=30 ></mat-spinner>
+      }    
       <button mat-flat-button color="primary" (click)="importData()" i18n="@@tableSearchImportData">
         Import Data
       </button>

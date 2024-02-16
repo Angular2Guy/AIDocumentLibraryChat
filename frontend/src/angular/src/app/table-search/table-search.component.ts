@@ -35,6 +35,7 @@ import {TableSearch} from '../model/table-search';
 })
 export class TableSearchComponent {
 	protected searchValueControl = new FormControl('', [Validators.required, Validators.minLength(3)]);
+	protected importing = false;
 	protected searching = false;
 	protected requestFailed = false;
 	protected msWorking = 0;
@@ -71,7 +72,10 @@ export class TableSearchComponent {
 	}
 	
 	protected importData(): void {
-		console.log('importData');
+		//this.importing = !this.importing;		
+		this.importing = true;
+		this.tableService.getDataImport().subscribe(result => this.importing = !result);
+		//console.log('importData');
 	}
 	
 	protected showList(): void {
