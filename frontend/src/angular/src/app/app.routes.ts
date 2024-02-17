@@ -14,16 +14,16 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   {
-    path: "doclist",
-    loadChildren: () => import("./doc-list").then((mod) => mod.DOCLIST),
+    path: 'doclist',
+    loadChildren: () => import('./doc-list').then((mod) => mod.DOCLIST),
   },
   {
-    path: "docsearch",
-    loadChildren: () => import("./doc-search").then((mod) => mod.DOCSEARCH),
+    path: 'docsearch',
+    loadChildren: () => import('./doc-search').then((mod) => mod.DOCSEARCH),
   },
   {
-    path: "tablesearch",
-    loadChildren: () => import("./table-search").then((mod) => mod.TABLESEARCH),
+    path: 'tablesearch',
+    loadChildren: () => import('./table-search').then((mod) => mod.TABLESEARCH),
   },
-  { path: "**", redirectTo: "doclist" },
+  { path: '**', redirectTo: 'doclist' },
 ];

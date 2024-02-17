@@ -19,7 +19,7 @@ describe('DocumentService', () => {
   let service: DocumentService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({providers: [HttpClient, HttpHandler]});
+    TestBed.configureTestingModule({ providers: [HttpClient, HttpHandler] });
     service = TestBed.inject(DocumentService);
   });
 

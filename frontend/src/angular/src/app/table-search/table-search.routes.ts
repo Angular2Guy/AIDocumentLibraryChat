@@ -10,13 +10,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Routes } from "@angular/router";
-import { TableSearchComponent } from "./table-search.component";
+import { Routes } from '@angular/router';
+import { TableSearchComponent } from './table-search.component';
 
 export const TABLESEARCH: Routes = [
   {
-    path: "",
-    component: TableSearchComponent,    
+    path: '',
+    component: TableSearchComponent,
   },
-  { path: "**", redirectTo: "" },
+  { path: '**', redirectTo: '' },
 ];

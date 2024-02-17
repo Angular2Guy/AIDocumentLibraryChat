@@ -19,7 +19,7 @@ describe('TableService', () => {
   let service: TableService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({providers: [HttpClient, HttpHandler]});
+    TestBed.configureTestingModule({ providers: [HttpClient, HttpHandler] });
     service = TestBed.inject(TableService);
   });
 

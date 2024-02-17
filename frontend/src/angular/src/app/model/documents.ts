@@ -10,18 +10,21 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { DocumentFile } from "./document-file";
+import { DocumentFile } from './document-file';
 
-export enum SearchType {PARAGRAPH = "PARAGRAPH", DOCUMENT="DOCUMENT"} 
+export enum SearchType {
+  PARAGRAPH = 'PARAGRAPH',
+  DOCUMENT = 'DOCUMENT',
+}
 
 export interface DocumentSearch {
-	searchString: string;
-	searchType: SearchType;
-	resultAmount: number;
+  searchString: string;
+  searchType: SearchType;
+  resultAmount: number;
 }
 
 export interface DocumentSearchResult {
-	searchString: string;
-	resultStrings: string[];
-	documents: DocumentFile[];
+  searchString: string;
+  resultStrings: string[];
+  documents: DocumentFile[];
 }

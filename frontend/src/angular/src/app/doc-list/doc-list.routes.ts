@@ -10,13 +10,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Routes } from "@angular/router";
-import { DocListComponent } from "./doc-list.component";
+import { Routes } from '@angular/router';
+import { DocListComponent } from './doc-list.component';
 
 export const DOCLIST: Routes = [
   {
-    path: "",
-    component: DocListComponent,    
+    path: '',
+    component: DocListComponent,
   },
-  { path: "**", redirectTo: "" },
+  { path: '**', redirectTo: '' },
 ];

@@ -12,8 +12,8 @@
  */
 
 export interface DocumentFile {
-	id: number;
-	documentName: string;
-	documentType: string;
-	documentContent?: string;
+  id: number;
+  documentName: string;
+  documentType: string;
+  documentContent?: string;
 }

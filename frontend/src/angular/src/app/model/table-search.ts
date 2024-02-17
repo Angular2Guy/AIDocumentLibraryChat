@@ -11,7 +11,7 @@
    limitations under the License.
  */
 export interface TableSearch {
-	question: string;
-	resultList?: Map<string,string>[];
-	resultAmount: number; 
+  question: string;
+  resultList?: Map<string, string>[];
+  resultAmount: number;
 }

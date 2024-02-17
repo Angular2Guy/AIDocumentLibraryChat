@@ -17,25 +17,29 @@ import { DocumentFile } from '../model/document-file';
 import { DocumentSearch, DocumentSearchResult } from '../model/documents';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DocumentService {
+  constructor(private httpClient: HttpClient) {}
 
-  constructor(private httpClient: HttpClient) { }
-  
   public getDocumentList(): Observable<DocumentFile[]> {
-	  return this.httpClient.get<DocumentFile[]>('/rest/document/list');
-  }   
-  
+    return this.httpClient.get<DocumentFile[]>('/rest/document/list');
+  }
+
   public getDocumentById(id: number): Observable<DocumentFile> {
-	  return this.httpClient.get<DocumentFile>(`/rest/document/id/${id}`);
+    return this.httpClient.get<DocumentFile>(`/rest/document/id/${id}`);
   }
-  
+
   public postDocumentForm(formData: FormData): Observable<string> {
-	  return this.httpClient.post<string>('/rest/document/upload', formData);
+    return this.httpClient.post<string>('/rest/document/upload', formData);
   }
-  
-  public postDocumentSearch(documentSearch: DocumentSearch): Observable<DocumentSearchResult> {
-	  return this.httpClient.post<DocumentSearchResult>('/rest/document/search', documentSearch);
+
+  public postDocumentSearch(
+    documentSearch: DocumentSearch
+  ): Observable<DocumentSearchResult> {
+    return this.httpClient.post<DocumentSearchResult>(
+      '/rest/document/search',
+      documentSearch
+    );
   }
 }

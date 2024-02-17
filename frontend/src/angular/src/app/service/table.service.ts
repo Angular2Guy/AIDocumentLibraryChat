@@ -16,17 +16,16 @@ import { Observable } from 'rxjs';
 import { TableSearch } from '../model/table-search';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TableService {
+  constructor(private httpClient: HttpClient) {}
 
-  constructor(private httpClient: HttpClient) { }
-  
   postTableSearch(tableSearch: TableSearch): Observable<TableSearch> {
-	  return this.httpClient.post<TableSearch>('/rest/table/search', tableSearch);
+    return this.httpClient.post<TableSearch>('/rest/table/search', tableSearch);
   }
-  
+
   getDataImport(): Observable<boolean> {
-	  return this.httpClient.get<boolean>('/rest/table/import');
+    return this.httpClient.get<boolean>('/rest/table/import');
   }
 }

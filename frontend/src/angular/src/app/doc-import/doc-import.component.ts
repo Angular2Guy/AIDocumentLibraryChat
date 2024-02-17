@@ -12,52 +12,77 @@
  */
 import { Component, DestroyRef, Inject, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'; 
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatButtonModule} from '@angular/material/button';
-import {FormsModule} from '@angular/forms';
-import {MatInputModule} from '@angular/material/input';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogModule,
+} from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
 import { DocumentService } from '../service/document.service';
 import { tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-export interface DocImportData {
-	
-}
+export interface DocImportData {}
 
 @Component({
   selector: 'app-docimport',
   standalone: true,
-  imports: [CommonModule,MatFormFieldModule, MatDialogModule,MatButtonModule, MatInputModule, FormsModule, MatProgressSpinnerModule],
+  imports: [
+    CommonModule,
+    MatFormFieldModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatInputModule,
+    FormsModule,
+    MatProgressSpinnerModule,
+  ],
   templateUrl: './doc-import.component.html',
-  styleUrls: ['./doc-import.component.scss']
+  styleUrls: ['./doc-import.component.scss'],
 })
 export class DocImportComponent {
-	protected file: File | null  = null;
-	protected uploading = false;
-	private destroyRef = inject(DestroyRef); 
-	
-	constructor(private dialogRef: MatDialogRef<DocImportComponent>, @Inject(MAT_DIALOG_DATA) public data: DocImportComponent, private documentService: DocumentService) { }
-	
-	protected onFileInputChange($event: Event): void {
-		const files = !$event.target ? null : ($event.target as HTMLInputElement).files;
-		this.file = !!files && files.length > 0 ? files[0] : null;				
-	}
-	
-	protected upload(): void {
-		//console.log(this.file);
-		if(!!this.file) {
-		  const formData = new FormData();
-          formData.append('file', this.file as Blob, this.file.name as string);
-          this.documentService.postDocumentForm(formData).pipe(tap(() => {this.uploading = true;}), takeUntilDestroyed(this.destroyRef))
-            .subscribe(result => {this.uploading = false; 
-            //console.log(result); 
-            this.dialogRef.close();});
-        }
-	}
-	
-	protected cancel(): void {
-		this.dialogRef.close();
-	}
+  protected file: File | null = null;
+  protected uploading = false;
+  private destroyRef = inject(DestroyRef);
+
+  constructor(
+    private dialogRef: MatDialogRef<DocImportComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: DocImportComponent,
+    private documentService: DocumentService
+  ) {}
+
+  protected onFileInputChange($event: Event): void {
+    const files = !$event.target
+      ? null
+      : ($event.target as HTMLInputElement).files;
+    this.file = !!files && files.length > 0 ? files[0] : null;
+  }
+
+  protected upload(): void {
+    //console.log(this.file);
+    if (!!this.file) {
+      const formData = new FormData();
+      formData.append('file', this.file as Blob, this.file.name as string);
+      this.documentService
+        .postDocumentForm(formData)
+        .pipe(
+          tap(() => {
+            this.uploading = true;
+          }),
+          takeUntilDestroyed(this.destroyRef)
+        )
+        .subscribe((result) => {
+          this.uploading = false;
+          //console.log(result);
+          this.dialogRef.close();
+        });
+    }
+  }
+
+  protected cancel(): void {
+    this.dialogRef.close();
+  }
 }

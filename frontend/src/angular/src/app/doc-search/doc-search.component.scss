@@ -30,13 +30,13 @@
 }
 
 .search-bar {
-	display: flex;
-	width: 100%;
-	align-items: center;
+  display: flex;
+  width: 100%;
+  align-items: center;
 }
 
 .search-button-box {
-	margin: 10px;
+  margin: 10px;
 }
 
 .contact-list {
@@ -46,28 +46,28 @@
 }
 
 .search-button {
-	margin-left: 10px;
+  margin-left: 10px;
 }
 
 .table {
-	width: 100%;
+  width: 100%;
 }
 
 .spinner-container {
-	display: flex;
-	align-content: center;
-	justify-content: center;	
-	.spinner-box {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 10px;	
-		font-size: 24px;	
-	}
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  .spinner-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    font-size: 24px;
+  }
 }
 
 .error-msg {
-	color: #ff0000;	
+  color: #ff0000;
 }
 
 @media (max-width: 900px), (max-height: 480px) {

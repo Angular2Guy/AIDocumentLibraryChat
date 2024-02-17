@@ -10,7 +10,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
- .toolbar-content {
+.toolbar-content {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -29,37 +29,37 @@
 }
 
 .search-bar {
-	display: flex;
-	width: 100%;
-	align-items: center;
+  display: flex;
+  width: 100%;
+  align-items: center;
 }
 
 .search-button-box {
-	margin: 10px;
+  margin: 10px;
 }
 
 .import-container {
-	display: flex;
-	align-items:  center;
-	justify-items: center;	
-	gap: 10px;
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  gap: 10px;
 }
 
 .spinner-container {
-	display: flex;
-	align-content: center;
-	justify-content: center;	
-	.spinner-box {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 10px;	
-		font-size: 24px;	
-	}
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  .spinner-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    font-size: 24px;
+  }
 }
 
 .error-msg {
-	color: #ff0000;	
+  color: #ff0000;
 }
 
 @media (max-width: 900px), (max-height: 480px) {

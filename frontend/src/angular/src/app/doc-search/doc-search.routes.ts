@@ -10,13 +10,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Routes } from "@angular/router";
-import { DocSearchComponent } from "./doc-search.component";
+import { Routes } from '@angular/router';
+import { DocSearchComponent } from './doc-search.component';
 
 export const DOCSEARCH: Routes = [
   {
-    path: "",
-    component: DocSearchComponent,    
+    path: '',
+    component: DocSearchComponent,
   },
-  { path: "**", redirectTo: "" },
+  { path: '**', redirectTo: '' },
 ];

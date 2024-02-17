@@ -3,65 +3,110 @@
     <div i18n="@@doclistHeading">Document Search</div>
     <div class="example-fill-remaining-space"></div>
     <div>
-      <button mat-flat-button color="primary" (click)="showList()" i18n="@@list">
+      <button
+        mat-flat-button
+        color="primary"
+        (click)="showList()"
+        i18n="@@list"
+      >
         List
       </button>
     </div>
     <div>
-      <button mat-flat-button color="primary" (click)="logout()" i18n="@@logout">
+      <button
+        mat-flat-button
+        color="primary"
+        (click)="logout()"
+        i18n="@@logout"
+      >
         Logout
       </button>
     </div>
   </div>
 </mat-toolbar>
 <div class="search-bar">
-	<mat-form-field class="example-full-width">
-		<mat-label i18n="@@search">Search</mat-label>
-		<textarea matInput [formControl]="searchValueControl"></textarea>
-	</mat-form-field>
-	<div class="search-button-box">
-		<button mat-flat-button color="primary" class="search-button" (click)="search()" [disabled]="searchValueControl.invalid" i18n="@@search">
-        	Search
-      	</button>
-      	<div>
-      	<mat-radio-group [formControl]="searchTypeControl">
-  			<mat-radio-button [value]="SearchType.DOCUMENT" i18n="@@document">Document</mat-radio-button>
-  			<mat-radio-button [value]="SearchType.PARAGRAPH" i18n="@@paragraph">Paragraph</mat-radio-button>
-		</mat-radio-group>
-		</div>
-    </div>	
+  <mat-form-field class="example-full-width">
+    <mat-label i18n="@@search">Search</mat-label>
+    <textarea matInput [formControl]="searchValueControl"></textarea>
+  </mat-form-field>
+  <div class="search-button-box">
+    <button
+      mat-flat-button
+      color="primary"
+      class="search-button"
+      (click)="search()"
+      [disabled]="searchValueControl.invalid"
+      i18n="@@search"
+    >
+      Search
+    </button>
+    <div>
+      <mat-radio-group [formControl]="searchTypeControl">
+        <mat-radio-button [value]="SearchType.DOCUMENT" i18n="@@document"
+          >Document</mat-radio-button
+        >
+        <mat-radio-button [value]="SearchType.PARAGRAPH" i18n="@@paragraph"
+          >Paragraph</mat-radio-button
+        >
+      </mat-radio-group>
+    </div>
+  </div>
 </div>
 @if(searching) {
-  <div class="spinner-container">	
+<div class="spinner-container">
   <div class="spinner-box">
-	  <mat-spinner></mat-spinner>
-	  <div i18n="@@searchWorking">The AI is working on the answer.</div>
-	  <div i18n="@@searchBePatient">Please be patient. {{ (msWorking / 1000) | number: '1.3'}} sec.</div>
-	  </div>	
+    <mat-spinner></mat-spinner>
+    <div i18n="@@searchWorking">The AI is working on the answer.</div>
+    <div i18n="@@searchBePatient">
+      Please be patient. {{ msWorking / 1000 | number : "1.3" }} sec.
+    </div>
   </div>
-}
-@if(requestFailed) {
-  <h2 class="error-msg" i18n="@@searchRequestFailed">Ai Request Failed. Please try again.</h2>
-}
-@for(searchResultStr of searchResult?.resultStrings; track searchResult?.resultStrings) {
-  <div>	  
-	  <ul>
-		  <li i18n="@@searchResultDocument">Result Document:</li>
-		  <ul>
-			  <li i18n="@@link">Link: <a mat-button href="/rest/document/content/{{!!searchResult && searchResult.documents[$index].id}}" target="_blank">{{!!searchResult && searchResult.documents[$index].documentName}}</a></li>
-			  <li>{{searchResultStr}}</li>
-		  </ul>
-	  </ul>	  
-  </div>
-}
-@for(myDocument of searchResult?.documents; track searchResult?.documents) {
-  <div>
-	  <ul>
-	  @if((searchResult?.documents?.length || 0) > 1 && $index === 0) {
-		<li i18n="@@docSearchOtherDocuments">Other Documents:</li>		  
-	  } @else {
-		<li i18n="@@link">Link: <a mat-button href="/rest/document/content/{{!!searchResult && searchResult.documents[$index].id}}" target="_blank">{{!!searchResult && searchResult.documents[$index].documentName}}</a></li>  
-	  }	  
-	  </ul>
-  </div>	
+</div>
+} @if(requestFailed) {
+<h2 class="error-msg" i18n="@@searchRequestFailed">
+  Ai Request Failed. Please try again.
+</h2>
+} @for(searchResultStr of searchResult?.resultStrings; track
+searchResult?.resultStrings) {
+<div>
+  <ul>
+    <li i18n="@@searchResultDocument">Result Document:</li>
+    <ul>
+      <li i18n="@@link">
+        Link:
+        <a
+          mat-button
+          href="/rest/document/content/{{
+            !!searchResult && searchResult.documents[$index].id
+          }}"
+          target="_blank"
+          >{{
+            !!searchResult && searchResult.documents[$index].documentName
+          }}</a
+        >
+      </li>
+      <li>{{ searchResultStr }}</li>
+    </ul>
+  </ul>
+</div>
+} @for(myDocument of searchResult?.documents; track searchResult?.documents) {
+<div>
+  <ul>
+    @if((searchResult?.documents?.length || 0) > 1 && $index === 0) {
+    <li i18n="@@docSearchOtherDocuments">Other Documents:</li>
+    } @else {
+    <li i18n="@@link">
+      Link:
+      <a
+        mat-button
+        href="/rest/document/content/{{
+          !!searchResult && searchResult.documents[$index].id
+        }}"
+        target="_blank"
+        >{{ !!searchResult && searchResult.documents[$index].documentName }}</a
+      >
+    </li>
+    }
+  </ul>
+</div>
 }
