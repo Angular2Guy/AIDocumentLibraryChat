@@ -119,10 +119,10 @@ export class TableSearchComponent {
 
   protected importData(): void {
     //this.importing = !this.importing;
-    this.importing = true;
     this.tableService
       .getDataImport()
-      .subscribe((result) => (this.importing = !result));
+      .pipe(tap(() => this.importing = true))
+      .subscribe({next: (result) => (this.importing = !result), error: (ex) => this.importing = false});
     //console.log('importData');
   }
 

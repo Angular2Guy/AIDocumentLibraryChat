@@ -29,5 +29,4 @@ public class MetaData {
 	public static final String REFERENCE_COLUMN = "referenceColumn";
 	public static final String REFERENCE_TABLE = "referenceTable";
 	public static final String PRIMARY_KEY = "primaryKey";
-	public static final String TABLE_DDL = "tableDdl";
 }

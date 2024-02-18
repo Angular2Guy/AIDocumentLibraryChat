@@ -35,7 +35,6 @@ import org.springframework.ai.document.Document;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.aidoclibchat.domain.client.ImportClient;
@@ -59,6 +58,7 @@ import jakarta.transaction.Transactional;
 public class TableService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TableService.class);
 	private static final Double MAX_ROW_DISTANCE = 0.30;
+	private record EmbeddingContainer(List<Document> tableDocuments, List<Document> columnDocuments, List<Document> rowDocuments) { }
 	private final ImportClient importClient;
 	private final ImportService importService;
 	private final DocumentVsRepository documentVsRepository;
@@ -99,38 +99,41 @@ public class TableService {
 	}
 
 	public SqlRowSet searchTables(SearchDto searchDto) {
-		var tableDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString(), MetaData.DataType.TABLE,
-				searchDto.getResultAmount());
-		var columnDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString(), MetaData.DataType.COLUMN,
-				searchDto.getResultAmount());
-		List<String> rowSearchStrs = new ArrayList<>();
-		if(searchDto.getSearchString().split("[ -.;,]").length > 5) {			
-			var tokens = List.of(searchDto.getSearchString().split("[ -.;,]"));		
-			for(int i = 0;i<tokens.size();i = i+3) {
-				rowSearchStrs.add(tokens.size() <= i + 3 ? "" : tokens.subList(i, tokens.size() >= i +6 ? i+6 : tokens.size()).stream().collect(Collectors.joining(" ")));
-			}
-		}
-		var rowDocuments = rowSearchStrs.stream().filter(myStr -> !myStr.isBlank()) .flatMap(myStr -> this.documentVsRepository.retrieve(myStr, MetaData.DataType.ROW,
-				searchDto.getResultAmount()).stream()).toList();
+		EmbeddingContainer documentContainer = this.retrieveEmbeddings(searchDto);
 
-//		LOGGER.info("Table: ");
-//		tableDocuments.forEach(myDoc -> LOGGER.info("name: {}, distance: {}",
-//				myDoc.getMetadata().get(MetaData.DATANAME), myDoc.getMetadata().get(MetaData.DISTANCE)));
-//		LOGGER.info("Column: ");
-//		columnDocuments.forEach(myDoc -> LOGGER.info("name: {}, distance: {}",
-//				myDoc.getMetadata().get(MetaData.DATANAME), myDoc.getMetadata().get(MetaData.DISTANCE)));
-//		LOGGER.info("Row: ");
-//		rowDocuments.forEach(
-//				myDoc -> LOGGER.info("name: {}, content: {}, distance: {}", myDoc.getMetadata().get(MetaData.DATANAME),
-//						myDoc.getContent(), myDoc.getMetadata().get(MetaData.DISTANCE)));
+		Prompt prompt = createPrompt(searchDto, documentContainer);
+		
+		String sqlQuery = createQuery(prompt);
+		
+		LOGGER.info("Sql query: {}", sqlQuery);		
+		SqlRowSet rowSet = this.jdbcTemplate.queryForRowSet(sqlQuery);
+		return rowSet;
+	}
 
-		final Float minRowDistance = rowDocuments.stream()
+	private String createQuery(Prompt prompt) {
+		var chatStart = new Date();
+		ChatResponse response = chatClient.call(prompt);
+		String chatResult = response.getResults().stream().map(myGen -> myGen.getOutput().getContent())
+				.collect(Collectors.joining(","));
+		LOGGER.info("AI response time: {}ms", new Date().getTime() - chatStart.getTime());
+		LOGGER.info("AI response: {}", chatResult);
+		String sqlQuery = chatResult; 
+		sqlQuery = sqlQuery.indexOf("'''") < 0 ? sqlQuery : sqlQuery.substring(sqlQuery.indexOf("'''") + 3);
+		sqlQuery = sqlQuery.indexOf("```") < 0 ? sqlQuery : sqlQuery.substring(sqlQuery.indexOf("```") + 3);
+		sqlQuery = sqlQuery.indexOf("\"\"\"") < 0 ? sqlQuery : sqlQuery.substring(sqlQuery.indexOf("\"\"\"") + 3);
+		sqlQuery = sqlQuery.toLowerCase().indexOf("select") < 0 ? sqlQuery : sqlQuery.substring(sqlQuery.toLowerCase().indexOf("select"));
+		sqlQuery = sqlQuery.indexOf(";") < 0 ? sqlQuery : sqlQuery.substring(0, sqlQuery.indexOf(";") + 1);
+		return sqlQuery;
+	}
+
+	private Prompt createPrompt(SearchDto searchDto, EmbeddingContainer documentContainer) {
+		final Float minRowDistance = documentContainer.rowDocuments().stream()
 				.map(myDoc -> (Float) myDoc.getMetadata().getOrDefault(MetaData.DISTANCE, 1.0f)).sorted().findFirst()
 				.orElse(1.0f);
 		LOGGER.info("MinRowDistance: {}", minRowDistance);
-		var sortedRowDocs = rowDocuments.stream().sorted(this.compareDistance()).toList();
-		var sortedColumnDocs = columnDocuments.stream().sorted(this.compareDistance()).toList();
-		var sortedTableDocs = tableDocuments.stream().sorted(this.compareDistance()).toList();
+		var sortedRowDocs = documentContainer.rowDocuments().stream().sorted(this.compareDistance()).toList();
+		var sortedColumnDocs = documentContainer.columnDocuments().stream().sorted(this.compareDistance()).toList();
+		var sortedTableDocs = documentContainer.tableDocuments().stream().sorted(this.compareDistance()).toList();
 		SystemPromptTemplate systemPromptTemplate = this.activeProfile.contains("ollama")
 				? new SystemPromptTemplate(minRowDistance > MAX_ROW_DISTANCE ? String.format(this.ollamaPrompt, "")
 						: String.format(this.ollamaPrompt, columnMatch))
@@ -176,23 +179,37 @@ public class TableService {
 				: new UserMessage(searchDto.getSearchString());
 		Prompt prompt = new Prompt(List.of(systemMessage, userMessage));
 //		LOGGER.info("Prompt: {}", prompt.getContents());
-		var chatStart = new Date();
-		ChatResponse response = chatClient.call(prompt);
-		String chatResult = response.getResults().stream().map(myGen -> myGen.getOutput().getContent())
-				.collect(Collectors.joining(","));
-		LOGGER.info("AI response time: {}ms", new Date().getTime() - chatStart.getTime());
-		LOGGER.info("AI response: {}", chatResult);
-		String sqlQuery = chatResult; 
-		sqlQuery = sqlQuery.indexOf("'''") < 0 ? sqlQuery : sqlQuery.substring(sqlQuery.indexOf("'''") + 3);
-		sqlQuery = sqlQuery.indexOf("```") < 0 ? sqlQuery : sqlQuery.substring(sqlQuery.indexOf("```") + 3);
-		sqlQuery = sqlQuery.indexOf("\"\"\"") < 0 ? sqlQuery : sqlQuery.substring(sqlQuery.indexOf("\"\"\"") + 3);
-		sqlQuery = sqlQuery.toLowerCase().indexOf("select") < 0 ? sqlQuery : sqlQuery.substring(sqlQuery.toLowerCase().indexOf("select"));
-		sqlQuery = sqlQuery.indexOf(";") < 0 ? sqlQuery : sqlQuery.substring(0, sqlQuery.indexOf(";") + 1);
-		LOGGER.info("Sql query: {}", sqlQuery);		
-		SqlRowSet rowSet = this.jdbcTemplate.queryForRowSet(sqlQuery);
-		return rowSet;
+		return prompt;
 	}
 
+	private EmbeddingContainer retrieveEmbeddings(SearchDto searchDto) {
+		var tableDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString(), MetaData.DataType.TABLE,
+				searchDto.getResultAmount());
+		var columnDocuments = this.documentVsRepository.retrieve(searchDto.getSearchString(), MetaData.DataType.COLUMN,
+				searchDto.getResultAmount());
+		List<String> rowSearchStrs = new ArrayList<>();
+		if(searchDto.getSearchString().split("[ -.;,]").length > 5) {			
+			var tokens = List.of(searchDto.getSearchString().split("[ -.;,]"));		
+			for(int i = 0;i<tokens.size();i = i+3) {
+				rowSearchStrs.add(tokens.size() <= i + 3 ? "" : tokens.subList(i, tokens.size() >= i +6 ? i+6 : tokens.size()).stream().collect(Collectors.joining(" ")));
+			}
+		}
+		var rowDocuments = rowSearchStrs.stream().filter(myStr -> !myStr.isBlank()) .flatMap(myStr -> this.documentVsRepository.retrieve(myStr, MetaData.DataType.ROW,
+				searchDto.getResultAmount()).stream()).toList();
+
+//		LOGGER.info("Table: ");
+//		tableDocuments.forEach(myDoc -> LOGGER.info("name: {}, distance: {}",
+//				myDoc.getMetadata().get(MetaData.DATANAME), myDoc.getMetadata().get(MetaData.DISTANCE)));
+//		LOGGER.info("Column: ");
+//		columnDocuments.forEach(myDoc -> LOGGER.info("name: {}, distance: {}",
+//				myDoc.getMetadata().get(MetaData.DATANAME), myDoc.getMetadata().get(MetaData.DISTANCE)));
+//		LOGGER.info("Row: ");
+//		rowDocuments.forEach(
+//				myDoc -> LOGGER.info("name: {}, content: {}, distance: {}", myDoc.getMetadata().get(MetaData.DATANAME),
+//						myDoc.getContent(), myDoc.getMetadata().get(MetaData.DISTANCE)));
+		return new EmbeddingContainer(tableDocuments, columnDocuments, rowDocuments);
+	}
+	
 	private Comparator<? super Document> compareDistance() {
 		return (myDocA, myDocB) -> ((Float) myDocA.getMetadata().get(MetaData.DISTANCE))
 				.compareTo(((Float) myDocB.getMetadata().get(MetaData.DISTANCE)));
@@ -249,7 +266,7 @@ public class TableService {
 		result.getMetadata().put(MetaData.ID, work.getId());
 		result.getMetadata().put(MetaData.DATATYPE, MetaData.DataType.ROW.toString());
 		result.getMetadata().put(MetaData.DATANAME, "style");
-		result.getMetadata().put(MetaData.TABLE_NAME, "museum_hours");
+		result.getMetadata().put(MetaData.TABLE_NAME, "work");
 		return result;
 	}
 
@@ -283,7 +300,6 @@ public class TableService {
 		result.getMetadata().put(MetaData.DATANAME, tableMetadata.getTableName());
 		result.getMetadata().put(MetaData.TABLE_NAME, tableMetadata.getTableName());
 		result.getMetadata().put(MetaData.PRIMARY_KEY, false);
-		result.getMetadata().put(MetaData.TABLE_DDL, tableMetadata.getTableDdl());
 		return result;
 	}
 }
