@@ -59,6 +59,8 @@ public class TableService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TableService.class);
 	private static final Double MAX_ROW_DISTANCE = 0.30;
 	private record EmbeddingContainer(List<Document> tableDocuments, List<Document> columnDocuments, List<Document> rowDocuments) { }
+	record TableColumnNames(List<String> tableNames, Set<String> columnNames) { }
+	record TableNameSchema(String name, String schema) { }
 	private final ImportClient importClient;
 	private final ImportService importService;
 	private final DocumentVsRepository documentVsRepository;
@@ -132,13 +134,55 @@ public class TableService {
 				.orElse(1.0f);
 		LOGGER.info("MinRowDistance: {}", minRowDistance);
 		var sortedRowDocs = documentContainer.rowDocuments().stream().sorted(this.compareDistance()).toList();
-		var sortedColumnDocs = documentContainer.columnDocuments().stream().sorted(this.compareDistance()).toList();
-		var sortedTableDocs = documentContainer.tableDocuments().stream().sorted(this.compareDistance()).toList();
+		var tableColumnNames = createTableColumnNames(documentContainer);
+
+		List<TableNameSchema> tableRecords = this.tableMetadataRepository.findByTableNameIn(tableColumnNames.tableNames())
+				.stream()
+				.map(tableMetaData -> new TableNameSchema(tableMetaData.getTableName(), tableMetaData.getTableDdl()))
+				.collect(Collectors.toList());
+		final AtomicReference<String> joinColumn = new AtomicReference<String>("");
+		final AtomicReference<String> joinTable = new AtomicReference<String>("");
+		final AtomicReference<String> columnValue = new AtomicReference<String>("");
+		sortedRowDocs.stream().filter(myDoc -> minRowDistance <= MAX_ROW_DISTANCE).findFirst().ifPresent(myRowDoc -> {
+			joinTable.set(((String) myRowDoc.getMetadata().get(MetaData.TABLE_NAME)));
+			joinColumn.set(((String) myRowDoc.getMetadata().get(MetaData.DATANAME)));
+			tableColumnNames.columnNames().add(((String) myRowDoc.getMetadata().get(MetaData.DATANAME)));
+			columnValue.set(myRowDoc.getContent());
+			this.tableMetadataRepository
+					.findByTableNameIn(List.of(((String) myRowDoc.getMetadata().get(MetaData.TABLE_NAME)))).stream()
+					.map(myTableMetadata -> new TableNameSchema(myTableMetadata.getTableName(),
+							myTableMetadata.getTableDdl()))
+					.findFirst().ifPresent(myRecord -> tableRecords.add(myRecord));
+		});
+		var messages = createMessages(searchDto, minRowDistance, tableColumnNames, tableRecords, joinColumn, joinTable,
+				columnValue);
+		Prompt prompt = new Prompt(messages);
+//		LOGGER.info("Prompt: {}", prompt.getContents());
+		return prompt;
+	}
+
+	private List<Message> createMessages(SearchDto searchDto, final Float minRowDistance,
+			TableColumnNames tableColumnNames, List<TableNameSchema> tableRecords,
+			final AtomicReference<String> joinColumn, final AtomicReference<String> joinTable,
+			final AtomicReference<String> columnValue) {
 		SystemPromptTemplate systemPromptTemplate = this.activeProfile.contains("ollama")
 				? new SystemPromptTemplate(minRowDistance > MAX_ROW_DISTANCE ? String.format(this.ollamaPrompt, "")
 						: String.format(this.ollamaPrompt, columnMatch))
 				: new SystemPromptTemplate(minRowDistance > MAX_ROW_DISTANCE ? String.format(this.systemPrompt, "")
 						: String.format(this.systemPrompt, columnMatch));
+		Message systemMessage = systemPromptTemplate
+				.createMessage(Map.of("columns", tableColumnNames.columnNames().stream().collect(Collectors.joining(",")), "schemas",
+						tableRecords.stream().map(myRecord -> myRecord.schema()).collect(Collectors.joining(";")),
+						"prompt", searchDto.getSearchString(), "joinColumn", joinColumn.get(), "joinTable",
+						joinTable.get(), "columnValue", columnValue.get()));
+		UserMessage userMessage = this.activeProfile.contains("ollama") ? new UserMessage(systemMessage.getContent())
+				: new UserMessage(searchDto.getSearchString());
+		return List.of(systemMessage, userMessage);
+	}
+
+	private TableColumnNames createTableColumnNames(EmbeddingContainer documentContainer) {
+		var sortedColumnDocs = documentContainer.columnDocuments().stream().sorted(this.compareDistance()).toList();
+		var sortedTableDocs = documentContainer.tableDocuments().stream().sorted(this.compareDistance()).toList();		
 		List<Document> filteredColDocs = sortedColumnDocs.stream()
 				.filter(myRowDoc -> sortedTableDocs.stream().limit(3)
 						.anyMatch(myTableDoc -> myTableDoc.getMetadata().get(MetaData.TABLE_NAME)
@@ -149,37 +193,9 @@ public class TableService {
 		Set<String> columnNames = filteredColDocs.stream()
 				.map(myDoc -> ((String) myDoc.getMetadata().get(MetaData.DATANAME))).collect(Collectors.toSet());
 		List<String> tableMetadataTableNames = filteredColDocs.stream()
-				.map(myDoc -> ((String) myDoc.getMetadata().get(MetaData.TABLE_NAME))).distinct().toList();
-		record TableNameSchema(String name, String schema) {
-		}
-		List<TableNameSchema> tableRecords = this.tableMetadataRepository.findByTableNameIn(tableMetadataTableNames)
-				.stream()
-				.map(tableMetaData -> new TableNameSchema(tableMetaData.getTableName(), tableMetaData.getTableDdl()))
-				.collect(Collectors.toList());
-		final AtomicReference<String> joinColumn = new AtomicReference<String>("");
-		final AtomicReference<String> joinTable = new AtomicReference<String>("");
-		final AtomicReference<String> columnValue = new AtomicReference<String>("");
-		sortedRowDocs.stream().filter(myDoc -> minRowDistance <= MAX_ROW_DISTANCE).findFirst().ifPresent(myRowDoc -> {
-			joinTable.set(((String) myRowDoc.getMetadata().get(MetaData.TABLE_NAME)));
-			joinColumn.set(((String) myRowDoc.getMetadata().get(MetaData.DATANAME)));
-			columnNames.add(((String) myRowDoc.getMetadata().get(MetaData.DATANAME)));
-			columnValue.set(myRowDoc.getContent());
-			this.tableMetadataRepository
-					.findByTableNameIn(List.of(((String) myRowDoc.getMetadata().get(MetaData.TABLE_NAME)))).stream()
-					.map(myTableMetadata -> new TableNameSchema(myTableMetadata.getTableName(),
-							myTableMetadata.getTableDdl()))
-					.findFirst().ifPresent(myRecord -> tableRecords.add(myRecord));
-		});
-		Message systemMessage = systemPromptTemplate
-				.createMessage(Map.of("columns", columnNames.stream().collect(Collectors.joining(",")), "schemas",
-						tableRecords.stream().map(myRecord -> myRecord.schema()).collect(Collectors.joining(";")),
-						"prompt", searchDto.getSearchString(), "joinColumn", joinColumn.get(), "joinTable",
-						joinTable.get(), "columnValue", columnValue.get()));
-		UserMessage userMessage = this.activeProfile.contains("ollama") ? new UserMessage(systemMessage.getContent())
-				: new UserMessage(searchDto.getSearchString());
-		Prompt prompt = new Prompt(List.of(systemMessage, userMessage));
-//		LOGGER.info("Prompt: {}", prompt.getContents());
-		return prompt;
+				.map(myDoc -> ((String) myDoc.getMetadata().get(MetaData.TABLE_NAME))).distinct().toList();		
+		var tableColumnNames = new TableColumnNames(tableMetadataTableNames, columnNames);
+		return tableColumnNames;
 	}
 
 	private EmbeddingContainer retrieveEmbeddings(SearchDto searchDto) {
