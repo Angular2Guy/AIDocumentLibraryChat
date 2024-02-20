@@ -151,17 +151,22 @@ public class TableService {
 		final AtomicReference<String> joinColumn = new AtomicReference<String>("");
 		final AtomicReference<String> joinTable = new AtomicReference<String>("");
 		final AtomicReference<String> columnValue = new AtomicReference<String>("");
-		sortedRowDocs.stream().filter(myDoc -> minRowDistance <= MAX_ROW_DISTANCE).findFirst().ifPresent(myRowDoc -> {
-			joinTable.set(((String) myRowDoc.getMetadata().get(MetaData.TABLE_NAME)));
-			joinColumn.set(((String) myRowDoc.getMetadata().get(MetaData.DATANAME)));
-			tableColumnNames.columnNames().add(((String) myRowDoc.getMetadata().get(MetaData.DATANAME)));
-			columnValue.set(myRowDoc.getContent());
-			this.tableMetadataRepository
-					.findByTableNameIn(List.of(((String) myRowDoc.getMetadata().get(MetaData.TABLE_NAME)))).stream()
-					.map(myTableMetadata -> new TableNameSchema(myTableMetadata.getTableName(),
-							myTableMetadata.getTableDdl()))
-					.findFirst().ifPresent(myRecord -> tableRecords.add(myRecord));
-		});
+		sortedRowDocs.stream().filter(myDoc -> minRowDistance <= MAX_ROW_DISTANCE)
+				.filter(myRowDoc -> tableRecords.stream()
+						.filter(myRecord -> myRecord.name().equals(myRowDoc.getMetadata().get(MetaData.TABLE_NAME)))
+						.findFirst().isEmpty())
+				.findFirst().ifPresent(myRowDoc -> {
+					joinTable.set(((String) myRowDoc.getMetadata().get(MetaData.TABLE_NAME)));
+					joinColumn.set(((String) myRowDoc.getMetadata().get(MetaData.DATANAME)));
+					tableColumnNames.columnNames().add(((String) myRowDoc.getMetadata().get(MetaData.DATANAME)));
+					columnValue.set(myRowDoc.getContent());
+					this.tableMetadataRepository
+							.findByTableNameIn(List.of(((String) myRowDoc.getMetadata().get(MetaData.TABLE_NAME))))
+							.stream()
+							.map(myTableMetadata -> new TableNameSchema(myTableMetadata.getTableName(),
+									myTableMetadata.getTableDdl()))
+							.findFirst().ifPresent(myRecord -> tableRecords.add(myRecord));
+				});
 		var messages = this.createMessages(searchDto, minRowDistance, tableColumnNames, tableRecords, joinColumn,
 				joinTable, columnValue);
 		Prompt prompt = new Prompt(messages);
