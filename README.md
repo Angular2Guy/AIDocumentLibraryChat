@@ -3,6 +3,8 @@ This is a project to show howto use SpringAI to chat with the documents in a lib
 
 The project uses Spring Boot with Spring AI to access OpenAI and the vector database. The Postgresql DB is used with the vector, hstore and the uuid-ossp extensions. Liquibase is used to manage the database migrations. Jpa is used for database access in the services by the rest controllers. For the frontend Angular, Angular Material and Typescript is used to create the table of documents, the upload dialog and the document chat. Angular Cli is used for the frontend build and Gradle for the project build.
 
+The project uses Spring AI to turn questions with a LLMs into Sql queries and display the result in the frontend. Based on metadata that is provided for the relational dataset the LLM is able to create embeddings for the metadata of the tables and columns. The project also creates embeddings for the content of certain columns to be able to decide if the column should be used as join in the Sql query. With that embedding metadata the LLM is able to turn a question in a reasonable Sql query and display the result in the frontend. The frontend uses a Angular Material Table with a flexible amount of columns and rows. 
+
 Author: Sven Loesekann
 
 Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, Spring AI, OpenAI, Ollama, Postgresql(vector,hstore), Liquibase, Jpa, Gradle, Java
@@ -10,6 +12,7 @@ Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, S
 [![CodeQL](https://github.com/Angular2Guy/AIDocumentLibraryChat/actions/workflows/codeql.yml/badge.svg)](https://github.com/Angular2Guy/AIDocumentLibraryChat/actions/workflows/codeql.yml)
 
 ## Articles
+* [Using Spring AI with LLMs to query relational databases](https://angular2guy.wordpress.com/2024/03/01/using-spring-ai-with-ai-llms-to-query-relational-databases/)
 * [Making Spring AI and OpenAI GPT useful with RAG on your own Documents](https://angular2guy.wordpress.com/2023/11/19/making-spring-ai-and-openai-gpt-useful-with-rag-on-your-own-documents/)
 * [Implementing RAG With Spring AI and Ollama Using Local AI/LLM Models](https://angular2guy.wordpress.com/2023/12/17/using-spring-ai-with-ollama-for-a-local-ai-model/)
 
@@ -17,9 +20,14 @@ Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, S
 1. It shows the list of the documents.
 2. It uploads new documents and creates the embeddings.
 3. It provides a chat box and shows the AI answers based on the nearest document with a link.
+4. It displays the result of the Sql query.
 
 ## Mission Statement
-The project shows howto use Spring AI to generate answers based on a provided set of documents with a link to the source. The Angular frontend provides the use interface for the backend and shows the responses. Spring AI makes using OpenAI / Ollama services simple and useful and this project demonstrates that. 
+The project shows howto use Spring AI to generate answers based on a provided set of documents with a link to the source. The Angular frontend provides the user interface for the backend and shows the responses. 
+
+The project shows howto use Spring AI to generate Sql queries based on provided metadata for the tables/columns. The Angular frontend provides a user interface to display the result in table.
+
+Spring AI makes using OpenAI / Ollama services simple and useful and this project demonstrates that. 
 
 ## C4 Architecture Diagrams
 The project has a [System Context Diagram](structurizr/diagrams/structurizr-1-SystemContext.svg), a [Container Diagram](structurizr/diagrams/structurizr-1-Containers.svg) and a [Component Diagram](structurizr/diagrams/structurizr-1-Components.svg). The Diagrams have been created with Structurizr. The file runStructurizr.sh contains the commands to use Structurizr and the directory structurizr contains the dsl file.
