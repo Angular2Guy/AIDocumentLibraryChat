@@ -15,6 +15,8 @@
  */
 package ch.xxx.aidoclibchat.adapter.config;
 
+import java.util.function.Function;
+
 import org.springframework.ai.embedding.EmbeddingClient;
 import org.springframework.ai.transformers.TransformersEmbeddingClient;
 import org.springframework.context.annotation.Bean;
@@ -23,14 +25,26 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.EnableAsync;
 
+import ch.xxx.aidoclibchat.domain.client.OpenLibraryClient;
+
 @Configuration
 @EnableAsync
 public class ApplicationConfig {
-
+	private final OpenLibraryClient openLibraryClient;
+	
+	public ApplicationConfig(OpenLibraryClient openLibraryClient) {
+		this.openLibraryClient = openLibraryClient;
+	}
+	
 	@Primary
 	@Profile("ollama")
 	@Bean
 	public EmbeddingClient embeddingClient() {
 		return new TransformersEmbeddingClient();
+	}
+	
+	@Bean
+	public Function<OpenLibraryClient.Request, OpenLibraryClient.Response> openLibraryClient() {		
+		return this.openLibraryClient::apply;
 	}
 }
