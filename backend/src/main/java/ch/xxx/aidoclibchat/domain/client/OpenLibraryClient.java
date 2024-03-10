@@ -18,7 +18,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public interface OpenLibraryClient extends Function<OpenLibraryClient.Request, OpenLibraryClient.Response> {
 	@JsonInclude(Include.NON_NULL)
 	@JsonClassDescription("OpenLibrary API request")
-	record Request(@JsonProperty(required=false, value="author") @JsonPropertyDescription("The book author") String author ) {}
+	record Request(@JsonProperty(required=false, value="author") @JsonPropertyDescription("The book author") String author,
+			@JsonProperty(required=false, value="title") @JsonPropertyDescription("The book title") String title,
+			@JsonProperty(required=false, value="subject") @JsonPropertyDescription("The book subject") String subject) {}
 	record Response(String title) {}
 	
 	@JsonInclude(Include.NON_NULL)

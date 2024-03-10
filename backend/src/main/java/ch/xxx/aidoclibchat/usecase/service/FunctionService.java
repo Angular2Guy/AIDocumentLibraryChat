@@ -35,6 +35,7 @@ public class FunctionService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FunctionService.class);
 	private final ObjectMapper objectMapper;
 	private final ChatClient chatClient;
+	private final OpenLibraryClient openLibraryClient;
 	private final List<String> nullCodes = List.of("none", "string");
 	private final String promptStr = """
 			You have access to the following tools:
@@ -68,9 +69,10 @@ public class FunctionService {
 	@Value("${spring.profiles.active:}")
 	private String activeProfile;
 
-	public FunctionService(ObjectMapper objectMapper, ChatClient chatClient) {
+	public FunctionService(ObjectMapper objectMapper, ChatClient chatClient, OpenLibraryClient openLibraryClient) {
 		this.objectMapper = objectMapper;
 		this.chatClient = chatClient;
+		this.openLibraryClient = openLibraryClient;
 	}
 
 	public String functionCall(String question) {
@@ -90,10 +92,10 @@ public class FunctionService {
 		var query = String.format(this.promptStr, jsonStr, question);
 		int aiCallCounter = 0;
 		var response = "";
-		while (aiCallCounter < 3) {
+		List<Tool> myToolsList = List.of();
+		while (aiCallCounter < 3 && myToolsList.isEmpty()) {
 			aiCallCounter += 1;
-			response = this.chatClient.call(query);			
-			List<Tool> myTools1 = null;
+			response = this.chatClient.call(query);
 			try {
 				response = response.substring(response.indexOf("{"), response.lastIndexOf("}") + 1);
 				final var atomicResponse = new AtomicReference<String>(response);
@@ -103,20 +105,25 @@ public class FunctionService {
 				});
 				var myTools = this.objectMapper.readValue(atomicResponse.get(), Tools.class);
 //		LOGGER.info(myTools.toString());
-				myTools1 = myTools.tools.stream()
+				myToolsList = myTools.tools().stream()
 						.filter(myTool1 -> myTool1.toolInput().values().stream()
 								.filter(myValue -> (myValue instanceof String) && !((String) myValue).isBlank())
 								.findFirst().isPresent())
 						.toList();
-				if (myTools1.isEmpty()) {
+				if (myToolsList.isEmpty()) {
 					throw new RuntimeException("No parameters found.");
 				}
 			} catch (Exception e) {
-				LOGGER.error("ChatResponse: {}",response);
+				LOGGER.error("ChatResponse: {}", response);
 				LOGGER.error("Chatresult Json Mapping failed.", e);
 			}
 		}
-		
+		myToolsList.forEach(myTool -> {
+			var myRequest = new OpenLibraryClient.Request((String) myTool.toolInput().get("author"),
+					(String) myTool.toolInput().get("title"), (String) myTool.toolInput().get("subject"));
+			var myResponse = this.openLibraryClient.apply(myRequest);
+			LOGGER.info(myResponse.toString());
+		});
 		return response;
 	}
 }

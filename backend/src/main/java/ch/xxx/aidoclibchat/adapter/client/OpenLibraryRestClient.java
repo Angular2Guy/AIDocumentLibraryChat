@@ -12,15 +12,19 @@
  */
 package ch.xxx.aidoclibchat.adapter.client;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import ch.xxx.aidoclibchat.domain.client.OpenLibraryClient;
 
 @Component
 public class OpenLibraryRestClient implements OpenLibraryClient {
+	private static final Logger LOGGER = LoggerFactory.getLogger(OpenLibraryRestClient.class);
 	
 	@Override
 	public Response apply(Request request) {
+		LOGGER.info(request.toString());
 		return new Response("Kevin Rudd");
 	}
 }
