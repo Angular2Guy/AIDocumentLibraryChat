@@ -12,6 +12,10 @@
  */
 package ch.xxx.aidoclibchat.adapter.client;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -21,10 +25,19 @@ import ch.xxx.aidoclibchat.domain.client.OpenLibraryClient;
 @Component
 public class OpenLibraryRestClient implements OpenLibraryClient {
 	private static final Logger LOGGER = LoggerFactory.getLogger(OpenLibraryRestClient.class);
-	
+	private final String baseUrl = "https://openlibrary.org/search.json";
+
 	@Override
 	public Response apply(Request request) {
-		LOGGER.info(request.toString());
+		var authorOpt = Optional.ofNullable(request.author()).stream().filter(myAuthor -> !myAuthor.isBlank())
+				.map(myAuthor -> "author=" + myAuthor.replace(" ", "+")).findFirst();
+		var titleOpt = Optional.ofNullable(request.title()).stream().filter(myAuthor -> !myAuthor.isBlank())
+				.map(myAuthor -> "title=" + myAuthor.replace(" ", "+")).findFirst();
+		var subjectOpt = Optional.ofNullable(request.subject()).stream().filter(myAuthor -> !myAuthor.isBlank())
+				.map(myAuthor -> "subject=" + myAuthor.replace(" ", "+")).findFirst();
+		var paramStr = "?" + List.of(authorOpt, titleOpt, subjectOpt).stream().filter(Optional::isPresent)
+				.map(myOpt -> myOpt.get()).collect(Collectors.joining("&"));
+		LOGGER.info(this.baseUrl + paramStr);
 		return new Response("Kevin Rudd");
 	}
 }

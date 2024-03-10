@@ -114,8 +114,8 @@ public class FunctionService {
 					throw new RuntimeException("No parameters found.");
 				}
 			} catch (Exception e) {
-				LOGGER.error("ChatResponse: {}", response);
 				LOGGER.error("Chatresult Json Mapping failed.", e);
+				LOGGER.error("ChatResponse: {}", response);
 			}
 		}
 		myToolsList.forEach(myTool -> {
