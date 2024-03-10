@@ -20,8 +20,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.ChatClient;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.bind.ConstructorBinding;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -54,6 +56,13 @@ public class FunctionService {
 			User Query: 
 			%s
 			""";
+	private record Tool(@JsonProperty("tool")String tool, @JsonProperty("tool_input") Map<String, Object> toolInput) {
+		@ConstructorBinding
+		public Tool(String tool, String jsonSchema) {
+			this(tool, OpenLibraryClient.parseJson(jsonSchema));
+		}
+	}
+	private record Tools(@JsonProperty("tools") List<Tool> tools) { }
 	@Value("${spring.profiles.active:}")
 	private String activeProfile;
 
@@ -78,12 +87,17 @@ public class FunctionService {
 		}
 		var query = String.format(this.promptStr, jsonStr, question);
 		var response = this.chatClient.call(query);
+		try {
 		response = response.substring(response.indexOf("{"), response.lastIndexOf("}"));
 		final var atomicResponse = new AtomicReference<String>(response);
 		this.nullCodes.forEach(myCode -> {
 			var myResponse = atomicResponse.get();
 			atomicResponse.set(myResponse.replaceAll(myCode, ""));
 			});
+		
+		} catch(Exception e) {
+			LOGGER.error("Json Mapping failed.",e);
+		}
 		return response;
 	}
 }
