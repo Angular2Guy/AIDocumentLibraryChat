@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.xxx.aidoclibchat.domain.client.OpenLibraryClient;
 import ch.xxx.aidoclibchat.domain.client.OpenLibraryClient.FunctionTool.Type;
+import ch.xxx.aidoclibchat.domain.client.OpenLibraryClient.Response;
 
 @Service
 public class FunctionService {
@@ -75,9 +76,9 @@ public class FunctionService {
 		this.openLibraryClient = openLibraryClient;
 	}
 
-	public String functionCall(String question) {
+	public Response functionCall(String question) {
 		if (!this.activeProfile.contains("ollama")) {
-			return "false";
+			return new Response(0L, 0L, false, List.of());
 		}
 		var description = "Search for books by author, title or subject.";
 		var name = "booksearch";
@@ -91,7 +92,7 @@ public class FunctionService {
 		}
 		var query = String.format(this.promptStr, jsonStr, question);
 		int aiCallCounter = 0;
-		var responseRef = new AtomicReference<String>("false");
+		var responseRef = new AtomicReference<Response>(new Response(0L, 0L, false, List.of()));
 		List<Tool> myToolsList = List.of();
 		while (aiCallCounter < 3 && myToolsList.isEmpty()) {
 			aiCallCounter += 1;
@@ -118,12 +119,13 @@ public class FunctionService {
 				LOGGER.error("ChatResponse: {}", response);
 			}
 		}
+		
 		myToolsList.forEach(myTool -> {
 			var myRequest = new OpenLibraryClient.Request((String) myTool.toolInput().get("author"),
 					(String) myTool.toolInput().get("title"), (String) myTool.toolInput().get("subject"));
 			var myResponse = this.openLibraryClient.apply(myRequest);
 			//LOGGER.info(myResponse.toString());
-			responseRef.set(myResponse.toString());
+			responseRef.set(myResponse);
 		});
 		return responseRef.get();
 	}

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import ch.xxx.aidoclibchat.domain.client.OpenLibraryClient;
 import ch.xxx.aidoclibchat.usecase.service.FunctionService;
 
 @RestController
@@ -29,8 +30,8 @@ public class FunctionController {
 	}
 	
 	//example: http://localhost:8080/rest/function/books?question=show+books+of+author+kevin+rudd+with+title+avoidable+war
-	@GetMapping("/books")
-	public String postQuestion(@RequestParam(name="question", defaultValue = "") String question) {
+	@GetMapping(path =  "/books", produces = "application/json")
+	public OpenLibraryClient.Response postQuestion(@RequestParam(name="question", defaultValue = "") String question) {
 		return this.functionService.functionCall(question);
 	}
 	
