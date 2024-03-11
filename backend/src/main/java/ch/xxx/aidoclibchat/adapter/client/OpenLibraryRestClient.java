@@ -40,8 +40,8 @@ public class OpenLibraryRestClient implements OpenLibraryClient {
 		var urlStr = 
 				String.format("%s?%s", this.baseUrl, paramsStr);
 		LOGGER.info(urlStr);
-		var response = RestClient.create().get().uri(urlStr).retrieve().body(String.class);
-		return new Response(response);
+		var response = RestClient.create().get().uri(urlStr).retrieve().body(Response.class);
+		return response;
 	}
 
 	private Optional<String> createParamOpt(String valueStr, String keyStr) {

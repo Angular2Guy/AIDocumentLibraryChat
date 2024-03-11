@@ -1,11 +1,13 @@
 package ch.xxx.aidoclibchat.domain.client;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
 import org.springframework.boot.context.properties.bind.ConstructorBinding;
 
 import com.fasterxml.jackson.annotation.JsonClassDescription;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -16,12 +18,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 public interface OpenLibraryClient extends Function<OpenLibraryClient.Request, OpenLibraryClient.Response> {
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	record Book(@JsonProperty(value= "author_name", required = false) List<String> authorName) {}
 	@JsonInclude(Include.NON_NULL)
 	@JsonClassDescription("OpenLibrary API request")
 	record Request(@JsonProperty(required=false, value="author") @JsonPropertyDescription("The book author") String author,
 			@JsonProperty(required=false, value="title") @JsonPropertyDescription("The book title") String title,
 			@JsonProperty(required=false, value="subject") @JsonPropertyDescription("The book subject") String subject) {}
-	record Response(String title) {}
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	record Response(Long numFound, Long start, Boolean numFoundExact, List<Book> docs) {}
 	
 	@JsonInclude(Include.NON_NULL)
 	record FunctionTool(
