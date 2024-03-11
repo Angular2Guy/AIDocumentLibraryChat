@@ -12,6 +12,8 @@
  */
 package ch.xxx.aidoclibchat.adapter.client;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClient;
 
 import ch.xxx.aidoclibchat.domain.client.OpenLibraryClient;
 
@@ -29,15 +32,20 @@ public class OpenLibraryRestClient implements OpenLibraryClient {
 
 	@Override
 	public Response apply(Request request) {
-		var authorOpt = Optional.ofNullable(request.author()).stream().filter(myAuthor -> !myAuthor.isBlank())
-				.map(myAuthor -> "author=" + myAuthor.replace(" ", "+")).findFirst();
-		var titleOpt = Optional.ofNullable(request.title()).stream().filter(myAuthor -> !myAuthor.isBlank())
-				.map(myAuthor -> "title=" + myAuthor.replace(" ", "+")).findFirst();
-		var subjectOpt = Optional.ofNullable(request.subject()).stream().filter(myAuthor -> !myAuthor.isBlank())
-				.map(myAuthor -> "subject=" + myAuthor.replace(" ", "+")).findFirst();
-		var paramStr = "?" + List.of(authorOpt, titleOpt, subjectOpt).stream().filter(Optional::isPresent)
-				.map(myOpt -> myOpt.get()).collect(Collectors.joining("&"));
-		LOGGER.info(this.baseUrl + paramStr);
-		return new Response("Kevin Rudd");
+		var authorOpt = this.createParamOpt(request.author(), "author");
+		var titleOpt = this.createParamOpt(request.title(), "title");
+		var subjectOpt = this.createParamOpt(request.subject(), "subject");
+		var paramsStr = List.of(authorOpt, titleOpt, subjectOpt).stream()
+				.filter(Optional::isPresent).map(myOpt -> myOpt.get()).collect(Collectors.joining("&"));
+		var urlStr = 
+				String.format("%s?%s", this.baseUrl, paramsStr);
+		LOGGER.info(urlStr);
+		var response = RestClient.create().get().uri(urlStr).retrieve().body(String.class);
+		return new Response(response);
+	}
+
+	private Optional<String> createParamOpt(String valueStr, String keyStr) {
+		return Optional.ofNullable(valueStr).stream().filter(myAuthor -> !myAuthor.isBlank())
+				.map(myAuthor -> String.format("%s=%s", keyStr, URLEncoder.encode(myAuthor, StandardCharsets.UTF_8))).findFirst();
 	}
 }

@@ -28,6 +28,7 @@ public class FunctionController {
 		this.functionService = functionService;
 	}
 	
+	//example: http://localhost:8080/rest/function/books?question=show+books+of+author+kevin+rudd+with+title+avoidable+war
 	@GetMapping("/books")
 	public String postQuestion(@RequestParam(name="question", defaultValue = "") String question) {
 		return this.functionService.functionCall(question);

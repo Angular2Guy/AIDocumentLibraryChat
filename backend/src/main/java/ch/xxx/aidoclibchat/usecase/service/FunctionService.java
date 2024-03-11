@@ -91,11 +91,11 @@ public class FunctionService {
 		}
 		var query = String.format(this.promptStr, jsonStr, question);
 		int aiCallCounter = 0;
-		var response = "";
+		var responseRef = new AtomicReference<String>("false");
 		List<Tool> myToolsList = List.of();
 		while (aiCallCounter < 3 && myToolsList.isEmpty()) {
 			aiCallCounter += 1;
-			response = this.chatClient.call(query);
+			var response = this.chatClient.call(query);
 			try {
 				response = response.substring(response.indexOf("{"), response.lastIndexOf("}") + 1);
 				final var atomicResponse = new AtomicReference<String>(response);
@@ -122,8 +122,9 @@ public class FunctionService {
 			var myRequest = new OpenLibraryClient.Request((String) myTool.toolInput().get("author"),
 					(String) myTool.toolInput().get("title"), (String) myTool.toolInput().get("subject"));
 			var myResponse = this.openLibraryClient.apply(myRequest);
-			LOGGER.info(myResponse.toString());
+			//LOGGER.info(myResponse.toString());
+			responseRef.set(myResponse.toString());
 		});
-		return response;
+		return responseRef.get();
 	}
 }
