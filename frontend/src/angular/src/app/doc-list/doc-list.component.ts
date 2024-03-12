@@ -74,6 +74,10 @@ export class DocListComponent implements OnInit {
   protected tableSearch(): void {
     this.router.navigate(['/tablesearch']);
   }
+  
+  protected functionSearch(): void {
+	  this.router.navigate(['/functionsearch']);
+  }
 
   protected showDocument(documentId: number): void {
     if (!!this.tabRef) {

@@ -11,23 +11,13 @@
    limitations under the License.
  */
 import { Routes } from '@angular/router';
+import { FunctionSearchComponent } from './function-search.component';
 
-export const routes: Routes = [
+
+export const FUNCTIONSEARCH: Routes = [
   {
-    path: 'doclist',
-    loadChildren: () => import('./doc-list').then((mod) => mod.DOCLIST),
+    path: '',
+    component: FunctionSearchComponent,
   },
-  {
-    path: 'docsearch',
-    loadChildren: () => import('./doc-search').then((mod) => mod.DOCSEARCH),
-  },
-  {
-    path: 'tablesearch',
-    loadChildren: () => import('./table-search').then((mod) => mod.TABLESEARCH),
-  },
-  {
-	path: 'functionsearch',
-	loadChildren: () => import('./function-search').then((mod) => mod.FUNCTIONSEARCH),
-  },
-  { path: '**', redirectTo: 'doclist' },
+  { path: '**', redirectTo: '' },
 ];
