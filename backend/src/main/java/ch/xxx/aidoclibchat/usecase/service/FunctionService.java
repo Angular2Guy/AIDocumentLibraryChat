@@ -76,7 +76,7 @@ public class FunctionService {
 		this.openLibraryClient = openLibraryClient;
 	}
 
-	public Response functionCall(String question) {
+	public Response functionCall(String question, Long resultsAmount) {
 		if (!this.activeProfile.contains("ollama")) {
 			return new Response(0L, 0L, false, List.of());
 		}

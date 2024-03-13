@@ -12,12 +12,14 @@
  */
 package ch.xxx.aidoclibchat.adapter.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ch.xxx.aidoclibchat.domain.client.OpenLibraryClient;
+import ch.xxx.aidoclibchat.domain.model.dto.FunctionSearch;
 import ch.xxx.aidoclibchat.usecase.service.FunctionService;
 
 @RestController
@@ -30,9 +32,14 @@ public class FunctionController {
 	}
 	
 	//example: http://localhost:8080/rest/function/books?question=show+books+of+author+kevin+rudd+with+title+avoidable+war
-	@GetMapping(path =  "/books", produces = "application/json")
-	public OpenLibraryClient.Response postQuestion(@RequestParam(name="question", defaultValue = "") String question) {
-		return this.functionService.functionCall(question);
+//	@GetMapping(path =  "/books", produces = "application/json")
+//	public OpenLibraryClient.Response postQuestion(@RequestParam(name="question", defaultValue = "") String question) {
+//		return this.functionService.functionCall(question);
+//	}
+	
+	@PostMapping(path="/books", produces = MediaType.APPLICATION_JSON_VALUE)
+	public OpenLibraryClient.Response postQuestion(@RequestBody FunctionSearch functionSearch) {
+		return this.functionService.functionCall(functionSearch.question(), functionSearch.resultsAmount());
 	}
 	
 }

@@ -42,3 +42,16 @@
     </button>
   </div>
 </div>
+@if(searching) {
+<div class="spinner-container">
+  <div class="spinner-box">
+    <mat-spinner></mat-spinner>
+    <div i18n="@@searchWorking">The AI is working on the answer.</div>
+    <div i18n="@@searchBePatient">
+      Please be patient. {{ msWorking / 1000 | number : "1.3" }} sec.
+    </div>
+  </div>
+</div>
+} @else {
+  <div>{{result | json}}</div>
+}
