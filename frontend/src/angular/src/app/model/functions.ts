@@ -14,3 +14,24 @@ export interface FunctionSearch {
   question: string;  
   resultAmount: number;
 }
+
+export interface Book {
+	title: string;
+	type: string;
+	author_name: string[];
+	language: string[];
+	publish_date: string[];
+	publisher: string[];
+	subject: string[];
+	place: string[];
+	time: string[];
+	person: string[];
+	ratings_average: number;
+}
+
+export interface FunctionResponse {
+	numFound: number;
+	start: number;
+	numFoundExact: boolean;
+	docs: Book[];
+}
