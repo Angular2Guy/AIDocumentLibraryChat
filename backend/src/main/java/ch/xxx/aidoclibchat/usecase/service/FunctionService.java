@@ -105,7 +105,7 @@ public class FunctionService {
 					atomicResponse.set(myResponse.replaceAll(myCode, ""));
 				});
 				var myTools = this.objectMapper.readValue(atomicResponse.get(), Tools.class);
-//		LOGGER.info(myTools.toString());
+				//		LOGGER.info(myTools.toString());
 				myToolsList = myTools.tools().stream()
 						.filter(myTool1 -> myTool1.toolInput().values().stream()
 								.filter(myValue -> (myValue instanceof String) && !((String) myValue).isBlank())
@@ -119,12 +119,12 @@ public class FunctionService {
 				LOGGER.error("ChatResponse: {}", response);
 			}
 		}
-		
+
 		myToolsList.forEach(myTool -> {
 			var myRequest = new OpenLibraryClient.Request((String) myTool.toolInput().get("author"),
 					(String) myTool.toolInput().get("title"), (String) myTool.toolInput().get("subject"));
 			var myResponse = this.openLibraryClient.apply(myRequest);
-			//LOGGER.info(myResponse.toString());
+			// LOGGER.info(myResponse.toString());
 			responseRef.set(myResponse);
 		});
 		return responseRef.get();
