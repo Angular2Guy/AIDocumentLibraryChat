@@ -39,6 +39,7 @@ dependencies {
 	implementation 'net.javacrumbs.shedlock:shedlock-spring:5.2.0'
 	implementation 'net.javacrumbs.shedlock:shedlock-provider-jdbc-template:5.2.0'
 	implementation 'org.springframework.ai:spring-ai-pgvector-store-spring-boot-starter:0.8.1-SNAPSHOT'
+	implementation 'org.springframework.ai:spring-ai-transformers-spring-boot-starter:0.8.1-SNAPSHOT'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testImplementation 'com.tngtech.archunit:archunit-junit5:1.1.0'
@@ -46,7 +47,6 @@ dependencies {
 	
 	if(project.hasProperty('useOllama')) {
 		implementation 'org.springframework.ai:spring-ai-ollama-spring-boot-starter:0.8.1-SNAPSHOT'
-		implementation 'org.springframework.ai:spring-ai-transformers-spring-boot-starter:0.8.1-SNAPSHOT'
 	} else {	    
 		implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter:0.8.1-SNAPSHOT'
 	}
