@@ -23,7 +23,8 @@ Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, S
 1. It shows the list of the documents.
 2. It uploads new documents and creates the embeddings.
 3. It provides a chat box and shows the AI answers based on the nearest document with a link.
-4. It displays the result of the Sql query.
+4. It displays the result of the Sql query based on the question.
+5. It displays the results of the rest api with parameters based on to question.
 
 ## Mission Statement
 The project shows howto use Spring AI to generate answers based on a provided set of documents with a link to the source. The Angular frontend provides the user interface for the backend and shows the responses. 
