@@ -5,6 +5,8 @@ The project uses Spring Boot with Spring AI to access OpenAI and the vector data
 
 The project uses Spring AI to turn questions with a LLMs into Sql queries and display the result in the frontend. Based on metadata that is provided for the relational dataset the LLM is able to create embeddings for the metadata of the tables and columns. The project also creates embeddings for the content of certain columns to be able to decide if the column should be used as join in the Sql query. With that embedding metadata the LLM is able to turn a question in a reasonable Sql query and display the result in the frontend. The frontend uses a Angular Material Table with a flexible amount of columns and rows. 
 
+The project uses Spring AI to turn questions about books into a rest function call to the OpenLibrary Api. It uses the Ollama Mixtral model to take the parameters from the question and turn them in a Json format that can be used to call the Api.
+
 Author: Sven Loesekann
 
 Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, Spring AI, OpenAI, Ollama, Postgresql(vector,hstore), Liquibase, Jpa, Gradle, Java
@@ -12,6 +14,7 @@ Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, S
 [![CodeQL](https://github.com/Angular2Guy/AIDocumentLibraryChat/actions/workflows/codeql.yml/badge.svg)](https://github.com/Angular2Guy/AIDocumentLibraryChat/actions/workflows/codeql.yml)
 
 ## Articles
+* [Extending AI/LLM Capabilities](https://angular2guy.wordpress.com/2024/03/17/extending-ai-llm-capabilities/)
 * [Using Spring AI with LLMs to query relational databases](https://angular2guy.wordpress.com/2024/03/01/using-spring-ai-with-ai-llms-to-query-relational-databases/)
 * [Making Spring AI and OpenAI GPT useful with RAG on your own Documents](https://angular2guy.wordpress.com/2023/11/19/making-spring-ai-and-openai-gpt-useful-with-rag-on-your-own-documents/)
 * [Implementing RAG With Spring AI and Ollama Using Local AI/LLM Models](https://angular2guy.wordpress.com/2023/12/17/using-spring-ai-with-ollama-for-a-local-ai-model/)
