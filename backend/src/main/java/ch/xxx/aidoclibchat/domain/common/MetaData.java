@@ -22,7 +22,18 @@ public class MetaData {
 	};
 
 	public enum ImageType {
-		JPEG, PNG, SVG, UNKNOWN
+		JPEG("jpg"), PNG("png"), SVG("svg"), UNKNOWN("unknown");
+		
+		private String type;
+		
+		private ImageType(String type) {
+			this.type = type;
+		}
+		
+		@Override
+		public String toString() {
+			return this.type;
+		}
 	}
 	
 	public static final String ID = "id";

@@ -12,6 +12,8 @@
  */
 package ch.xxx.aidoclibchat.adapter.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,19 +21,23 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import ch.xxx.aidoclibchat.usecase.mapping.ImageMapper;
+import ch.xxx.aidoclibchat.usecase.service.ImageService;
 
 @RestController
 @RequestMapping("rest/image")
 public class ImageController {
+	private static final Logger LOG = LoggerFactory.getLogger(ImageController.class);
 	private final ImageMapper imageMapper;
+	private final ImageService imageService;		
 	
-	public ImageController(ImageMapper imageMapper) {
+	public ImageController(ImageMapper imageMapper, ImageService imageService) {
 		this.imageMapper = imageMapper;
+		this.imageService = imageService;
 	}
 	
 	@PostMapping("/query")
-	public String postImageQuery(@RequestParam(required = true) String query, @RequestParam("file") MultipartFile imageQuery) {
-		var imageDto = this.imageMapper.map(imageQuery, query);
-		return "";
+	public String postImageQuery(@RequestParam(required = true) String query, @RequestParam("file") MultipartFile imageQuery) {		
+		var result = this.imageService.queryImage(this.imageMapper.map(imageQuery, query));		
+		return result;
 	}
 }
