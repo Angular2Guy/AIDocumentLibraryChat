@@ -21,6 +21,10 @@ public class MetaData {
 		PDF, HTML, TEXT, XML, UNKNOWN
 	};
 
+	public enum ImageType {
+		JPEG, PNG, SVG, UNKNOWN
+	}
+	
 	public static final String ID = "id";
 	public static final String DATATYPE = "datatype";
 	public static final String DATANAME = "dataname";
