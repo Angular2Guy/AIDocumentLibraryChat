@@ -30,6 +30,7 @@ import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MimeType;
 
+import ch.xxx.aidoclibchat.domain.common.MetaData.ImageType;
 import ch.xxx.aidoclibchat.domain.model.dto.ImageDto;
 
 @Service
@@ -42,7 +43,9 @@ public class ImageService {
 	}
 
 	public String queryImage(ImageDto imageDto) {
-		imageDto = resizeImage(imageDto);
+		if(ImageType.JPEG.equals(imageDto.getImageType()) || ImageType.PNG.equals(imageDto.getImageType())) {
+			imageDto = this.resizeImage(imageDto);
+		}
 		var prompt = new Prompt(new UserMessage(imageDto.getQuery(), List
 				.of(new Media(MimeType.valueOf(imageDto.getImageType().getMediaType()), imageDto.getImageContent()))));
 		var response = this.chatClient.call(prompt);
