@@ -12,6 +12,8 @@
  */
 package ch.xxx.aidoclibchat.domain.common;
 
+import org.springframework.http.MediaType;
+
 public class MetaData {
 	public enum DataType {
 		DOCUMENT, TABLE, COLUMN, ROW
@@ -22,17 +24,23 @@ public class MetaData {
 	};
 
 	public enum ImageType {
-		JPEG("jpg"), PNG("png"), SVG("svg"), UNKNOWN("unknown");
+		JPEG("jpg", MediaType.IMAGE_JPEG_VALUE), PNG("png", MediaType.IMAGE_JPEG_VALUE), SVG("svg", "image/svg+xml"), UNKNOWN("unknown", "unknown");
 		
 		private String type;
+		private String mediaType;
 		
-		private ImageType(String type) {
+		private ImageType(String type, String mediaType) {
 			this.type = type;
+			this.mediaType = mediaType;
 		}
 		
 		@Override
 		public String toString() {
 			return this.type;
+		}
+		
+		public String getMediaType() {
+			return this.mediaType;
 		}
 	}
 	
