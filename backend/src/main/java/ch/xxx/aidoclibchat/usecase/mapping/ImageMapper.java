@@ -19,14 +19,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import ch.xxx.aidoclibchat.domain.common.MetaData.ImageType;
-import ch.xxx.aidoclibchat.domain.model.dto.ImageDto;
+import ch.xxx.aidoclibchat.domain.model.dto.ImageQueryDto;
 
 @Component
 public class ImageMapper {
 	private static final Logger LOG = LoggerFactory.getLogger(ImageMapper.class);
 
-	public ImageDto map(MultipartFile multipartFile, String query) {
-		var imageDto = new ImageDto();
+	public ImageQueryDto map(MultipartFile multipartFile, String query) {
+		var imageDto = new ImageQueryDto();
 		try {
 			imageDto.setImageContent(multipartFile.getBytes());
 			imageDto.setQuery(query);

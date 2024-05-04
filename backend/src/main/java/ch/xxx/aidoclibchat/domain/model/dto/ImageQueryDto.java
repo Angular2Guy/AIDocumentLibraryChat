@@ -14,36 +14,34 @@ package ch.xxx.aidoclibchat.domain.model.dto;
 
 import ch.xxx.aidoclibchat.domain.common.MetaData.ImageType;
 
-public class ImageDto {
-	private String answer;
-	private String b64Image;
-	private ImageType imageType;
-	
-	public ImageDto() { }
-	
-	public ImageDto(String answer, String b64Image, ImageType imageType) {
-		super();
-		this.answer = answer;
-		this.b64Image = b64Image;
-		this.imageType = imageType;
+public class ImageQueryDto {
+    private String query;
+    private ImageType imageType;
+    private byte[] imageContent;
+    private long contentSize;
+    
+	public String getQuery() {
+		return query;
 	}
-
-	public String getAnswer() {
-		return answer;
-	}
-	public void setAnswer(String answer) {
-		this.answer = answer;
-	}
-	public String getB64Image() {
-		return b64Image;
-	}
-	public void setB64Image(String b64Image) {
-		this.b64Image = b64Image;
+	public void setQuery(String query) {
+		this.query = query;
 	}
 	public ImageType getImageType() {
 		return imageType;
 	}
 	public void setImageType(ImageType imageType) {
 		this.imageType = imageType;
+	}
+	public byte[] getImageContent() {
+		return imageContent;
+	}
+	public void setImageContent(byte[] imageContent) {
+		this.imageContent = imageContent;
+	}
+	public long getContentSize() {
+		return contentSize;
+	}
+	public void setContentSize(long contentSize) {
+		this.contentSize = contentSize;
 	}
 }

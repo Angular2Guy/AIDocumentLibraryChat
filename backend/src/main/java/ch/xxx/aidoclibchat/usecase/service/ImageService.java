@@ -17,6 +17,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -32,6 +33,7 @@ import org.springframework.util.MimeType;
 
 import ch.xxx.aidoclibchat.domain.common.MetaData.ImageType;
 import ch.xxx.aidoclibchat.domain.model.dto.ImageDto;
+import ch.xxx.aidoclibchat.domain.model.dto.ImageQueryDto;
 
 @Service
 public class ImageService {
@@ -42,17 +44,18 @@ public class ImageService {
 		this.chatClient = chatClient;
 	}
 
-	public String queryImage(ImageDto imageDto) {
+	public ImageDto queryImage(ImageQueryDto imageDto) {
 		if(ImageType.JPEG.equals(imageDto.getImageType()) || ImageType.PNG.equals(imageDto.getImageType())) {
 			imageDto = this.resizeImage(imageDto);
 		}
 		var prompt = new Prompt(new UserMessage(imageDto.getQuery(), List
 				.of(new Media(MimeType.valueOf(imageDto.getImageType().getMediaType()), imageDto.getImageContent()))));
 		var response = this.chatClient.call(prompt);
-		return response.getResult().getOutput().getContent();
+		var answer = response.getResult().getOutput().getContent();
+		return new ImageDto(answer, Base64.getEncoder().encodeToString(imageDto.getImageContent()), imageDto.getImageType());
 	}
 
-	private ImageDto resizeImage(ImageDto imageDto) {
+	private ImageQueryDto resizeImage(ImageQueryDto imageDto) {
 		try {
 			BufferedImage image = ImageIO.read(new ByteArrayInputStream(imageDto.getImageContent()));
 			int targetHeight = image.getHeight();

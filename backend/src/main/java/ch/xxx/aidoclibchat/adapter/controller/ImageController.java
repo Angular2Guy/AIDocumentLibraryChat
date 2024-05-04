@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import ch.xxx.aidoclibchat.domain.model.dto.ImageDto;
 import ch.xxx.aidoclibchat.usecase.mapping.ImageMapper;
 import ch.xxx.aidoclibchat.usecase.service.ImageService;
 
@@ -36,7 +37,7 @@ public class ImageController {
 	}
 	
 	@PostMapping("/query")
-	public String postImageQuery(@RequestParam(required = true) String query, @RequestParam("file") MultipartFile imageQuery) {		
+	public ImageDto postImageQuery(@RequestParam(required = true) String query, @RequestParam("file") MultipartFile imageQuery) {		
 		var result = this.imageService.queryImage(this.imageMapper.map(imageQuery, query));		
 		return result;
 	}
