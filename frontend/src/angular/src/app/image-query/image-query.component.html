@@ -1,1 +1,24 @@
-<p>image-query works!</p>
+<div>
+<h1 i18n="@@imagequeryHeading">Image description</h1>
+ @if(uploading) {
+  <div class="upload-spinner"><mat-spinner></mat-spinner></div>
+  } @else {
+  <input type="file" (change)="onFileInputChange($event)" />
+  <mat-form-field class="example-full-width">
+    <mat-label i18n="@@imagequeryQuery">Image query</mat-label>
+    <input matInput placeholder="query">
+  </mat-form-field>
+  }
+  <div>
+    <button mat-button (click)="cancel()" i18n="@@cancel">Cancel</button>
+  <button
+    mat-flat-button
+    color="primary"
+    [disabled]="!file || uploading"
+    (click)="upload()"
+    i18n="@@upload"
+  >
+    Upload
+  </button>
+  </div>
+</div>

@@ -10,6 +10,19 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
- .example-full-width {
-  width: 100%;
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { ImageFile } from '../model/image-file';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ImageService {
+
+  constructor(private httpClient: HttpClient) { }
+  
+    public postImageForm(formData: FormData): Observable<ImageFile> {
+    return this.httpClient.post<string>('/rest/image/query', formData);
+  }
 }

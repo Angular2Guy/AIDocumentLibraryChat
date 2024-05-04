@@ -10,6 +10,21 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
- .example-full-width {
-  width: 100%;
-}
+import { TestBed } from '@angular/core/testing';
+
+
+import { ImageService } from './image.service';
+/*
+describe('ImageService', () => {
+  let service: ImageService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(ImageService);
+  });
+
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+});
+*/

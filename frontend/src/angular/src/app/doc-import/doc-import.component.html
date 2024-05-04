@@ -8,9 +8,9 @@
   } @if(!!file) {
   <div>
     <ul>
-      <li>Name: {{ file.name }}</li>
-      <li>Type: {{ file.type }}</li>
-      <li>Size: {{ file.size }} bytes</li>
+      <li i18n="@@docimportFileName">Name: {{ file.name }}</li>
+      <li i18n="@@docimportFileType">Type: {{ file.type }}</li>
+      <li i18n="@@docimportFileSize">Size: {{ file.size }} bytes</li>
     </ul>
   </div>
   }
@@ -22,7 +22,7 @@
     color="primary"
     [disabled]="!file || uploading"
     (click)="upload()"
-    i18n="@@docimportUpload"
+    i18n="@@upload"
   >
     Upload
   </button>
