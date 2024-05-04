@@ -11,27 +11,13 @@
    limitations under the License.
  */
 import { Routes } from '@angular/router';
+import { ImageQueryComponent } from './image-query.component';
 
-export const routes: Routes = [
+
+export const IMAGEQUERY: Routes = [
   {
-    path: 'doclist',
-    loadChildren: () => import('./doc-list').then((mod) => mod.DOCLIST),
+    path: '',
+    component: ImageQueryComponent,
   },
-  {
-    path: 'docsearch',
-    loadChildren: () => import('./doc-search').then((mod) => mod.DOCSEARCH),
-  },
-  {
-    path: 'tablesearch',
-    loadChildren: () => import('./table-search').then((mod) => mod.TABLESEARCH),
-  },
-  {
-	path: 'functionsearch',
-	loadChildren: () => import('./function-search').then((mod) => mod.FUNCTIONSEARCH),
-  },
-  {
-	path: 'imagequery',
-	loadChildren: () => import('./image-query').then((mod) => mod.IMAGEQUERY)
-  },
-  { path: '**', redirectTo: 'doclist' },
+  { path: '**', redirectTo: '' },
 ];
