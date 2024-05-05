@@ -21,7 +21,7 @@
   <button
     mat-flat-button
     color="primary"
-    [disabled]="!imageForm.controls.file || uploading"
+    [disabled]="uploading"
     (click)="upload()"
     i18n="@@upload"
   >

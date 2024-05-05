@@ -20,6 +20,7 @@ import { tap } from 'rxjs';
 import { ImageService } from '../service/image.service';
 import { ImageFile } from '../model/image-file';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-image-query',
@@ -36,7 +37,7 @@ export class ImageQueryComponent {
   protected uploading = false;
   protected result: ImageFile | null = null;
   
-  constructor(private imageService: ImageService, private destroyRef: DestroyRef) { }
+  constructor(private imageService: ImageService, private destroyRef: DestroyRef, private router: Router) { }
 	
   protected onFileInputChange($event: Event): void {
 	this.result = null;
@@ -52,7 +53,7 @@ export class ImageQueryComponent {
   
   protected upload(): void {
     //console.log(this.file);
-    if (!!this.imageForm.controls.file) {
+    if (!!this.imageForm.controls.file.value) {
 	  this.result = null;
 	  this.uploading = true;
       const formData = new FormData();
@@ -60,9 +61,9 @@ export class ImageQueryComponent {
       formData.append('file', myFile as Blob, myFile?.name as string);
       formData.append('query', this.imageForm.controls.query.value as unknown as string);
       formData.append('type', (this.imageForm.controls.file.value as unknown as File)?.type);
-      console.log(formData);
-      console.log(this.imageForm.controls.file.value);
-      console.log(this.imageForm.controls.query.value);
+      //console.log(formData);
+      //console.log(this.imageForm.controls.file.value);
+      //console.log(this.imageForm.controls.query.value);
       this.imageService
         .postImageForm(formData)
       .pipe(
@@ -74,12 +75,15 @@ export class ImageQueryComponent {
         .subscribe((result) => {
           this.uploading = false;
           this.result = result;
-          console.log(result);
+          this.imageForm.controls.file.setValue(null);
+          //console.log(result);
         });
-    }
+    } else if(!this.uploading && !!this.result) {
+		this.result = null;
+	}
   }
   
   protected cancel(): void {
-	console.log('cancel');
+	this.router.navigate(['/']);
   }
 }
