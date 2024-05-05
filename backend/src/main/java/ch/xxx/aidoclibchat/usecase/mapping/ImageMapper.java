@@ -35,7 +35,7 @@ public class ImageMapper {
 		} catch (Exception e) {
 			LOG.info("Mapping failed.", e);
 		}
-		return null;
+		return imageDto;
 	}
 
 	private ImageType toImageType(String contentType) {

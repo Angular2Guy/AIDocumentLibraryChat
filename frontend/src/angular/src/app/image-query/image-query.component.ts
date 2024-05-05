@@ -55,7 +55,8 @@ export class ImageQueryComponent {
     if (!!this.imageForm.controls.file) {
 	  this.result = null;
       const formData = new FormData();
-      formData.append('file', (this.imageForm.controls.file as unknown as Blob));
+      const myFile = this.imageForm.controls.file.value;
+      formData.append('file', myFile as Blob, myFile?.name as string);
       formData.append('query', this.imageForm.controls.query.value as unknown as string);
       formData.append('type', (this.imageForm.controls.file.value as unknown as File)?.type);
       console.log(formData);
