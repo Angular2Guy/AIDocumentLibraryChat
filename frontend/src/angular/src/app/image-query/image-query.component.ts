@@ -19,17 +19,20 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs';
 import { ImageService } from '../service/image.service';
 import { ImageFile } from '../model/image-file';
+import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-image-query',
   standalone: true,
-  imports: [CommonModule, MatProgressSpinnerModule, MatInputModule,MatButtonModule],
+  imports: [CommonModule, MatProgressSpinnerModule, MatInputModule,MatButtonModule,ReactiveFormsModule],
   templateUrl: './image-query.component.html',
   styleUrl: './image-query.component.scss'
 })
 export class ImageQueryComponent {
-  protected file: File | null = null;
-  protected query = '';
+  protected imageForm = new FormGroup({
+	file: new FormControl<File | null>(null, Validators.required),
+	query: new FormControl<string>('', Validators.minLength(3))
+  });
   protected uploading = false;
   protected result: ImageFile | null = null;
   
@@ -40,7 +43,7 @@ export class ImageQueryComponent {
     const files = !$event.target
       ? null
       : ($event.target as HTMLInputElement).files;
-    this.file = !!files && files.length > 0 ? files[0] : null;
+    this.imageForm.controls.file.setValue(!!files && files.length > 0 ? files[0] : null);
   }
   
   protected createImageUrl(): string {
@@ -49,12 +52,15 @@ export class ImageQueryComponent {
   
   protected upload(): void {
     //console.log(this.file);
-    if (!!this.file) {
+    if (!!this.imageForm.controls.file) {
 	  this.result = null;
       const formData = new FormData();
-      formData.append('file', this.file as Blob, this.file.name as string);
-      formData.append('query', this.query);
-      formData.append('type', this.file.type)
+      formData.append('file', (this.imageForm.controls.file as unknown as Blob));
+      formData.append('query', this.imageForm.controls.query.value as unknown as string);
+      formData.append('type', (this.imageForm.controls.file.value as unknown as File)?.type);
+      console.log(formData);
+      console.log(this.imageForm.controls.file.value);
+      console.log(this.imageForm.controls.query.value);
       this.imageService
         .postImageForm(formData)
       .pipe(
