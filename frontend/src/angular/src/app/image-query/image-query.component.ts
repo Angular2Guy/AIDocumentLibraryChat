@@ -54,6 +54,7 @@ export class ImageQueryComponent {
     //console.log(this.file);
     if (!!this.imageForm.controls.file) {
 	  this.result = null;
+	  this.uploading = true;
       const formData = new FormData();
       const myFile = this.imageForm.controls.file.value;
       formData.append('file', myFile as Blob, myFile?.name as string);
