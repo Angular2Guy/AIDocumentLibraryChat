@@ -10,6 +10,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
+export enum ImageType {JPEG='jpg', PNG='png', SVG='svg', UNKNOWN='unknown'}
+
 export interface ImageFile {
-	
+	answer: string;
+	b64Image: string;
+	imageType: ImageType;
 }

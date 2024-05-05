@@ -2,6 +2,11 @@
 <h1 i18n="@@imagequeryHeading">Image description</h1>
  @if(uploading) {
   <div class="upload-spinner"><mat-spinner></mat-spinner></div>
+  } @else if(result) {
+  <div class="horizontal-container">
+  	<div><img src="createImageUrl()"></div>
+  	<div>{{result.answer}}</div>
+  </div>
   } @else {
   <input type="file" (change)="onFileInputChange($event)" />
   <mat-form-field class="example-full-width">
@@ -9,7 +14,7 @@
     <input matInput placeholder="query">
   </mat-form-field>
   }
-  <div class="button-container">
+  <div class="horizontal-container">
     <button mat-button (click)="cancel()" i18n="@@cancel">Cancel</button>
   <button
     mat-flat-button
