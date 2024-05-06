@@ -27,7 +27,7 @@
     "link": " Link: {$START_LINK}{$INTERPOLATION}{$CLOSE_LINK}",
     "docSearchOtherDocuments": "Other Documents:",
     "functionSearchHeading": "Function Search",
-    "imagequeryHeading": "Image description",
+    "imageQueryHeading": "Image Query",
     "imagequeryQuery": "Image query",
     "tableSearchHeading": "Table Search",
     "tableSearchDataImport": "A new DB instance needs a data import first.",

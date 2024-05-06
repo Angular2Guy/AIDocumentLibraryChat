@@ -21,11 +21,12 @@ import { ImageService } from '../service/image.service';
 import { ImageFile } from '../model/image-file';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
   selector: 'app-image-query',
   standalone: true,
-  imports: [CommonModule, MatProgressSpinnerModule, MatInputModule,MatButtonModule,ReactiveFormsModule],
+  imports: [CommonModule, MatProgressSpinnerModule, MatInputModule,MatButtonModule,ReactiveFormsModule,MatToolbarModule],
   templateUrl: './image-query.component.html',
   styleUrl: './image-query.component.scss'
 })
@@ -81,6 +82,14 @@ export class ImageQueryComponent {
     } else if(!this.uploading && !!this.result) {
 		this.result = null;
 	}
+  }
+  
+  	protected showList(): void {
+		this.router.navigate(['/doclist']);
+	}
+  
+  protected logout(): void {
+	console.log('logout');
   }
   
   protected cancel(): void {
