@@ -48,8 +48,11 @@ export class ImageQueryComponent {
     this.imageForm.controls.file.setValue(!!files && files.length > 0 ? files[0] : null);
   }
   
-  protected createImageUrl(): string {
-	return !this.result ? '' : 'data:image/'+this?.result?.imageType+';base64,'+this?.result?.b64Image;
+  protected createImageUrl(myResult: ImageFile): ImageFile {
+	if(!!myResult) {
+		myResult.b64Image = 'data:image/'+myResult?.imageType+';base64,'+myResult?.b64Image;
+	}
+	return myResult
   }
   
   protected upload(): void {
@@ -75,7 +78,7 @@ export class ImageQueryComponent {
         )
         .subscribe((result) => {
           this.uploading = false;
-          this.result = result;
+          this.result = this.createImageUrl(result);
           this.imageForm.controls.file.setValue(null);
           //console.log(result);
         });
