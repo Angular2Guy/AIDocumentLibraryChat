@@ -16,7 +16,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import {MatInputModule} from '@angular/material/input'; 
 import { MatButtonModule } from '@angular/material/button';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { tap } from 'rxjs';
+import { Subscription, interval, map, tap } from 'rxjs';
 import { ImageService } from '../service/image.service';
 import { ImageFile } from '../model/image-file';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
@@ -37,6 +37,8 @@ export class ImageQueryComponent {
   });
   protected uploading = false;
   protected result: ImageFile | null = null;
+  protected msWorking = 0;
+  private repeatSub: Subscription | null = null;
   
   constructor(private imageService: ImageService, private destroyRef: DestroyRef, private router: Router) { }
 	
@@ -58,8 +60,19 @@ export class ImageQueryComponent {
   protected upload(): void {
     //console.log(this.file);
     if (!!this.imageForm.controls.file.value) {
+	  const startDate = new Date();
+	  this.msWorking = 0;	  
 	  this.result = null;
 	  this.uploading = true;
+	  this.repeatSub?.unsubscribe();
+      this.repeatSub = interval(100)
+      .pipe(
+        map(() => new Date()),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(
+        (newDate) => (this.msWorking = newDate.getTime() - startDate.getTime())
+      );
       const formData = new FormData();
       const myFile = this.imageForm.controls.file.value;
       formData.append('file', myFile as Blob, myFile?.name as string);

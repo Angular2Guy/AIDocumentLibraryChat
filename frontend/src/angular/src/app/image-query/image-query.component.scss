@@ -43,8 +43,13 @@
   display: flex;
   width: 100%;
   justify-content: center;
+  margin: 10px;
 }
 
+.auto-margin {
+	margin: auto;
+	text-align: center;
+}
 
 .horizontal-container {
 	display: flex;
