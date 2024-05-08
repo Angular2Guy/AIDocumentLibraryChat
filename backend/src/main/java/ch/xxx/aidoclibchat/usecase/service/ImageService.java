@@ -62,11 +62,11 @@ public class ImageService {
 			int targetWidth = image.getWidth();
 			if (image.getHeight() > 672 && image.getWidth() > 672) {
 				if (image.getHeight() < image.getWidth()) {
-					targetHeight = image.getHeight() / (image.getHeight() / 672);
-					targetWidth = image.getWidth() / (image.getHeight() / 672);
+					targetHeight = Math.round( image.getHeight() / (image.getHeight() / 672.0f));
+					targetWidth = Math.round(image.getWidth() / (image.getHeight() / 672.0f));					
 				} else {
-					targetHeight = image.getHeight() / (image.getWidth() / 672);
-					targetWidth = image.getWidth() / (image.getWidth() / 672);
+					targetHeight = Math.round(image.getHeight() / (image.getWidth() / 672.0f));
+					targetWidth = Math.round(image.getWidth() / (image.getWidth() / 672.0f));
 				}
 			}
 			var outputImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
@@ -76,6 +76,7 @@ public class ImageService {
 			ImageIO.write(outputImage, imageDto.getImageType().toString(), ios);
 			imageDto.setImageContent(ios.toByteArray());
 			imageDto.setContentSize(ios.toByteArray().length);
+			LOG.info("Resized image to x: {}, y: {}", targetWidth, targetHeight);
 		} catch (IOException e) {
 			LOG.info("Image resize failed.", e);
 		}
