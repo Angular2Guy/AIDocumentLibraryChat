@@ -71,6 +71,10 @@ export class DocListComponent implements OnInit {
     this.router.navigate(['/docsearch']);
   }
 
+  protected imageQuery(): void {
+	this.router.navigate(['/imagequery']);
+  }
+
   protected tableSearch(): void {
     this.router.navigate(['/tablesearch']);
   }
