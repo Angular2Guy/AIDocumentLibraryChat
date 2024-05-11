@@ -31,6 +31,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
   styleUrl: './image-query.component.scss'
 })
 export class ImageQueryComponent {
+  //'What do you see in the image? Describe the background. Describe the colors.'
   protected imageForm = new FormGroup({
 	file: new FormControl<File | null>(null, Validators.required),
 	query: new FormControl<string>('', Validators.minLength(3))

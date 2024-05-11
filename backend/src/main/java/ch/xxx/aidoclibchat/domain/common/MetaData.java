@@ -16,7 +16,7 @@ import org.springframework.http.MediaType;
 
 public class MetaData {
 	public enum DataType {
-		DOCUMENT, TABLE, COLUMN, ROW
+		DOCUMENT, TABLE, COLUMN, ROW, IMAGE
 	};
 
 	public enum DocumentType {
