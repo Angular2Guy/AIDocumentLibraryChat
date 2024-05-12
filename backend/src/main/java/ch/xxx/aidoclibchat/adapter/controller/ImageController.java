@@ -12,6 +12,8 @@
  */
 package ch.xxx.aidoclibchat.adapter.controller;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,7 +39,7 @@ public class ImageController {
 	}
 	
 	@PostMapping("/query")
-	public ImageDto postImageQuery(@RequestParam("query") String query,@RequestParam("type") String type, @RequestParam("file") MultipartFile imageQuery) {		
+	public List<ImageDto> postImageQuery(@RequestParam("query") String query,@RequestParam("type") String type, @RequestParam("file") MultipartFile imageQuery) {		
 		var result = this.imageService.queryImage(this.imageMapper.map(imageQuery, query));		
 		return result;
 	}
@@ -47,4 +49,5 @@ public class ImageController {
 		var result = this.imageService.importImage(this.imageMapper.map(imageQuery, query), this.imageMapper.map(imageQuery));		
 		return result;
 	}
+		
 }

@@ -18,6 +18,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 
@@ -32,6 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MimeType;
 
 import ch.xxx.aidoclibchat.domain.common.MetaData;
+import ch.xxx.aidoclibchat.domain.common.MetaData.DataType;
 import ch.xxx.aidoclibchat.domain.common.MetaData.ImageType;
 import ch.xxx.aidoclibchat.domain.model.dto.ImageDto;
 import ch.xxx.aidoclibchat.domain.model.dto.ImageQueryDto;
@@ -51,14 +54,15 @@ public class ImageService {
 	private record ResultData(String answer, ImageQueryDto imageQueryDto) {
 	}
 
-	public ImageService(ChatClient chatClient, ImageRepository imageRepository, DocumentVsRepository documentVsRepository) {
+	public ImageService(ChatClient chatClient, ImageRepository imageRepository,
+			DocumentVsRepository documentVsRepository) {
 		this.chatClient = chatClient;
 		this.imageRepository = imageRepository;
 		this.documentVsRepository = documentVsRepository;
 	}
 
 	public ImageDto importImage(ImageQueryDto imageDto, Image image) {
-		var resultData = createAIResult(imageDto);
+		var resultData = this.createAIResult(imageDto);
 		image.setImageContent(resultData.imageQueryDto().getImageContent());
 		var myImage = this.imageRepository.save(image);
 		var aiDocument = new Document(resultData.answer());
@@ -70,11 +74,35 @@ public class ImageService {
 				resultData.imageQueryDto().getImageType());
 	}
 
-	public ImageDto queryImage(ImageQueryDto imageDto) {
-		var resultData = createAIResult(imageDto);
-		return new ImageDto(resultData.answer(),
-				Base64.getEncoder().encodeToString(resultData.imageQueryDto().getImageContent()),
-				resultData.imageQueryDto().getImageType());
+	public List<ImageDto> queryImage(ImageQueryDto imageDto) {
+		var aiDocuments = this.documentVsRepository.retrieve(imageDto.getQuery(), MetaData.DataType.IMAGE).stream()
+				.filter(myDoc -> myDoc.getMetadata().get(MetaData.DATATYPE).equals(DataType.IMAGE.toString()))
+				.sorted((myDocA, myDocB) -> ((Float) myDocA.getMetadata().get(MetaData.DISTANCE))
+						.compareTo(((Float) myDocB.getMetadata().get(MetaData.DISTANCE))))
+				.toList();
+		var imageMap = this.imageRepository
+				.findAllById(aiDocuments.stream().map(myDoc -> (String) myDoc.getMetadata().get(MetaData.ID))
+						.map(myUuid -> UUID.fromString(myUuid)).limit(20).toList())
+				.stream().collect(Collectors.toMap(myDoc -> myDoc.getId(), myDoc -> myDoc));
+		record Container(Document document, Image image, Float distance) {
+		}		
+		var containers = imageMap.entrySet().stream().map(myEntry -> new Container(
+				aiDocuments.stream()
+						.filter(myDoc -> myEntry.getKey().toString()
+								.equals((String) myDoc.getMetadata().get(MetaData.ID)))
+						.findFirst().orElseThrow(),
+				myEntry.getValue(),
+				aiDocuments.stream()
+						.filter(myDoc -> myEntry.getKey().toString()
+								.equals((String) myDoc.getMetadata().get(MetaData.ID)))
+						.map(myDoc -> (Float) myDoc.getMetadata().get(MetaData.DISTANCE)).findFirst().orElseThrow()))
+				.toList();
+		return containers.stream()
+				.sorted((containerA, containerB) -> containerA.distance().compareTo(containerB.distance()))
+				.map(myContainer -> new ImageDto(myContainer.document().getContent(),
+						Base64.getEncoder().encodeToString(myContainer.image().getImageContent()),
+						myContainer.image().getImageType()))				
+				.toList();
 	}
 
 	private ResultData createAIResult(ImageQueryDto imageDto) {
