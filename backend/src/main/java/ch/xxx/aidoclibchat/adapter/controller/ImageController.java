@@ -39,8 +39,8 @@ public class ImageController {
 	}
 	
 	@PostMapping("/query")
-	public List<ImageDto> postImageQuery(@RequestParam("query") String query,@RequestParam("type") String type, @RequestParam("file") MultipartFile imageQuery) {		
-		var result = this.imageService.queryImage(this.imageMapper.map(imageQuery, query));		
+	public List<ImageDto> postImageQuery(@RequestParam("query") String query,@RequestParam("type") String type) {		
+		var result = this.imageService.queryImage(query);		
 		return result;
 	}
 	

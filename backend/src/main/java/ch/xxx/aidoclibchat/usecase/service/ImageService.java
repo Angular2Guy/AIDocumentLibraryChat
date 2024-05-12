@@ -18,8 +18,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 
@@ -57,6 +59,9 @@ public class ImageService {
 	private record ResultData(String answer, ImageQueryDto imageQueryDto) {
 	}
 
+	private record ImageContainer(Document document, Image image, Float distance) {
+	}
+
 	public ImageService(ChatClient chatClient, ImageRepository imageRepository,
 			DocumentVsRepository documentVsRepository) {
 		this.chatClient = chatClient;
@@ -77,8 +82,8 @@ public class ImageService {
 				resultData.imageQueryDto().getImageType());
 	}
 
-	public List<ImageDto> queryImage(ImageQueryDto imageDto) {
-		var aiDocuments = this.documentVsRepository.retrieve(imageDto.getQuery(), MetaData.DataType.IMAGE).stream()
+	public List<ImageDto> queryImage(String imageQuery) {
+		var aiDocuments = this.documentVsRepository.retrieve(imageQuery, MetaData.DataType.IMAGE).stream()
 				.filter(myDoc -> myDoc.getMetadata().get(MetaData.DATATYPE).equals(DataType.IMAGE.toString()))
 				.sorted((myDocA, myDocB) -> ((Float) myDocA.getMetadata().get(MetaData.DISTANCE))
 						.compareTo(((Float) myDocB.getMetadata().get(MetaData.DISTANCE))))
@@ -87,23 +92,27 @@ public class ImageService {
 				.findAllById(aiDocuments.stream().map(myDoc -> (String) myDoc.getMetadata().get(MetaData.ID))
 						.map(myUuid -> UUID.fromString(myUuid)).toList())
 				.stream().collect(Collectors.toMap(myDoc -> myDoc.getId(), myDoc -> myDoc));
-		record Container(Document document, Image image, Float distance) {
-		}
-		return imageMap.entrySet().stream().map(myEntry -> new Container(
-				aiDocuments.stream()
-						.filter(myDoc -> myEntry.getKey().toString()
-								.equals((String) myDoc.getMetadata().get(MetaData.ID)))
-						.findFirst().orElseThrow(),
-				myEntry.getValue(),
-				aiDocuments.stream()
-						.filter(myDoc -> myEntry.getKey().toString()
-								.equals((String) myDoc.getMetadata().get(MetaData.ID)))
-						.map(myDoc -> (Float) myDoc.getMetadata().get(MetaData.DISTANCE)).findFirst().orElseThrow()))
+		return imageMap.entrySet().stream().map(myEntry -> createImageContainer(aiDocuments, myEntry))
 				.sorted((containerA, containerB) -> containerA.distance().compareTo(containerB.distance()))
 				.map(myContainer -> new ImageDto(myContainer.document().getContent(),
 						Base64.getEncoder().encodeToString(myContainer.image().getImageContent()),
 						myContainer.image().getImageType()))
 				.limit(this.resultSize).toList();
+	}
+
+	private ImageContainer createImageContainer(List<Document> aiDocuments, Entry<UUID, Image> myEntry) {
+		return new ImageContainer(
+				createIdFilteredStream(aiDocuments, myEntry)
+						.findFirst().orElseThrow(),
+				myEntry.getValue(),
+				createIdFilteredStream(aiDocuments, myEntry)
+						.map(myDoc -> (Float) myDoc.getMetadata().get(MetaData.DISTANCE)).findFirst().orElseThrow());
+	}
+
+	private Stream<Document> createIdFilteredStream(List<Document> aiDocuments, Entry<UUID, Image> myEntry) {
+		return aiDocuments.stream()
+				.filter(myDoc -> myEntry.getKey().toString()
+						.equals((String) myDoc.getMetadata().get(MetaData.ID)));
 	}
 
 	private ResultData createAIResult(ImageQueryDto imageDto) {

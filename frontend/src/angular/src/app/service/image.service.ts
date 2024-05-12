@@ -23,6 +23,6 @@ export class ImageService {
   constructor(private httpClient: HttpClient) { }
   
     public postImageForm(formData: FormData): Observable<ImageFile> {
-    return this.httpClient.post<ImageFile>('/rest/image/query', formData);
+    return this.httpClient.post<ImageFile>('/rest/image/import', formData);
   }
 }
