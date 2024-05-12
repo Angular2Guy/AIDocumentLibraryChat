@@ -30,6 +30,7 @@ import org.springframework.ai.chat.messages.Media;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.document.Document;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MimeType;
 
@@ -50,6 +51,8 @@ public class ImageService {
 	private ChatClient chatClient;
 	private ImageRepository imageRepository;
 	private DocumentVsRepository documentVsRepository;
+	@Value("${image.result-size:20}")
+	private Long resultSize;
 
 	private record ResultData(String answer, ImageQueryDto imageQueryDto) {
 	}
@@ -82,11 +85,11 @@ public class ImageService {
 				.toList();
 		var imageMap = this.imageRepository
 				.findAllById(aiDocuments.stream().map(myDoc -> (String) myDoc.getMetadata().get(MetaData.ID))
-						.map(myUuid -> UUID.fromString(myUuid)).limit(20).toList())
+						.map(myUuid -> UUID.fromString(myUuid)).toList())
 				.stream().collect(Collectors.toMap(myDoc -> myDoc.getId(), myDoc -> myDoc));
 		record Container(Document document, Image image, Float distance) {
-		}		
-		var containers = imageMap.entrySet().stream().map(myEntry -> new Container(
+		}
+		return imageMap.entrySet().stream().map(myEntry -> new Container(
 				aiDocuments.stream()
 						.filter(myDoc -> myEntry.getKey().toString()
 								.equals((String) myDoc.getMetadata().get(MetaData.ID)))
@@ -96,13 +99,11 @@ public class ImageService {
 						.filter(myDoc -> myEntry.getKey().toString()
 								.equals((String) myDoc.getMetadata().get(MetaData.ID)))
 						.map(myDoc -> (Float) myDoc.getMetadata().get(MetaData.DISTANCE)).findFirst().orElseThrow()))
-				.toList();
-		return containers.stream()
 				.sorted((containerA, containerB) -> containerA.distance().compareTo(containerB.distance()))
 				.map(myContainer -> new ImageDto(myContainer.document().getContent(),
 						Base64.getEncoder().encodeToString(myContainer.image().getImageContent()),
-						myContainer.image().getImageType()))				
-				.toList();
+						myContainer.image().getImageType()))
+				.limit(this.resultSize).toList();
 	}
 
 	private ResultData createAIResult(ImageQueryDto imageDto) {
