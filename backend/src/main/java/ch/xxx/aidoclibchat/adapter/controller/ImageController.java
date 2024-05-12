@@ -41,4 +41,10 @@ public class ImageController {
 		var result = this.imageService.queryImage(this.imageMapper.map(imageQuery, query));		
 		return result;
 	}
+	
+	@PostMapping("/import")
+	public ImageDto postImportImage(@RequestParam("query") String query,@RequestParam("type") String type, @RequestParam("file") MultipartFile imageQuery) {		
+		var result = this.imageService.importImage(this.imageMapper.map(imageQuery, query), this.imageMapper.map(imageQuery));		
+		return result;
+	}
 }

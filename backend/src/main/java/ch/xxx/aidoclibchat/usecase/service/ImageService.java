@@ -12,7 +12,6 @@
  */
 package ch.xxx.aidoclibchat.usecase.service;
 
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -28,31 +27,65 @@ import org.springframework.ai.chat.ChatClient;
 import org.springframework.ai.chat.messages.Media;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.document.Document;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MimeType;
 
+import ch.xxx.aidoclibchat.domain.common.MetaData;
 import ch.xxx.aidoclibchat.domain.common.MetaData.ImageType;
 import ch.xxx.aidoclibchat.domain.model.dto.ImageDto;
 import ch.xxx.aidoclibchat.domain.model.dto.ImageQueryDto;
+import ch.xxx.aidoclibchat.domain.model.entity.DocumentVsRepository;
+import ch.xxx.aidoclibchat.domain.model.entity.Image;
+import ch.xxx.aidoclibchat.domain.model.entity.ImageRepository;
+import jakarta.transaction.Transactional;
 
 @Service
+@Transactional
 public class ImageService {
 	private static final Logger LOG = LoggerFactory.getLogger(ImageService.class);
 	private ChatClient chatClient;
+	private ImageRepository imageRepository;
+	private DocumentVsRepository documentVsRepository;
 
-	public ImageService(ChatClient chatClient) {
+	private record ResultData(String answer, ImageQueryDto imageQueryDto) {
+	}
+
+	public ImageService(ChatClient chatClient, ImageRepository imageRepository, DocumentVsRepository documentVsRepository) {
 		this.chatClient = chatClient;
+		this.imageRepository = imageRepository;
+		this.documentVsRepository = documentVsRepository;
+	}
+
+	public ImageDto importImage(ImageQueryDto imageDto, Image image) {
+		var resultData = createAIResult(imageDto);
+		image.setImageContent(resultData.imageQueryDto().getImageContent());
+		var myImage = this.imageRepository.save(image);
+		var aiDocument = new Document(resultData.answer());
+		aiDocument.getMetadata().put(MetaData.ID, myImage.getId().toString());
+		aiDocument.getMetadata().put(MetaData.DATATYPE, MetaData.DataType.IMAGE.toString());
+		this.documentVsRepository.add(List.of(aiDocument));
+		return new ImageDto(resultData.answer(),
+				Base64.getEncoder().encodeToString(resultData.imageQueryDto().getImageContent()),
+				resultData.imageQueryDto().getImageType());
 	}
 
 	public ImageDto queryImage(ImageQueryDto imageDto) {
-		if(ImageType.JPEG.equals(imageDto.getImageType()) || ImageType.PNG.equals(imageDto.getImageType())) {
+		var resultData = createAIResult(imageDto);
+		return new ImageDto(resultData.answer(),
+				Base64.getEncoder().encodeToString(resultData.imageQueryDto().getImageContent()),
+				resultData.imageQueryDto().getImageType());
+	}
+
+	private ResultData createAIResult(ImageQueryDto imageDto) {
+		if (ImageType.JPEG.equals(imageDto.getImageType()) || ImageType.PNG.equals(imageDto.getImageType())) {
 			imageDto = this.resizeImage(imageDto);
 		}
 		var prompt = new Prompt(new UserMessage(imageDto.getQuery(), List
 				.of(new Media(MimeType.valueOf(imageDto.getImageType().getMediaType()), imageDto.getImageContent()))));
 		var response = this.chatClient.call(prompt);
-		var answer = response.getResult().getOutput().getContent();
-		return new ImageDto(answer, Base64.getEncoder().encodeToString(imageDto.getImageContent()), imageDto.getImageType());
+		var resultData = new ResultData(response.getResult().getOutput().getContent(), imageDto);
+		return resultData;
 	}
 
 	private ImageQueryDto resizeImage(ImageQueryDto imageDto) {
@@ -62,16 +95,16 @@ public class ImageService {
 			int targetWidth = image.getWidth();
 			if (image.getHeight() > 672 && image.getWidth() > 672) {
 				if (image.getHeight() < image.getWidth()) {
-					targetHeight = Math.round( image.getHeight() / (image.getHeight() / 672.0f));
-					targetWidth = Math.round(image.getWidth() / (image.getHeight() / 672.0f));					
+					targetHeight = Math.round(image.getHeight() / (image.getHeight() / 672.0f));
+					targetWidth = Math.round(image.getWidth() / (image.getHeight() / 672.0f));
 				} else {
 					targetHeight = Math.round(image.getHeight() / (image.getWidth() / 672.0f));
 					targetWidth = Math.round(image.getWidth() / (image.getWidth() / 672.0f));
 				}
 			}
 			var outputImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
-			outputImage.getGraphics().drawImage(image.getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH),
-					0, 0, null);
+			outputImage.getGraphics().drawImage(
+					image.getScaledInstance(targetWidth, targetHeight, java.awt.Image.SCALE_SMOOTH), 0, 0, null);
 			var ios = new ByteArrayOutputStream();
 			ImageIO.write(outputImage, imageDto.getImageType().toString(), ios);
 			imageDto.setImageContent(ios.toByteArray());

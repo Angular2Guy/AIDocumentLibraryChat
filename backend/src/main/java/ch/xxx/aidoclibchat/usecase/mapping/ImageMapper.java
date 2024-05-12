@@ -12,6 +12,8 @@
  */
 package ch.xxx.aidoclibchat.usecase.mapping;
 
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -20,11 +22,24 @@ import org.springframework.web.multipart.MultipartFile;
 
 import ch.xxx.aidoclibchat.domain.common.MetaData.ImageType;
 import ch.xxx.aidoclibchat.domain.model.dto.ImageQueryDto;
+import ch.xxx.aidoclibchat.domain.model.entity.Image;
 
 @Component
 public class ImageMapper {
 	private static final Logger LOG = LoggerFactory.getLogger(ImageMapper.class);
 
+	public Image map(MultipartFile multipartFile) {
+		var image = new Image();
+		try {
+			image.setImageContent(multipartFile.getBytes());
+			image.setImageName(multipartFile.getName());
+			image.setImageType(this.toImageType(multipartFile.getContentType()));
+		} catch (IOException e) {
+			LOG.info("Mapping failed.", e);
+		}
+		return image;
+	}
+	
 	public ImageQueryDto map(MultipartFile multipartFile, String query) {
 		var imageDto = new ImageQueryDto();
 		try {
