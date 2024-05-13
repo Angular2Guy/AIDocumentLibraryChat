@@ -16,6 +16,26 @@
       <button
         mat-flat-button
         color="primary"
+        (click)="switchToUpload()"
+        i18n="@@upload"
+      >
+        Upload
+      </button>      
+    </div>
+        <div>
+      <button
+        mat-flat-button
+        color="primary"
+        (click)="switchToQuery()"
+        i18n="@@query"
+      >
+        Query
+      </button>      
+    </div>
+    <div>
+      <button
+        mat-flat-button
+        color="primary"
         (click)="logout()"
         i18n="@@logout"
       >
@@ -25,6 +45,7 @@
   </div>
 </mat-toolbar>
 <div>
+@if(uiMode === 'upload') {
 <form [formGroup]="imageForm">
  @if(uploading) {
   <div class="upload-spinner">
@@ -42,10 +63,10 @@
   	<div>{{result.answer}}</div>
   </div>
   } @else {
-  <input type="file" (change)="onFileInputChange($event)" />
+  <input type="file" class="vertical-margin" (change)="onFileInputChange($event)" />
   <mat-form-field class="example-full-width">
-    <mat-label i18n="@@imagequeryQuery">Image query</mat-label>
-    <input matInput placeholder="query" [formControl]="imageForm.controls.query">
+    <mat-label i18n="@@imageQueryPrompt">Image prompt</mat-label>
+    <input matInput placeholder="prompt" [formControl]="imageForm.controls.prompt">
   </mat-form-field>
   }
   </form>
@@ -61,4 +82,19 @@
     Upload
   </button>
   </div>
+  } @else if(uiMode === 'query') {
+  	<div>
+  		<mat-form-field class="example-full-width">
+    		<mat-label i18n="@@imageQuery">Image query</mat-label>
+    		<input matInput placeholder="query" [formControl]="queryControl">
+  		</mat-form-field>
+  		<button mat-flat-button color="primary" (click)="query()" [disabled]="queryControl.invalid || this.queryControl.untouched" i18n="@@query">Upload</button>
+  		@for(myresult of results; track myresult.answer) {
+  			<div class="horizontal-container">
+  				<div><img [src]="myresult.b64Image"></div>
+  				<div>{{myresult.answer}}</div>
+  			</div>
+  		}
+  	</div>
+  }
 </div>

@@ -25,4 +25,8 @@ export class ImageService {
     public postImageForm(formData: FormData): Observable<ImageFile> {
     return this.httpClient.post<ImageFile>('/rest/image/import', formData);
   }
+  
+  public postQueryForm(formData: FormData): Observable<ImageFile[]> {
+	return this.httpClient.post<ImageFile[]>('/rest/image/query', formData);
+  }
 }

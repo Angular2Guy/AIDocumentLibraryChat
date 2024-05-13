@@ -34,12 +34,15 @@ export class ImageQueryComponent {
   //'What do you see in the image? Describe the background. Describe the colors.'
   protected imageForm = new FormGroup({
 	file: new FormControl<File | null>(null, Validators.required),
-	query: new FormControl<string>('', Validators.minLength(3))
+	prompt: new FormControl<string>('', Validators.minLength(3))
   });
+  protected queryControl = new FormControl<string>('', Validators.compose([Validators.required, Validators.minLength(3)]));
   protected uploading = false;
   protected result: ImageFile | null = null;
+  protected results: ImageFile[] = [];
   protected msWorking = 0;
-  private repeatSub: Subscription | null = null;
+  protected uiMode: 'upload' | 'query' = 'upload';
+  private repeatSub: Subscription | null = null;  
   
   constructor(private imageService: ImageService, private destroyRef: DestroyRef, private router: Router) { }
 	
@@ -56,6 +59,23 @@ export class ImageQueryComponent {
 		myResult.b64Image = 'data:image/'+myResult?.imageType+';base64,'+myResult?.b64Image;
 	}
 	return myResult
+  }
+  
+  protected switchToUpload(): void {
+	this.uiMode = 'upload';
+  }
+  
+  protected switchToQuery(): void {
+	this.uiMode = 'query';
+  }
+  
+  protected query(): void {	
+	//console.log(this.queryControl.invalid);
+	//console.log(this.queryControl.untouched);
+	const formData = new FormData();
+	formData.append('query', this.queryControl.value as unknown as string);
+	formData.append('type', '');
+	this.imageService.postQueryForm(formData).subscribe(result => this.results = result);
   }
   
   protected upload(): void {
@@ -77,7 +97,7 @@ export class ImageQueryComponent {
       const formData = new FormData();
       const myFile = this.imageForm.controls.file.value;
       formData.append('file', myFile as Blob, myFile?.name as string);
-      formData.append('query', this.imageForm.controls.query.value as unknown as string);
+      formData.append('query', this.imageForm.controls.prompt.value as unknown as string);
       formData.append('type', (this.imageForm.controls.file.value as unknown as File)?.type);
       //console.log(formData);
       //console.log(this.imageForm.controls.file.value);
