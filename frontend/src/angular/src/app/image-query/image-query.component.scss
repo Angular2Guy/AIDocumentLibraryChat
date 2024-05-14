@@ -56,3 +56,9 @@
 .horizontal-container {
 	display: flex;
 }
+
+.images {
+	margin-top: 20px;
+	overflow-y: scroll;
+	height: calc(100vh - (36px + 21px + 64px));
+}

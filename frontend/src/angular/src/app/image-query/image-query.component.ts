@@ -75,7 +75,7 @@ export class ImageQueryComponent {
 	const formData = new FormData();
 	formData.append('query', this.queryControl.value as unknown as string);
 	formData.append('type', '');
-	this.imageService.postQueryForm(formData).subscribe(result => this.results = result);
+	this.imageService.postQueryForm(formData).subscribe(myResults => this.results = myResults.map(myResult => myResult = this.createImageUrl(myResult)));
   }
   
   protected upload(): void {

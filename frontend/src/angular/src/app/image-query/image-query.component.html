@@ -89,12 +89,14 @@
     		<input matInput placeholder="query" [formControl]="queryControl">
   		</mat-form-field>
   		<button mat-flat-button color="primary" (click)="query()" [disabled]="queryControl.invalid || this.queryControl.untouched" i18n="@@query">Upload</button>
+  		<div class="images">
   		@for(myresult of results; track myresult.answer) {
   			<div class="horizontal-container">
   				<div><img [src]="myresult.b64Image"></div>
   				<div>{{myresult.answer}}</div>
   			</div>
   		}
+  		</div>
   	</div>
   }
 </div>
