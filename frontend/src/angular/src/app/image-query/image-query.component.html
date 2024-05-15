@@ -88,7 +88,7 @@
     		<mat-label i18n="@@imageQuery">Image query</mat-label>
     		<input matInput placeholder="query" [formControl]="queryControl">
   		</mat-form-field>
-  		<button mat-flat-button color="primary" (click)="query()" [disabled]="queryControl.invalid || this.queryControl.untouched" i18n="@@query">Upload</button>
+  		<button mat-flat-button color="primary" (click)="query()" [disabled]="queryControl.invalid || this.queryControl.untouched" i18n="@@query">Query</button>
   		<div class="images">
   		@for(myresult of results; track myresult.answer) {
   			<div class="horizontal-container">

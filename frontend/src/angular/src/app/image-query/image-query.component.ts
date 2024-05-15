@@ -34,7 +34,7 @@ export class ImageQueryComponent {
   //'What do you see in the image? Describe the background. Describe the colors.'
   protected imageForm = new FormGroup({
 	file: new FormControl<File | null>(null, Validators.required),
-	prompt: new FormControl<string>('', Validators.minLength(3))
+	prompt: new FormControl<string>('What do you see in the image? Describe the background. Describe the colors.', Validators.minLength(3))
   });
   protected queryControl = new FormControl<string>('', Validators.compose([Validators.required, Validators.minLength(3)]));
   protected uploading = false;
