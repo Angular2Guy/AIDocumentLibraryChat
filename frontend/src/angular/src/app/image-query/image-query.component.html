@@ -71,11 +71,10 @@
   }
   </form>
   <div class="horizontal-container">
-    <button mat-button (click)="cancel()" i18n="@@cancel">Cancel</button>
-  <button
+  <button class="my-button" 
     mat-flat-button
     color="primary"
-    [disabled]="uploading"
+    [disabled]="uploading || imageForm.invalid"
     (click)="upload()"
     i18n="@@upload"
   >
@@ -88,7 +87,7 @@
     		<mat-label i18n="@@imageQuery">Image query</mat-label>
     		<input matInput placeholder="query" [formControl]="queryControl">
   		</mat-form-field>
-  		<button mat-flat-button color="primary" (click)="query()" [disabled]="queryControl.invalid || this.queryControl.untouched" i18n="@@query">Query</button>
+  		<button mat-flat-button color="primary" class="my-button" (click)="query()" [disabled]="queryControl.invalid || this.queryControl.untouched" i18n="@@query">Query</button>
   		<div class="images">
   		@for(myresult of results; track myresult.answer) {
   			<div class="horizontal-container">

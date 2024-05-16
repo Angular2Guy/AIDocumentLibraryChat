@@ -10,7 +10,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import {MatInputModule} from '@angular/material/input'; 
@@ -34,7 +34,7 @@ export class ImageQueryComponent {
   //'What do you see in the image? Describe the background. Describe the colors.'
   protected imageForm = new FormGroup({
 	file: new FormControl<File | null>(null, Validators.required),
-	prompt: new FormControl<string>('What do you see in the image? Describe the background. Describe the colors.', Validators.minLength(3))
+	prompt: new FormControl<string>('What do you see in the image? Describe the background. Describe the colors.', Validators.compose([Validators.required, Validators.minLength(3)]))
   });
   protected queryControl = new FormControl<string>('', Validators.compose([Validators.required, Validators.minLength(3)]));
   protected uploading = false;
@@ -127,9 +127,5 @@ export class ImageQueryComponent {
   
   protected logout(): void {
 	console.log('logout');
-  }
-  
-  protected cancel(): void {
-	this.router.navigate(['/']);
   }
 }
