@@ -9,7 +9,7 @@ The project uses Spring AI to answer questions to an image database. Spring AIs 
 ### Image library search
 The project uses Spring Boot with Spring AI to access OpenAI and the vector database. The Postgresql DB is used with the vector, hstore and the uuid-ossp extensions. Liquibase is used to manage the database migrations. Jpa is used for database access in the services by the rest controllers. For the frontend Angular, Angular Material and Typescript is used to create the table of documents, the upload dialog and the document chat. Angular Cli is used for the frontend build and Gradle for the project build.
 
-### Relations database search
+### Relational database search
 The project uses Spring AI to turn questions with a LLMs into Sql queries and display the result in the frontend. Based on metadata that is provided for the relational dataset the LLM is able to create embeddings for the metadata of the tables and columns. The project also creates embeddings for the content of certain columns to be able to decide if the column should be used as join in the Sql query. With that embedding metadata the LLM is able to turn a question in a reasonable Sql query and display the result in the frontend. The frontend uses a Angular Material Table with a flexible amount of columns and rows. 
 
 ### Function calls for book search
