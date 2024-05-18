@@ -121,8 +121,11 @@ export class TableSearchComponent {
     //this.importing = !this.importing;
     this.tableService
       .getDataImport()
-      .pipe(tap(() => this.importing = true))
-      .subscribe({next: (result) => (this.importing = !result), error: (ex) => this.importing = false});
+      .pipe(tap(() => (this.importing = true)))
+      .subscribe({
+        next: (result) => (this.importing = !result),
+        error: (ex) => (this.importing = false),
+      });
     //console.log('importData');
   }
 

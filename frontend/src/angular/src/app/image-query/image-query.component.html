@@ -1,7 +1,7 @@
 <mat-toolbar color="primary" class="custom-toolbar">
   <div class="toolbar-content">
     <div i18n="@@imageQueryHeading">Image Query</div>
-    <div class="example-fill-remaining-space"></div>    
+    <div class="example-fill-remaining-space"></div>
     <div>
       <button
         mat-flat-button
@@ -20,9 +20,9 @@
         i18n="@@upload"
       >
         Upload
-      </button>      
+      </button>
     </div>
-        <div>
+    <div>
       <button
         mat-flat-button
         color="primary"
@@ -30,7 +30,7 @@
         i18n="@@query"
       >
         Query
-      </button>      
+      </button>
     </div>
     <div>
       <button
@@ -45,57 +45,77 @@
   </div>
 </mat-toolbar>
 <div>
-@if(uiMode === 'upload') {
-<form [formGroup]="imageForm">
- @if(uploading) {
-  <div class="upload-spinner">
-  <div>
-  <mat-spinner class="auto-margin"></mat-spinner>
-  <div  class="auto-margin" i18n="@@searchWorking">The AI is working on the answer.</div>
-    <div  class="auto-margin" i18n="@@searchBePatient">
-      Please be patient. {{ msWorking / 1000 | number : "1.3" }} sec.
+  @if(uiMode === 'upload') {
+  <form [formGroup]="imageForm">
+    @if(uploading) {
+    <div class="upload-spinner">
+      <div>
+        <mat-spinner class="auto-margin"></mat-spinner>
+        <div class="auto-margin" i18n="@@searchWorking">
+          The AI is working on the answer.
+        </div>
+        <div class="auto-margin" i18n="@@searchBePatient">
+          Please be patient. {{ msWorking / 1000 | number : "1.3" }} sec.
+        </div>
+      </div>
     </div>
-  </div>
-  </div>
-  } @else if(result) {
-  <div class="horizontal-container">
-  	<div><img [src]="result.b64Image"></div>
-  	<div>{{result.answer}}</div>
-  </div>
-  } @else {
-  <input type="file" class="vertical-margin" (change)="onFileInputChange($event)" />
-  <mat-form-field class="example-full-width">
-    <mat-label i18n="@@imageQueryPrompt">Image prompt</mat-label>
-    <input matInput placeholder="prompt" [formControl]="imageForm.controls.prompt">
-  </mat-form-field>
-  }
+    } @else if(result) {
+    <div class="horizontal-container">
+      <div><img [src]="result.b64Image" /></div>
+      <div>{{ result.answer }}</div>
+    </div>
+    } @else {
+    <input
+      type="file"
+      class="vertical-margin"
+      (change)="onFileInputChange($event)"
+    />
+    <mat-form-field class="example-full-width">
+      <mat-label i18n="@@imageQueryPrompt">Image prompt</mat-label>
+      <input
+        matInput
+        placeholder="prompt"
+        [formControl]="imageForm.controls.prompt"
+      />
+    </mat-form-field>
+    }
   </form>
   <div class="horizontal-container">
-  <button class="my-button" 
-    mat-flat-button
-    color="primary"
-    [disabled]="uploading || imageForm.invalid"
-    (click)="upload()"
-    i18n="@@upload"
-  >
-    Upload
-  </button>
+    <button
+      class="my-button"
+      mat-flat-button
+      color="primary"
+      [disabled]="uploading || imageForm.invalid"
+      (click)="upload()"
+      i18n="@@upload"
+    >
+      Upload
+    </button>
   </div>
   } @else if(uiMode === 'query') {
-  	<div>
-  		<mat-form-field class="example-full-width">
-    		<mat-label i18n="@@imageQuery">Image query</mat-label>
-    		<input matInput placeholder="query" [formControl]="queryControl">
-  		</mat-form-field>
-  		<button mat-flat-button color="primary" class="my-button" (click)="query()" [disabled]="queryControl.invalid || this.queryControl.untouched" i18n="@@query">Query</button>
-  		<div class="images">
-  		@for(myresult of results; track myresult.answer) {
-  			<div class="horizontal-container">
-  				<div><img [src]="myresult.b64Image"></div>
-  				<div>{{myresult.answer}}</div>
-  			</div>
-  		}
-  		</div>
-  	</div>
+  <div>
+    <mat-form-field class="example-full-width">
+      <mat-label i18n="@@imageQuery">Image query</mat-label>
+      <input matInput placeholder="query" [formControl]="queryControl" />
+    </mat-form-field>
+    <button
+      mat-flat-button
+      color="primary"
+      class="my-button"
+      (click)="query()"
+      [disabled]="queryControl.invalid || this.queryControl.untouched"
+      i18n="@@query"
+    >
+      Query
+    </button>
+    <div class="images">
+      @for(myresult of results; track myresult.answer) {
+      <div class="horizontal-container">
+        <div><img [src]="myresult.b64Image" /></div>
+        <div>{{ myresult.answer }}</div>
+      </div>
+      }
+    </div>
+  </div>
   }
 </div>

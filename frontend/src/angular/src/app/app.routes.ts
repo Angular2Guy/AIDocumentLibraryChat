@@ -26,12 +26,13 @@ export const routes: Routes = [
     loadChildren: () => import('./table-search').then((mod) => mod.TABLESEARCH),
   },
   {
-	path: 'functionsearch',
-	loadChildren: () => import('./function-search').then((mod) => mod.FUNCTIONSEARCH),
+    path: 'functionsearch',
+    loadChildren: () =>
+      import('./function-search').then((mod) => mod.FUNCTIONSEARCH),
   },
   {
-	path: 'imagequery',
-	loadChildren: () => import('./image-query').then((mod) => mod.IMAGEQUERY)
+    path: 'imagequery',
+    loadChildren: () => import('./image-query').then((mod) => mod.IMAGEQUERY),
   },
   { path: '**', redirectTo: 'doclist' },
 ];

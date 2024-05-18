@@ -72,15 +72,15 @@ export class DocListComponent implements OnInit {
   }
 
   protected imageQuery(): void {
-	this.router.navigate(['/imagequery']);
+    this.router.navigate(['/imagequery']);
   }
 
   protected tableSearch(): void {
     this.router.navigate(['/tablesearch']);
   }
-  
+
   protected functionSearch(): void {
-	  this.router.navigate(['/functionsearch']);
+    this.router.navigate(['/functionsearch']);
   }
 
   protected showDocument(documentId: number): void {

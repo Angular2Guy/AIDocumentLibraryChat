@@ -13,7 +13,6 @@
 import { Routes } from '@angular/router';
 import { FunctionSearchComponent } from './function-search.component';
 
-
 export const FUNCTIONSEARCH: Routes = [
   {
     path: '',

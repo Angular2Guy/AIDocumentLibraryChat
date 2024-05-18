@@ -13,7 +13,6 @@
 import { Routes } from '@angular/router';
 import { ImageQueryComponent } from './image-query.component';
 
-
 export const IMAGEQUERY: Routes = [
   {
     path: '',

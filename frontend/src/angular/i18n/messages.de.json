@@ -9,6 +9,7 @@
     "cancel": "Cancel",
     "upload": "Upload",
     "doclistHeading": "Document List",
+    "imageQuery": "Image query",
     "function": "Function",
     "table": "Table",
     "search": "Search",
@@ -28,7 +29,8 @@
     "docSearchOtherDocuments": "Other Documents:",
     "functionSearchHeading": "Function Search",
     "imageQueryHeading": "Image Query",
-    "imagequeryQuery": "Image query",
+    "query": "Query",
+    "imageQueryPrompt": "Image prompt",
     "tableSearchHeading": "Table Search",
     "tableSearchDataImport": "A new DB instance needs a data import first.",
     "tableSearchImportData": " Import Data "

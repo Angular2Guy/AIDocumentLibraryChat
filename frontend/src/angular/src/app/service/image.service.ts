@@ -16,17 +16,16 @@ import { Observable } from 'rxjs';
 import { ImageFile } from '../model/image-file';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ImageService {
+  constructor(private httpClient: HttpClient) {}
 
-  constructor(private httpClient: HttpClient) { }
-  
-    public postImageForm(formData: FormData): Observable<ImageFile> {
+  public postImageForm(formData: FormData): Observable<ImageFile> {
     return this.httpClient.post<ImageFile>('/rest/image/import', formData);
   }
-  
+
   public postQueryForm(formData: FormData): Observable<ImageFile[]> {
-	return this.httpClient.post<ImageFile[]>('/rest/image/query', formData);
+    return this.httpClient.post<ImageFile[]>('/rest/image/query', formData);
   }
 }

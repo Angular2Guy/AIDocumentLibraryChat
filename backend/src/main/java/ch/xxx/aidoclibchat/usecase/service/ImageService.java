@@ -83,7 +83,7 @@ public class ImageService {
 	}
 
 	public List<ImageDto> queryImage(String imageQuery) {
-		var aiDocuments = this.documentVsRepository.retrieve(imageQuery, MetaData.DataType.IMAGE).stream()
+		var aiDocuments = this.documentVsRepository.retrieve(imageQuery, MetaData.DataType.IMAGE, this.resultSize.intValue()).stream()
 				.filter(myDoc -> myDoc.getMetadata().get(MetaData.DATATYPE).equals(DataType.IMAGE.toString()))
 				.sorted((myDocA, myDocB) -> ((Float) myDocA.getMetadata().get(MetaData.DISTANCE))
 						.compareTo(((Float) myDocB.getMetadata().get(MetaData.DISTANCE))))

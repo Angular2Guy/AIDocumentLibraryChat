@@ -10,7 +10,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
- .toolbar-content {
+.toolbar-content {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -28,7 +28,7 @@
   width: 100%;
 }
 .vertical-margin {
-	margin: 20px 10px;
+  margin: 20px 10px;
 }
 .search-bar {
   display: flex;
@@ -36,8 +36,7 @@
   align-items: center;
 }
 
- 
- .example-full-width {
+.example-full-width {
   width: 100%;
 }
 
@@ -49,20 +48,20 @@
 }
 
 .auto-margin {
-	margin: auto;
-	text-align: center;
+  margin: auto;
+  text-align: center;
 }
 
 .horizontal-container {
-	display: flex;
+  display: flex;
 }
 
 .images {
-	margin-top: 20px;
-	overflow-y: scroll;
-	height: calc(100vh - (36px + 21px + 64px));
+  margin-top: 20px;
+  overflow-y: scroll;
+  height: calc(100vh - (36px + 21px + 64px));
 }
 
 .my-button {
-	margin-left: 10px;
+  margin-left: 10px;
 }

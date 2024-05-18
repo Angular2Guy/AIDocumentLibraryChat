@@ -16,13 +16,17 @@ import { Observable } from 'rxjs';
 import { FunctionResponse, FunctionSearch } from '../model/functions';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FunctionSearchService {
+  constructor(private httpClient: HttpClient) {}
 
-  constructor(private httpClient: HttpClient) { }
-  
-  postLibraryFunction(functionSearch: FunctionSearch): Observable<FunctionResponse> {
-	  return this.httpClient.post<FunctionResponse>('/rest/function/books', functionSearch);
+  postLibraryFunction(
+    functionSearch: FunctionSearch
+  ): Observable<FunctionResponse> {
+    return this.httpClient.post<FunctionResponse>(
+      '/rest/function/books',
+      functionSearch
+    );
   }
 }
