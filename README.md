@@ -1,10 +1,18 @@
 # AIDocumentLibraryChat
+
+### DocumentLibraryChat
 This is a project to show howto use SpringAI to chat with the documents in a library. Document can be uploaded are then stored in a normal and vector database. The AI is used to create embeddings from the chunks of the documents that are stored in the vector database. In the chat questions can be asked that are turned in embeddings and are used for requests to the vector database. The document vector with the lowest distance is used to load the document from the database and to request an answer from the AI based on document content tokens. That enables the AI to generate the answer based on the content of the document and limits hallucinations. A link to the source document is provided for further research.
 
+### Ollama support
+The project uses Spring AI to answer questions to an image database. Spring AIs Ollama support is used to run the LLava model that creates descriptions of images. The descriptions are turned in Embeddings and are stored in a vector database(PGVector in this project). The image is also stored in a relational table. The questions for an image can be entered in the frontend the backend turns the question in embeddings and the vector database is searched for the nearest neighbors. The best matches are returned as  descriptions and images to be displayed in the frontend.
+
+### Image library search
 The project uses Spring Boot with Spring AI to access OpenAI and the vector database. The Postgresql DB is used with the vector, hstore and the uuid-ossp extensions. Liquibase is used to manage the database migrations. Jpa is used for database access in the services by the rest controllers. For the frontend Angular, Angular Material and Typescript is used to create the table of documents, the upload dialog and the document chat. Angular Cli is used for the frontend build and Gradle for the project build.
 
+### Relations database search
 The project uses Spring AI to turn questions with a LLMs into Sql queries and display the result in the frontend. Based on metadata that is provided for the relational dataset the LLM is able to create embeddings for the metadata of the tables and columns. The project also creates embeddings for the content of certain columns to be able to decide if the column should be used as join in the Sql query. With that embedding metadata the LLM is able to turn a question in a reasonable Sql query and display the result in the frontend. The frontend uses a Angular Material Table with a flexible amount of columns and rows. 
 
+### Function calls for book search
 The project uses Spring AI to turn questions about books into a rest function call to the OpenLibrary Api. It uses the Ollama Mixtral model to take the parameters from the question and turn them in a Json format that can be used to call the Api.
 
 Author: Sven Loesekann
