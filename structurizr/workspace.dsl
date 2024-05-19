@@ -5,15 +5,23 @@ workspace "AIDocumentLibraryChat" "A project to show howto use SpringAI with Ope
         	aiModel = container "OpenAI/Ollama AI Model" "The AI Model provides the Embeddings(OpenAI) and Answers to the questions based on the documents. The OpenAI is an external model Ollama is a local model."
         	aiDocumentLibraryChat = container "AIDocumentLibraryChat" "Angular Frontend and Spring Boot Backend integrated." {
         		angularFrontend = component "Angular Frontend" "The SPA imports/searches the documents and results." tag "Browser"
+        		backendImageController = component "Image Controller" "Provides the rest interfaces for image import/search."
+        		backendFunctionController = component "Function Controller" "Provides the rest interfaces for function calls."
+        		backendTableController = component "Table Controller" "Provides the rest interfaces for Sql database search."
         		backendDocumentController = component "Document Controller" "Provides the rest interfaces for document import/search."
         	    backendDocumentVsRepository = component "Vectorstore repository for embeddings" "Repository to create/read/store embeddings. OpenAI embeddings are created by a service and Ollama embeddings are create with a library."
         	    backendDocumentRepository = component "Jpa repository for the documents" "Repository stores the originals and the metadata of the documents."
-        	    backendChatClientServices = component "ChatClient for AI Answers" "The ChatClient generates answers with the OpenAI/Ollama models."
+        	    backendImageRepository = component "Jpa repository for the images" "Repository stores the resized images and the metadata of the images."
+        	    backendSqlTemplate = component "Sql Template" "Sql template executes sql queries on a relational database."
+        	    backendChatClientServices = component "ChatClient for AI Answers" "The ChatClient generates answers for documents/images/dbs/function calls with the OpenAI/Ollama models."
         	    backendDocumentService = component "Document Service" "Document Service provides the logic for import/search of documents."
+        	    backendImageService = component "Image Service" "Image Service provides the logic for import/search of images."
+        	    backendTableService = component "Table Service" "Table Service provides the logic for the generation and execution of Sql queries."
+        	    backendFunctionService = component "Function Service" "Function Service provides the logic for the generation of the function calls with its parameters."
         	}
         	database = container "Postgresql Db" "Postgresql stores the relational and vector data of the system." tag "Database"
         }
-		aiModelSystem = softwareSystem "OpenAI Model" "The OpenAI interface for Embeddings/Answers"
+		aiModelSystem = softwareSystem "OpenAI/Ollama Model" "The OpenAI/Ollama interface for Embeddings/Answers"
 		#databaseSystem = softwareSystem "Postgresql Db" "Postgresql relational and vector data database" 
 		
 		# relationships people / software systems
@@ -22,16 +30,29 @@ workspace "AIDocumentLibraryChat" "A project to show howto use SpringAI with Ope
         #aiDocumentLibraryChatSystem -> databaseSystem "store relational/vector data"
         
         # relationships containers
-        user -> aiDocumentLibraryChat "manages the document imports/searches"
-        aiDocumentLibraryChat -> aiModel "create embeddings/answers"
-        aiDocumentLibraryChat -> database "read/store document data"
+        user -> aiDocumentLibraryChat "manages the document/image imports/searches and queries dbs and calls functions"
+        aiDocumentLibraryChat -> aiModel "create embeddings/answers or sql queries or funtion calls"
+        aiDocumentLibraryChat -> database "read/store document/image data and embeddings"
         
         # relationships components
         angularFrontend -> backendDocumentController "rest requests"
-        backendDocumentController -> backendDocumentService
+        angularFrontend -> backendImageController "rest requests"
+        angularFrontend -> backendTableController "rest requests"
+        angularFrontend -> backendFunctionController "rest requests"
+        backendDocumentController -> backendDocumentService   
+        backendImageController -> backendImageService
+        backendTableController -> backendTableService
+        backendFunctionController -> backendFunctionService 
         backendDocumentService -> backendDocumentVsRepository
         backendDocumentService -> backendDocumentRepository
         backendDocumentService -> backendChatClientServices
+        backendImageService -> backendChatClientServices
+        backendImageService -> backendDocumentVsRepository
+        backendImageService -> backendImageRepository
+        backendTableService -> backendSqlTemplate
+        backendTableService -> backendChatClientServices
+        backendTableService -> backendDocumentVsRepository
+        backendFunctionService -> backendChatClientServices
     }
 
     views {
