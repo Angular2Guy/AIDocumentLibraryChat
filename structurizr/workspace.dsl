@@ -1,6 +1,9 @@
 workspace "AIDocumentLibraryChat" "A project to show howto use SpringAI with OpenAI to chat with the documents in a library. Documents are stored in a normal/vector database. The AI is used to create embeddings from documents that are stored in the vector database. The vector database is used to query for the nearest document. That document is used by the AI to generate the answer. " {
-    model {
-        user = person "User"
+    model {    	
+        documentUser = person "Document User"
+        imageUser = person "Image User"
+        functionUser = person "Function User"
+        dbUser = person "Database User"
         aiDocumentLibraryChatSystem = softwareSystem "AIDocumentLibraryChat System" "AIDocumentLibraryChat System" {
         	aiModel = container "OpenAI/Ollama AI Model" "The AI Model provides the Embeddings(OpenAI) and Answers to the questions based on the documents. The OpenAI is an external model Ollama is a local model."
         	aiDocumentLibraryChat = container "AIDocumentLibraryChat" "Angular Frontend and Spring Boot Backend integrated." {
@@ -25,12 +28,16 @@ workspace "AIDocumentLibraryChat" "A project to show howto use SpringAI with Ope
 		#databaseSystem = softwareSystem "Postgresql Db" "Postgresql relational and vector data database" 
 		
 		# relationships people / software systems
-        user -> aiDocumentLibraryChatSystem "ask questions about documents"
+        #user -> aiDocumentLibraryChatSystem "ask questions about documents"
+        
         aiDocumentLibraryChatSystem -> aiModelSystem "generate embeddings/answers"
         #aiDocumentLibraryChatSystem -> databaseSystem "store relational/vector data"
         
         # relationships containers
-        user -> aiDocumentLibraryChat "manages the document/image imports/searches and queries dbs and calls functions"
+        documentUser -> aiDocumentLibraryChat "manages the document imports/searches"
+        imageUser ->  aiDocumentLibraryChat "manages the image imports/searches"
+        functionUser -> aiDocumentLibraryChat "manages the function call and the parameters"
+        dbUser -> aiDocumentLibraryChat "manages the sql query creation and execution"
         aiDocumentLibraryChat -> aiModel "create embeddings/answers or sql queries or funtion calls"
         aiDocumentLibraryChat -> database "read/store document/image data and embeddings"
         
