@@ -41,7 +41,11 @@ Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, S
 ## Mission Statement
 The project shows howto use Spring AI to generate answers based on a provided set of documents with a link to the source. The Angular frontend provides the user interface for the backend and shows the responses. 
 
+The project shows howto use Spring Ai to generate descriptions for uploaded images and to store the image, the descriptions and the description embeddings in the database. The questions asked to the image database are turned in embeddings and the best fitting descriptions with the images are returned. The Angular frontend provides a user interface to display the result and to upload the images.
+
 The project shows howto use Spring AI to generate Sql queries based on provided metadata for the tables/columns. The Angular frontend provides a user interface to display the result in table.
+
+The project shows howto use Spring AI to select a Rest interface to call and to provide the parameters for the Rest call. The Angular frontend provides the user interface to ask the question and to display the result of the Rest call.
 
 Spring AI makes using OpenAI / Ollama services simple and useful and this project demonstrates that. 
 
