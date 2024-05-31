@@ -12,7 +12,7 @@
  */
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.2.3'
+	id 'org.springframework.boot' version '3.3.0'
 	id 'io.spring.dependency-management' version '1.1.4'
 }
 
@@ -45,11 +45,11 @@ dependencies {
 	testImplementation 'com.tngtech.archunit:archunit-junit5:1.1.0'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	
-	if(project.hasProperty('useOllama')) {
+//	if(project.hasProperty('useOllama')) {
 		implementation 'org.springframework.ai:spring-ai-ollama-spring-boot-starter:0.8.1-SNAPSHOT'
-	} else {	    
-		implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter:0.8.1-SNAPSHOT'
-	}
+//	} else {	    
+//		implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter:0.8.1-SNAPSHOT'
+//	}
 }
 
 bootJar {
