@@ -41,17 +41,18 @@ import ch.xxx.aidoclibchat.usecase.mapping.TableMapper;
 public class ImportRestClient implements ImportClient {
 	private final CsvMapper csvMapper;
 	private final TableMapper tableMapper;
+	private final RestClient restClient;
 
-	public ImportRestClient(TableMapper tableMapper) {
+	public ImportRestClient(TableMapper tableMapper, RestClient restClient) {
 		this.tableMapper = tableMapper;
+		this.restClient = restClient;
 		this.csvMapper = new CsvMapper();
 		this.csvMapper.registerModule(new JavaTimeModule());
 	}
 
 	@Override
 	public List<Artist> importArtists() {
-		RestClient restClient = RestClient.create();
-		String result = restClient.get().uri(
+		String result = this.restClient.get().uri(
 				"https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/museumDataset/artist.csv")
 				.retrieve().body(String.class);
 		return this.mapString(result, ArtistDto.class).stream().map(myDto -> this.tableMapper.map(myDto)).toList();
@@ -70,8 +71,7 @@ public class ImportRestClient implements ImportClient {
 
 	@Override
 	public List<Museum> importMuseums() {
-		RestClient restClient = RestClient.create();
-		String result = restClient.get().uri(
+		String result = this.restClient.get().uri(
 				"https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/museumDataset/museum.csv")
 				.retrieve().body(String.class);
 		return this.mapString(result, MuseumDto.class).stream().map(myDto -> this.tableMapper.map(myDto)).toList();
@@ -79,8 +79,7 @@ public class ImportRestClient implements ImportClient {
 
 	@Override
 	public List<MuseumHours> importMuseumHours() {
-		RestClient restClient = RestClient.create();
-		String result = restClient.get().uri(
+		String result = this.restClient.get().uri(
 				"https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/museumDataset/museum_hours.csv")
 				.retrieve().body(String.class);
 		return this.mapString(result, MuseumHoursDto.class).stream().map(myDto -> this.tableMapper.map(myDto)).toList();
@@ -88,8 +87,7 @@ public class ImportRestClient implements ImportClient {
 
 	@Override
 	public List<Work> importWorks() {
-		RestClient restClient = RestClient.create();
-		String result = restClient.get().uri(
+		String result = this.restClient.get().uri(
 				"https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/museumDataset/work.csv")
 				.retrieve().body(String.class);
 		return this.mapString(result, WorkDto.class).stream().map(myDto -> this.tableMapper.map(myDto)).toList();
@@ -97,8 +95,7 @@ public class ImportRestClient implements ImportClient {
 	
 	@Override
 	public List<Subject> importSubjects() {
-		RestClient restClient = RestClient.create();
-		String result = restClient.get().uri(
+		String result = this.restClient.get().uri(
 				"https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/museumDataset/subject.csv")
 				.retrieve().body(String.class);
 		return this.mapString(result, SubjectDto.class).stream().map(myDto -> this.tableMapper.map(myDto)).toList();
@@ -106,8 +103,7 @@ public class ImportRestClient implements ImportClient {
 	
 	@Override
 	public List<WorkLink> importWorkLinks() {
-		RestClient restClient = RestClient.create();
-		String result = restClient.get().uri(
+		String result = this.restClient.get().uri(
 				"https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/museumDataset/work_link.csv")
 				.retrieve().body(String.class);
 		return this.mapString(result, WorkLinkDto.class).stream().map(myDto -> this.tableMapper.map(myDto)).toList();

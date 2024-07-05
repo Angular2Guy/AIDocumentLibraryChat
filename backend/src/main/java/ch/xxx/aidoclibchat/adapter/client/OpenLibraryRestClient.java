@@ -29,7 +29,12 @@ import ch.xxx.aidoclibchat.domain.client.OpenLibraryClient;
 public class OpenLibraryRestClient implements OpenLibraryClient {
 	private static final Logger LOGGER = LoggerFactory.getLogger(OpenLibraryRestClient.class);
 	private final String baseUrl = "https://openlibrary.org/search.json";
-
+	private final RestClient restClient;
+	
+	public OpenLibraryRestClient(RestClient restClient) {
+		this.restClient = restClient;
+	}
+	
 	@Override
 	public Response apply(Request request) {
 		var authorOpt = this.createParamOpt(request.author(), "author");
@@ -40,7 +45,7 @@ public class OpenLibraryRestClient implements OpenLibraryClient {
 		var urlStr = 
 				String.format("%s?%s", this.baseUrl, paramsStr);
 		LOGGER.info(urlStr);
-		var response = RestClient.create().get().uri(urlStr).retrieve().body(Response.class);
+		var response = this.restClient.get().uri(urlStr).retrieve().body(Response.class);
 		return response;
 	}
 

@@ -17,11 +17,18 @@ package ch.xxx.aidoclibchat.adapter.config;
 
 import java.util.function.Function;
 
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.core5.util.Timeout;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.web.client.RestClient;
 
 import ch.xxx.aidoclibchat.domain.client.OpenLibraryClient;
+
 
 @Configuration
 @EnableAsync
@@ -42,5 +49,15 @@ public class ApplicationConfig {
 	@Bean
 	public Function<OpenLibraryClient.Request, OpenLibraryClient.Response> openLibraryClient() {		
 		return this.openLibraryClient::apply;
+	}
+	
+	@Bean
+	public RestClient createRestClient() {
+		RequestConfig requestConfig = RequestConfig.custom().setResponseTimeout(Timeout.ofMilliseconds(5000)).build();
+		CloseableHttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
+		var factory = new HttpComponentsClientHttpRequestFactory(httpClient);
+		factory.setConnectTimeout(2000);
+		factory.setConnectionRequestTimeout(2000);
+		return RestClient.builder().requestFactory(factory).build();
 	}
 }
