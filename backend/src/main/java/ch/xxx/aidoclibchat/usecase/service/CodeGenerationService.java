@@ -26,7 +26,7 @@ public class CodeGenerationService {
 	}
 	
 	public GithubSource generateTests(String url) {
-		var myUrl = url.replace("https://github.com/", GithubClient.GITHUB_BASE_URL).replace("/blob", "");
+		var myUrl = url.replace("https://github.com", GithubClient.GITHUB_BASE_URL).replace("/blob", "");
 		return this.githubClient.readSourceFile(myUrl);
 	}
 }

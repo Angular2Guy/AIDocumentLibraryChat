@@ -29,8 +29,8 @@ public class GithubRestClient implements GithubClient {
 	}
 
 	public GithubSource readSourceFile(String url) {
-		var result = this.restClient.get().uri("{url}", url).retrieve().body(String.class);
-		var sourceName = Arrays.asList(url.split("/")).reversed().get(0).split(".")[0].trim();
+		var result = this.restClient.get().uri(url).retrieve().body(String.class);
+		var sourceName = Arrays.asList(url.split("/")).reversed().get(0).split("\\.")[0].trim();
 		var resultLines = result.lines().toList();
 		var sourcePackage = resultLines.stream().filter(myLine -> myLine.contains("package")).findFirst().orElseThrow()
 				.trim().split(" ")[1].split(";")[0].trim();
