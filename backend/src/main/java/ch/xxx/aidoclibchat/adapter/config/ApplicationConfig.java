@@ -15,8 +15,6 @@
  */
 package ch.xxx.aidoclibchat.adapter.config;
 
-import java.util.function.Function;
-
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
@@ -27,17 +25,10 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.client.RestClient;
 
-import ch.xxx.aidoclibchat.domain.client.OpenLibraryClient;
-
 
 @Configuration
 @EnableAsync
 public class ApplicationConfig {
-	private final OpenLibraryClient openLibraryClient;
-	
-	public ApplicationConfig(OpenLibraryClient openLibraryClient) {
-		this.openLibraryClient = openLibraryClient;
-	}
 	
 //	@Primary
 //	@Profile("ollama")
@@ -45,11 +36,6 @@ public class ApplicationConfig {
 //	public EmbeddingClient embeddingClient() {
 //		return new TransformersEmbeddingClient();
 //	}
-	
-	@Bean
-	public Function<OpenLibraryClient.Request, OpenLibraryClient.Response> openLibraryClient() {		
-		return this.openLibraryClient::apply;
-	}
 	
 	@Bean
 	public RestClient createRestClient() {
