@@ -15,5 +15,5 @@ package ch.xxx.aidoclibchat.domain.model.dto;
 public interface GithubClient {
 	public static final String GITHUB_BASE_URL = "https://raw.githubusercontent.com";
 	
-	GithubSource readSourceFile(String baseUrl, String url);
+	GithubSource readSourceFile(String url);
 }

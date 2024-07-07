@@ -28,12 +28,12 @@ public class GithubRestClient implements GithubClient {
 		this.restClient = restClient;
 	}
 
-	public GithubSource readSourceFile(String baseUrl, String url) {
-		var result = this.restClient.get().uri("{baseUrl}{url}", baseUrl, url).retrieve().body(String.class);
+	public GithubSource readSourceFile(String url) {
+		var result = this.restClient.get().uri("{url}", url).retrieve().body(String.class);
 		var sourceName = Arrays.asList(url.split("/")).reversed().get(0).split(".")[0].trim();
 		var resultLines = result.lines().toList();
 		var sourcePackage = resultLines.stream().filter(myLine -> myLine.contains("package")).findFirst().orElseThrow()
-				.split(" ")[1].split(";")[0].trim();
+				.trim().split(" ")[1].split(";")[0].trim();
 		return new GithubSource(sourceName, sourcePackage, resultLines);
 	}
 }
