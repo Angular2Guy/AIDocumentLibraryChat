@@ -12,8 +12,12 @@
  */
 package ch.xxx.aidoclibchat.usecase.service;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.aidoclibchat.domain.model.dto.GithubClient;
@@ -21,6 +25,7 @@ import ch.xxx.aidoclibchat.domain.model.dto.GithubSource;
 
 @Service
 public class CodeGenerationService {
+	private static final Logger LOGGER = LoggerFactory.getLogger(CodeGenerationService.class);
 	private final GithubClient githubClient;
 
 	public CodeGenerationService(GithubClient githubClient) {
@@ -28,11 +33,19 @@ public class CodeGenerationService {
 	}
 
 	public GithubSource generateTests(String url) {
-		var myUrl = url.replace("https://github.com", GithubClient.GITHUB_BASE_URL).replace("/blob", "");
+		final var myUrl = url.replace("https://github.com", GithubClient.GITHUB_BASE_URL).replace("/blob", "");
 		var result = this.githubClient.readSourceFile(myUrl);
 		var isComment = new AtomicBoolean(false);
-		var sourceLines = result.lines().stream().map(myLine -> myLine.replaceAll("[\t]", "").trim()).filter(myLine -> !myLine.isBlank())
-				.filter(myLine -> filterComments(isComment, myLine)).toList();
+		var sourceLines = result.lines().stream().map(myLine -> myLine.replaceAll("[\t]", "").trim())
+				.filter(myLine -> !myLine.isBlank()).filter(myLine -> filterComments(isComment, myLine)).toList();
+		final var basePackage = List.of(result.sourcePackage().split("\\.")).stream().limit(2)
+				.collect(Collectors.joining("."));
+		var importLines = sourceLines.stream().filter(myLine -> myLine.contains("import"))
+				.filter(myLine -> myLine.contains(basePackage))
+				.map(myLine -> String.format("%s%s%s", myUrl.split(basePackage.replace(".", "/"))[0].trim(),
+						myLine.split("import")[1].split(";")[0].replaceAll("\\.", "/").trim(), ".java"))
+				.toList();
+		importLines.forEach(myLine -> LOGGER.info(myLine));
 		return new GithubSource(result.sourceName(), result.sourcePackage(), sourceLines);
 	}
 
