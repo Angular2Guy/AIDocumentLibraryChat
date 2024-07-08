@@ -12,6 +12,8 @@
  */
 package ch.xxx.aidoclibchat.usecase.service;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.springframework.stereotype.Service;
 
 import ch.xxx.aidoclibchat.domain.model.dto.GithubClient;
@@ -20,13 +22,31 @@ import ch.xxx.aidoclibchat.domain.model.dto.GithubSource;
 @Service
 public class CodeGenerationService {
 	private final GithubClient githubClient;
-	
+
 	public CodeGenerationService(GithubClient githubClient) {
 		this.githubClient = githubClient;
 	}
-	
+
 	public GithubSource generateTests(String url) {
 		var myUrl = url.replace("https://github.com", GithubClient.GITHUB_BASE_URL).replace("/blob", "");
-		return this.githubClient.readSourceFile(myUrl);
+		var result = this.githubClient.readSourceFile(myUrl);
+		var isComment = new AtomicBoolean(false);
+		var sourceLines = result.lines().stream().map(myLine -> myLine.replaceAll("[\t]", "").trim()).filter(myLine -> !myLine.isBlank())
+				.filter(myLine -> filterComments(isComment, myLine)).toList();
+		return new GithubSource(result.sourceName(), result.sourcePackage(), sourceLines);
+	}
+
+	private boolean filterComments(AtomicBoolean isComment, String myLine) {
+		var result1 = true;
+		if (myLine.contains("/*") || isComment.get()) {
+			isComment.set(true);
+			result1 = false;
+		}
+		if (myLine.contains("*/")) {
+			isComment.set(false);
+			result1 = false;
+		}
+		result1 = result1 && !myLine.trim().startsWith("//");
+		return result1;
 	}
 }
