@@ -13,6 +13,8 @@
 package ch.xxx.aidoclibchat.adapter.client;
 
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -34,6 +36,6 @@ public class GithubRestClient implements GithubClient {
 		var resultLines = result.lines().toList();
 		var sourcePackage = resultLines.stream().filter(myLine -> myLine.contains("package")).findFirst().orElseThrow()
 				.trim().split(" ")[1].split(";")[0].trim();
-		return new GithubSource(sourceName, sourcePackage, resultLines);
+		return new GithubSource(sourceName, sourcePackage, resultLines, new LinkedList<GithubSource>());
 	}
 }

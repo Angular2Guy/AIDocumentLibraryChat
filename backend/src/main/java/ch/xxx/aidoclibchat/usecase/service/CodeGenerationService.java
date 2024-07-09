@@ -32,7 +32,7 @@ public class CodeGenerationService {
 		this.githubClient = githubClient;
 	}
 
-	public GithubSource generateTests(String url) {
+	public GithubSource generateTests(String url, final boolean referencedSources) {
 		final var myUrl = url.replace("https://github.com", GithubClient.GITHUB_BASE_URL).replace("/blob", "");
 		var result = this.githubClient.readSourceFile(myUrl);
 		var isComment = new AtomicBoolean(false);
@@ -40,13 +40,13 @@ public class CodeGenerationService {
 				.filter(myLine -> !myLine.isBlank()).filter(myLine -> filterComments(isComment, myLine)).toList();
 		final var basePackage = List.of(result.sourcePackage().split("\\.")).stream().limit(2)
 				.collect(Collectors.joining("."));
-		var importLines = sourceLines.stream().filter(myLine -> myLine.contains("import"))
+		var importLines = sourceLines.stream().filter(x -> referencedSources).filter(myLine -> myLine.contains("import"))
 				.filter(myLine -> myLine.contains(basePackage))
 				.map(myLine -> String.format("%s%s%s", myUrl.split(basePackage.replace(".", "/"))[0].trim(),
 						myLine.split("import")[1].split(";")[0].replaceAll("\\.", "/").trim(), ".java"))
-				.toList();
-		importLines.forEach(myLine -> LOGGER.info(myLine));
-		return new GithubSource(result.sourceName(), result.sourcePackage(), sourceLines);
+				.map(myLine -> this.generateTests(myLine, false)).toList();
+//		importLines.forEach(myLine -> LOGGER.info(myLine));
+		return new GithubSource(result.sourceName(), result.sourcePackage(), sourceLines, importLines);
 	}
 
 	private boolean filterComments(AtomicBoolean isComment, String myLine) {

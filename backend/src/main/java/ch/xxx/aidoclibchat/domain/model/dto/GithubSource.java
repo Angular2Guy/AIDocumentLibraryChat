@@ -14,6 +14,6 @@ package ch.xxx.aidoclibchat.domain.model.dto;
 
 import java.util.List;
 
-public record GithubSource(String sourceName, String sourcePackage, List<String> lines) {
+public record GithubSource(String sourceName, String sourcePackage, List<String> lines, List<GithubSource> dependencies) {
 
 }
