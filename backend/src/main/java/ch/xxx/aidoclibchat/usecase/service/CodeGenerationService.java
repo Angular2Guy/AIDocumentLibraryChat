@@ -18,6 +18,9 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.ai.chat.ChatClient;
+import org.springframework.ai.chat.messages.AssistantMessage;
+import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.aidoclibchat.domain.model.dto.GithubClient;
@@ -27,12 +30,39 @@ import ch.xxx.aidoclibchat.domain.model.dto.GithubSource;
 public class CodeGenerationService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CodeGenerationService.class);
 	private final GithubClient githubClient;
+	private final ChatClient chatClient;
+	private final String ollamaPrompt = """
+			You are an assistant to generate spring tests for the class under test.
+			Generate tests for this class:
 
-	public CodeGenerationService(GithubClient githubClient) {
+			%s
+
+			Use these classes as context for the tests:
+
+			%s
+
+			Use this class as test example class:
+
+			%s
+			""";
+
+	public CodeGenerationService(GithubClient githubClient, ChatClient chatClient) {
 		this.githubClient = githubClient;
+		this.chatClient = chatClient;
 	}
 
-	public GithubSource generateTests(String url, final boolean referencedSources) {
+	public String generateTest(String url) {
+		var githubSource = this.createTestSources(url, true);
+		String contextClasses = "";
+		String testExample = "";
+		String myPrompt = String.format(this.ollamaPrompt,
+				githubSource.lines().stream().collect(Collectors.joining(System.getProperty("line.separator"))),
+				contextClasses, testExample);
+		var response = chatClient.call(new Prompt(new AssistantMessage(myPrompt)));
+		return response.getResult().getOutput().getContent();
+	}
+
+	public GithubSource createTestSources(String url, final boolean referencedSources) {
 		final var myUrl = url.replace("https://github.com", GithubClient.GITHUB_BASE_URL).replace("/blob", "");
 		var result = this.githubClient.readSourceFile(myUrl);
 		final var isComment = new AtomicBoolean(false);
@@ -50,7 +80,7 @@ public class CodeGenerationService {
 				.filter(myLine -> myLine.contains(basePackage))
 				.map(myLine -> String.format("%s%s%s", myUrl.split(basePackage.replace(".", "/"))[0].trim(),
 						myLine.split("import")[1].split(";")[0].replaceAll("\\.", "/").trim(), ".java"))
-				.map(myLine -> this.generateTests(myLine, false)).toList();
+				.map(myLine -> this.createTestSources(myLine, false)).toList();
 	}
 
 	private boolean filterComments(AtomicBoolean isComment, String myLine) {

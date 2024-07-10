@@ -34,6 +34,6 @@ public class CodeGenerationController {
 	
 	@GetMapping("/test")
 	public GithubSource getGenerateTests(@RequestParam("url") String url) {		
-		return this.codeGenerationService.generateTests(URLDecoder.decode(url, StandardCharsets.UTF_8), true);
+		return this.codeGenerationService.createTestSources(URLDecoder.decode(url, StandardCharsets.UTF_8), true);
 	}
 }
