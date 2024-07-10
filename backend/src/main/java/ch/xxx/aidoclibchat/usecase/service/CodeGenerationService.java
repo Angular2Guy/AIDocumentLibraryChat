@@ -13,6 +13,7 @@
 package ch.xxx.aidoclibchat.usecase.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -35,15 +36,15 @@ public class CodeGenerationService {
 			You are an assistant to generate spring tests for the class under test.
 			Generate tests for this class:
 
-			%s
+			{classToTest}
 
 			Use these classes as context for the tests:
 
-			%s
+			{contextClasses}
 
 			Use this class as test example class:
 
-			%s
+			{testExample}
 			""";
 
 	public CodeGenerationService(GithubClient githubClient, ChatClient chatClient) {
@@ -55,10 +56,10 @@ public class CodeGenerationService {
 		var githubSource = this.createTestSources(url, true);
 		String contextClasses = "";
 		String testExample = "";
-		String myPrompt = String.format(this.ollamaPrompt,
-				githubSource.lines().stream().collect(Collectors.joining(System.getProperty("line.separator"))),
-				contextClasses, testExample);
-		var response = chatClient.call(new Prompt(new AssistantMessage(myPrompt)));
+		String classToTest = githubSource.lines().stream()
+				.collect(Collectors.joining(System.getProperty("line.separator")));
+		var response = chatClient.call(new Prompt(new AssistantMessage(this.ollamaPrompt,
+				Map.of("classToTest", classToTest, "contextClasses", contextClasses, "testExample", testExample))));
 		return response.getResult().getOutput().getContent();
 	}
 
