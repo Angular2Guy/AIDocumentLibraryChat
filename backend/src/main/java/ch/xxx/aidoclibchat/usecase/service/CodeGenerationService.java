@@ -35,14 +35,10 @@ public class CodeGenerationService {
 	private final String ollamaPrompt = """
 			You are an assistant to generate spring tests for the class under test.
 			Generate tests for this class:
-
 			{classToTest}
 
 			Use these classes as context for the tests:
-
 			{contextClasses}
-
-			Use this class as test example class:
 
 			{testExample}
 			""";
@@ -52,10 +48,16 @@ public class CodeGenerationService {
 		this.chatClient = chatClient;
 	}
 
-	public String generateTest(String url) {
+	public String generateTest(String url, String testUrl) {
 		var githubSource = this.createTestSources(url, true);
-		String contextClasses = "";
-		String testExample = "";
+		var githubTestSource = this.createTestSources(testUrl, false);
+		String contextClasses = githubSource.dependencies().stream()
+				.map(myGithubSource -> myGithubSource.sourceName() + ":" + System.getProperty("line.separator")
+						+ myGithubSource.lines().stream()
+								.collect(Collectors.joining(System.getProperty("line.separator"))))
+				.collect(Collectors.joining(System.getProperty("line.separator")));
+		String testExample = "Use this class as test example:" + System.getProperty("line.separator")
+				+ githubTestSource.lines().stream().collect(Collectors.joining(System.getProperty("line.separator")));
 		String classToTest = githubSource.lines().stream()
 				.collect(Collectors.joining(System.getProperty("line.separator")));
 		var response = chatClient.call(new Prompt(new AssistantMessage(this.ollamaPrompt,

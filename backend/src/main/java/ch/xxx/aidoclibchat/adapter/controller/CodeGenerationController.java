@@ -14,6 +14,8 @@ package ch.xxx.aidoclibchat.adapter.controller;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,19 +23,32 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ch.xxx.aidoclibchat.domain.model.dto.GithubSource;
+import ch.xxx.aidoclibchat.domain.model.dto.GithubSources;
 import ch.xxx.aidoclibchat.usecase.service.CodeGenerationService;
 
 @RestController
 @RequestMapping("rest/code-generation")
 public class CodeGenerationController {
 	private final CodeGenerationService codeGenerationService;
-	
+
 	public CodeGenerationController(CodeGenerationService codeGenerationService) {
 		this.codeGenerationService = codeGenerationService;
 	}
-	
+
 	@GetMapping("/test")
-	public GithubSource getGenerateTests(@RequestParam("url") String url) {		
-		return this.codeGenerationService.createTestSources(URLDecoder.decode(url, StandardCharsets.UTF_8), true);
+	public String getGenerateTests(@RequestParam("url") String url,
+			@RequestParam(required = false) String testUrl) {
+		return this.codeGenerationService.generateTest(URLDecoder.decode(url, StandardCharsets.UTF_8),URLDecoder.decode(testUrl, StandardCharsets.UTF_8));
+	}
+
+	@GetMapping("/sources")
+	public GithubSources getSources(@RequestParam("url") String url, @RequestParam(required = false) String testUrl) {
+		var sources = this.codeGenerationService.createTestSources(URLDecoder.decode(url, StandardCharsets.UTF_8),
+				true);
+		var test = Optional.ofNullable(testUrl)
+				.map(myTestUrl -> this.codeGenerationService
+						.createTestSources(URLDecoder.decode(myTestUrl, StandardCharsets.UTF_8), false))
+				.orElse(new GithubSource("none", "none", List.of(), List.of()));
+		return new GithubSources(sources, test);
 	}
 }
