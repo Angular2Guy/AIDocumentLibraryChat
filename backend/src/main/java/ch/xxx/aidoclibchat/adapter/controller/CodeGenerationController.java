@@ -35,6 +35,8 @@ public class CodeGenerationController {
 		this.codeGenerationService = codeGenerationService;
 	}
 
+	// http://localhost:8080/rest/code-generation/test?url=https://github.com/Angular2Guy/MovieManager/blob/master/backend/src/main/java/ch/xxx/moviemanager/adapter/controller/ActorController.java&testUrl=https://github.com/Angular2Guy/MovieManager/blob/master/backend/src/test/java/ch/xxx/moviemanager/adapter/controller/MovieControllerTest.java
+	// http://localhost:8080/rest/code-generation/test?url=https://github.com/Angular2Guy/MovieManager/blob/master/backend/src/main/java/ch/xxx/moviemanager/usecase/service/ActorService.java&testUrl=https://github.com/Angular2Guy/MovieManager/blob/master/backend/src/test/java/ch/xxx/moviemanager/usecase/service/MovieServiceTest.java
 	@GetMapping("/test")
 	public String getGenerateTests(@RequestParam("url") String url,
 			@RequestParam(name = "testUrl", required = false) String testUrl) {

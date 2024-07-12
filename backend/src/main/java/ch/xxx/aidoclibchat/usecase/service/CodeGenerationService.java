@@ -72,6 +72,9 @@ public class CodeGenerationService {
 				Map.of("classToTest", classToTest, "contextClasses", contextClasses, "testExample", testExample)).createMessage().getContent());
 		var response = chatClient.call(new PromptTemplate(this.ollamaPrompt,
 				Map.of("classToTest", classToTest, "contextClasses", contextClasses, "testExample", testExample)).create());
+		LOGGER.info("Prompt tokens: " + response.getMetadata().getUsage().getPromptTokens());
+		LOGGER.info("Generation tokens: " + response.getMetadata().getUsage().getGenerationTokens());
+		LOGGER.info("Total tokens: " + response.getMetadata().getUsage().getTotalTokens());
 		return response.getResult().getOutput().getContent();
 	}
 
