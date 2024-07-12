@@ -14,6 +14,7 @@ package ch.xxx.aidoclibchat.usecase.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -48,16 +49,21 @@ public class CodeGenerationService {
 		this.chatClient = chatClient;
 	}
 
-	public String generateTest(String url, String testUrl) {
+	public String generateTest(String url, Optional<String> testUrlOpt) {
 		var githubSource = this.createTestSources(url, true);
-		var githubTestSource = this.createTestSources(testUrl, false);
+		var githubTestSource = testUrlOpt.map(testUrl -> this.createTestSources(testUrl, false))
+				.orElse(new GithubSource(null, null, List.of(), List.of()));
 		String contextClasses = githubSource.dependencies().stream()
 				.map(myGithubSource -> myGithubSource.sourceName() + ":" + System.getProperty("line.separator")
 						+ myGithubSource.lines().stream()
 								.collect(Collectors.joining(System.getProperty("line.separator"))))
 				.collect(Collectors.joining(System.getProperty("line.separator")));
-		String testExample = "Use this class as test example:" + System.getProperty("line.separator")
-				+ githubTestSource.lines().stream().collect(Collectors.joining(System.getProperty("line.separator")));
+		String testExample = Optional
+				.ofNullable(
+						githubTestSource.sourceName())
+				.map(x -> "Use this class as test example:" + System.getProperty("line.separator") + githubTestSource
+						.lines().stream().collect(Collectors.joining(System.getProperty("line.separator"))))
+				.orElse("");
 		String classToTest = githubSource.lines().stream()
 				.collect(Collectors.joining(System.getProperty("line.separator")));
 		var response = chatClient.call(new Prompt(new AssistantMessage(this.ollamaPrompt,

@@ -37,8 +37,9 @@ public class CodeGenerationController {
 
 	@GetMapping("/test")
 	public String getGenerateTests(@RequestParam("url") String url,
-			@RequestParam(required = false) String testUrl) {
-		return this.codeGenerationService.generateTest(URLDecoder.decode(url, StandardCharsets.UTF_8),URLDecoder.decode(testUrl, StandardCharsets.UTF_8));
+			@RequestParam(name = "testUrl", required = false) String testUrl) {
+		return this.codeGenerationService.generateTest(URLDecoder.decode(url, StandardCharsets.UTF_8),
+				Optional.ofNullable(testUrl).map(myValue -> URLDecoder.decode(myValue, StandardCharsets.UTF_8)));
 	}
 
 	@GetMapping("/sources")
