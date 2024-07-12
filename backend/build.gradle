@@ -40,7 +40,6 @@ dependencies {
 	implementation 'net.javacrumbs.shedlock:shedlock-provider-jdbc-template:5.2.0'
 	implementation 'org.springframework.ai:spring-ai-pgvector-store-spring-boot-starter:0.8.1-SNAPSHOT'
 	implementation 'org.springframework.ai:spring-ai-transformers-spring-boot-starter:0.8.1-SNAPSHOT'
-	implementation 'org.apache.httpcomponents.client5:httpclient5'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testImplementation 'com.tngtech.archunit:archunit-junit5:1.1.0'

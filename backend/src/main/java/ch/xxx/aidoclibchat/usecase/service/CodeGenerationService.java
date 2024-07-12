@@ -21,8 +21,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.ChatClient;
-import org.springframework.ai.chat.messages.AssistantMessage;
-import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.aidoclibchat.domain.model.dto.GithubClient;
@@ -34,7 +33,10 @@ public class CodeGenerationService {
 	private final GithubClient githubClient;
 	private final ChatClient chatClient;
 	private final String ollamaPrompt = """
-			You are an assistant to generate spring tests for the class under test.
+			You are an assistant to generate spring tests for the class under test. 
+			Analyse the classes provided and generate tests for all methods. Base your tests on the test example.
+			Generate and implement the test methods. 	
+					 
 			Generate tests for this class:
 			{classToTest}
 
@@ -66,8 +68,10 @@ public class CodeGenerationService {
 				.orElse("");
 		String classToTest = githubSource.lines().stream()
 				.collect(Collectors.joining(System.getProperty("line.separator")));
-		var response = chatClient.call(new Prompt(new AssistantMessage(this.ollamaPrompt,
-				Map.of("classToTest", classToTest, "contextClasses", contextClasses, "testExample", testExample))));
+		LOGGER.debug(new PromptTemplate(this.ollamaPrompt,
+				Map.of("classToTest", classToTest, "contextClasses", contextClasses, "testExample", testExample)).createMessage().getContent());
+		var response = chatClient.call(new PromptTemplate(this.ollamaPrompt,
+				Map.of("classToTest", classToTest, "contextClasses", contextClasses, "testExample", testExample)).create());
 		return response.getResult().getOutput().getContent();
 	}
 
