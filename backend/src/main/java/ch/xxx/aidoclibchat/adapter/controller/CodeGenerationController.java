@@ -45,7 +45,7 @@ public class CodeGenerationController {
 	}
 
 	@GetMapping("/sources")
-	public GithubSources getSources(@RequestParam("url") String url, @RequestParam(required = false) String testUrl) {
+	public GithubSources getSources(@RequestParam("url") String url, @RequestParam(name="testUrl", required = false) String testUrl) {
 		var sources = this.codeGenerationService.createTestSources(URLDecoder.decode(url, StandardCharsets.UTF_8),
 				true);
 		var test = Optional.ofNullable(testUrl)

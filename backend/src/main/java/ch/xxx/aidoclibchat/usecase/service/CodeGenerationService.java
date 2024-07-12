@@ -35,7 +35,7 @@ public class CodeGenerationService {
 	private final String ollamaPrompt = """
 			You are an assistant to generate spring tests for the class under test. 
 			Analyse the classes provided and generate tests for all methods. Base your tests on the test example.
-			Generate and implement the test methods. 	
+			Generate and implement the test methods. Generate and implement complete tests methods.
 					 
 			Generate tests for this class:
 			{classToTest}
@@ -95,7 +95,7 @@ public class CodeGenerationService {
 		return sourceLines.stream().filter(x -> referencedSources).filter(myLine -> myLine.contains("import"))
 				.filter(myLine -> myLine.contains(basePackage))
 				.map(myLine -> String.format("%s%s%s", myUrl.split(basePackage.replace(".", "/"))[0].trim(),
-						myLine.split("import")[1].split(";")[0].replaceAll("\\.", "/").trim(), ".java"))
+						myLine.split("import")[1].split(";")[0].replaceAll("\\.", "/").trim(), myUrl.substring(myUrl.lastIndexOf('.'))))
 				.map(myLine -> this.createTestSources(myLine, false)).toList();
 	}
 
