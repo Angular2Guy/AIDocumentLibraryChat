@@ -47,6 +47,23 @@ public class CodeGenerationService {
 			{contextClasses}
 
 			{testExample}
+			""";	
+	private final String ollamaPrompt1 = """
+			You are an assistant to generate a spring test class for the source class.
+			1. Analyse the source class
+			2. Analyse the context classes for the classes used by the source class
+			3. Analyse the class in test example to base the code of the generated test class on it.
+			4. Generate a test class for the source class, use the context classes as sources for it and base the code of the test class on the test example. 
+			Generate the complete source code of the test class implementing the tests.						
+
+			{testExample}
+
+			Use these context classes as extension for the source class:
+			{contextClasses}
+			
+			Generate the complete source code of the test class implementing the tests.
+			Generate tests for this source class:
+			{classToTest}	
 			""";
 	@Value("${spring.ai.ollama.chat.options.num-ctx:0}")
 	private Long contextWindowSize;
@@ -61,7 +78,8 @@ public class CodeGenerationService {
 		var githubSource = this.createTestSources(url, true);
 		var githubTestSource = testUrlOpt.map(testUrl -> this.createTestSources(testUrl, false))
 				.orElse(new GithubSource(null, null, List.of(), List.of()));
-		String contextClasses = githubSource.dependencies().stream().filter(x -> this.contextWindowSize >= 16 * 1024)
+		String contextClasses = githubSource.dependencies().stream()
+				.filter(x -> this.contextWindowSize >= 16 * 1024)
 				.map(myGithubSource -> myGithubSource.sourceName() + ":" + System.getProperty("line.separator")
 						+ myGithubSource.lines().stream()
 								.collect(Collectors.joining(System.getProperty("line.separator"))))
@@ -69,15 +87,15 @@ public class CodeGenerationService {
 		String testExample = Optional
 				.ofNullable(
 						githubTestSource.sourceName())
-				.map(x -> "Use this class as example:" + System.getProperty("line.separator") + githubTestSource
+				.map(x -> "Use this as test example class:" + System.getProperty("line.separator") + githubTestSource
 						.lines().stream().collect(Collectors.joining(System.getProperty("line.separator"))))
 				.orElse("");
 		String classToTest = githubSource.lines().stream()
 				.collect(Collectors.joining(System.getProperty("line.separator")));
-		LOGGER.debug(new PromptTemplate(this.ollamaPrompt,
+		LOGGER.debug(new PromptTemplate(this.contextWindowSize >= 16 * 1024 ? this.ollamaPrompt1 : this.ollamaPrompt,
 				Map.of("classToTest", classToTest, "contextClasses", contextClasses, "testExample", testExample)).createMessage().getContent());
 		LOGGER.info("Generation started with context window: {}", this.contextWindowSize);
-		var response = chatClient.call(new PromptTemplate(this.ollamaPrompt,
+		var response = chatClient.call(new PromptTemplate(this.contextWindowSize >= 16 * 1024 ? this.ollamaPrompt1 : this.ollamaPrompt,
 				Map.of("classToTest", classToTest, "contextClasses", contextClasses, "testExample", testExample)).create());
 		if((Instant.now().getEpochSecond() - start.getEpochSecond()) >= 300) {
 			LOGGER.info(response.getResult().getOutput().getContent());
