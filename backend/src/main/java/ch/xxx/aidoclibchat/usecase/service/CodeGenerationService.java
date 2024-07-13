@@ -36,7 +36,7 @@ public class CodeGenerationService {
 	private final ChatClient chatClient;
 	private final String ollamaPrompt = """
 			You are an assistant to generate spring tests for the class under test. 
-			Analyse the classes provided and generate tests for all methods. Base your tests on the test example.
+			Analyse the classes provided and generate tests for all methods. Base your tests on the example.
 			Generate and implement the test methods. Generate and implement complete tests methods.
 			Generate the complete source of the test class.
 					 
@@ -69,13 +69,14 @@ public class CodeGenerationService {
 		String testExample = Optional
 				.ofNullable(
 						githubTestSource.sourceName())
-				.map(x -> "Use this class as test example:" + System.getProperty("line.separator") + githubTestSource
+				.map(x -> "Use this class as example:" + System.getProperty("line.separator") + githubTestSource
 						.lines().stream().collect(Collectors.joining(System.getProperty("line.separator"))))
 				.orElse("");
 		String classToTest = githubSource.lines().stream()
 				.collect(Collectors.joining(System.getProperty("line.separator")));
 		LOGGER.debug(new PromptTemplate(this.ollamaPrompt,
 				Map.of("classToTest", classToTest, "contextClasses", contextClasses, "testExample", testExample)).createMessage().getContent());
+		LOGGER.info("Generation started with context window: {}", this.contextWindowSize);
 		var response = chatClient.call(new PromptTemplate(this.ollamaPrompt,
 				Map.of("classToTest", classToTest, "contextClasses", contextClasses, "testExample", testExample)).create());
 		if((Instant.now().getEpochSecond() - start.getEpochSecond()) >= 300) {
