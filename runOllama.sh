@@ -9,4 +9,5 @@ docker exec -it ollama ollama run stable-beluga:13bc
 #docker exec -it ollama ollama run mixtral:8x7b-text-v0.1-q6_K
 #docker exec -it ollama ollama run llava:34b-v1.6-q6_K
 #docker exec -it ollama ollama run granite-code:20b
+#docker exec -it ollama ollama run deepseek-coder-v2:16b
 #docker exec -it ollama bash

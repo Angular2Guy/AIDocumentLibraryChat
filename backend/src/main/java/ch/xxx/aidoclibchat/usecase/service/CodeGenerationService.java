@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.ChatClient;
 import org.springframework.ai.chat.prompt.PromptTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.aidoclibchat.domain.model.dto.GithubClient;
@@ -37,7 +38,7 @@ public class CodeGenerationService {
 			You are an assistant to generate spring tests for the class under test. 
 			Analyse the classes provided and generate tests for all methods. Base your tests on the test example.
 			Generate and implement the test methods. Generate and implement complete tests methods.
-			
+			Generate the complete source of the test class.
 					 
 			Generate tests for this class:
 			{classToTest}
@@ -47,6 +48,8 @@ public class CodeGenerationService {
 
 			{testExample}
 			""";
+	@Value("${spring.ai.ollama.chat.options.num-ctx:0}")
+	private Long contextWindowSize;
 
 	public CodeGenerationService(GithubClient githubClient, ChatClient chatClient) {
 		this.githubClient = githubClient;
@@ -58,7 +61,7 @@ public class CodeGenerationService {
 		var githubSource = this.createTestSources(url, true);
 		var githubTestSource = testUrlOpt.map(testUrl -> this.createTestSources(testUrl, false))
 				.orElse(new GithubSource(null, null, List.of(), List.of()));
-		String contextClasses = githubSource.dependencies().stream()
+		String contextClasses = githubSource.dependencies().stream().filter(x -> this.contextWindowSize >= 16 * 1024)
 				.map(myGithubSource -> myGithubSource.sourceName() + ":" + System.getProperty("line.separator")
 						+ myGithubSource.lines().stream()
 								.collect(Collectors.joining(System.getProperty("line.separator"))))
@@ -75,7 +78,9 @@ public class CodeGenerationService {
 				Map.of("classToTest", classToTest, "contextClasses", contextClasses, "testExample", testExample)).createMessage().getContent());
 		var response = chatClient.call(new PromptTemplate(this.ollamaPrompt,
 				Map.of("classToTest", classToTest, "contextClasses", contextClasses, "testExample", testExample)).create());
-		LOGGER.info(response.getResult().getOutput().getContent());
+		if((Instant.now().getEpochSecond() - start.getEpochSecond()) >= 300) {
+			LOGGER.info(response.getResult().getOutput().getContent());
+		}
 		LOGGER.info("Prompt tokens: " + response.getMetadata().getUsage().getPromptTokens());
 		LOGGER.info("Generation tokens: " + response.getMetadata().getUsage().getGenerationTokens());
 		LOGGER.info("Total tokens: " + response.getMetadata().getUsage().getTotalTokens());
