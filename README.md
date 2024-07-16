@@ -17,6 +17,9 @@ The project uses Spring AI to turn questions with a LLMs into Sql queries and di
 ### Function calls for book search
 The project uses Spring AI to turn questions about books into a rest function call to the OpenLibrary Api. It uses the Ollama Mixtral model to take the parameters from the question and turn them in a Json format that can be used to call the Api.
 
+### Generating code
+The project uses Spring AI to generate test classes. To do that the class to test is provided and the classes the class to test depends on. A test example class can also be provided. The ollama based AI/LLM then gets a prompt with all the information and generates a draft of the source of the test class.
+
 Author: Sven Loesekann
 
 Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, Spring AI, OpenAI, Ollama, Postgresql(vector,hstore), Liquibase, Jpa, Gradle, Java
@@ -24,6 +27,7 @@ Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, S
 [![CodeQL](https://github.com/Angular2Guy/AIDocumentLibraryChat/actions/workflows/codeql.yml/badge.svg)](https://github.com/Angular2Guy/AIDocumentLibraryChat/actions/workflows/codeql.yml)
 
 ## Articles
+* [Using Spring AI with LLMs to generate code](https://angular2guy.wordpress.com/2024/07/15/using-spring-ai-with-llms-to-generate-code/)
 * [Questioning an Image Database with local AI/LLM on Ollama and Spring AI](https://angular2guy.wordpress.com/2024/05/17/questioning-an-image-database-with-ai-llm-and-spring-ai/)
 * [Extending AI/LLM Capabilities with Rag and Function calls](https://angular2guy.wordpress.com/2024/03/17/extending-ai-llm-capabilities/)
 * [Using Spring AI with LLMs to query relational databases](https://angular2guy.wordpress.com/2024/03/01/using-spring-ai-with-ai-llms-to-query-relational-databases/)
@@ -37,6 +41,7 @@ Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, S
 4. It displays the result of the Sql query based on the question.
 5. It displays the results of the rest api with parameters based on to question.
 6. It displays the results of the questions to the image database.
+7. It generates tests for sources in public Github repositories
 
 ## Mission Statement
 The project shows howto use Spring AI to generate answers based on a provided set of documents with a link to the source. The Angular frontend provides the user interface for the backend and shows the responses. 
@@ -46,6 +51,8 @@ The project shows howto use Spring Ai to generate descriptions for uploaded imag
 The project shows howto use Spring AI to generate Sql queries based on provided metadata for the tables/columns. The Angular frontend provides a user interface to display the result in table.
 
 The project shows howto use Spring AI to select a Rest interface to call and to provide the parameters for the Rest call. The Angular frontend provides the user interface to ask the question and to display the result of the Rest call.
+
+The project shows howto use Spring AI to create a image database that can be queried with natural language questions and returns the closest matching images with their descriptions.  
 
 Spring AI makes using OpenAI / Ollama services simple and useful and this project demonstrates that. 
 
