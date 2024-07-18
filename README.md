@@ -1,5 +1,11 @@
 # AIDocumentLibraryChat
 
+Author: Sven Loesekann
+
+Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, Spring AI, OpenAI, Ollama, Postgresql(vector,hstore), Liquibase, Jpa, Gradle, Java
+
+[![CodeQL](https://github.com/Angular2Guy/AIDocumentLibraryChat/actions/workflows/codeql.yml/badge.svg)](https://github.com/Angular2Guy/AIDocumentLibraryChat/actions/workflows/codeql.yml)
+
 ### DocumentLibraryChat
 This is a project to show howto use SpringAI to chat with the documents in a library. Document can be uploaded are then stored in a normal and vector database. The AI is used to create embeddings from the chunks of the documents that are stored in the vector database. In the chat questions can be asked that are turned in embeddings and are used for requests to the vector database. The document vector with the lowest distance is used to load the document from the database and to request an answer from the AI based on document content tokens. That enables the AI to generate the answer based on the content of the document and limits hallucinations. A link to the source document is provided for further research.
 
@@ -19,12 +25,6 @@ The project uses Spring AI to turn questions about books into a rest function ca
 
 ### Generating code
 The project uses Spring AI to generate test classes. To do that the class to test is provided and the classes the class to test depends on. A test example class can also be provided. The ollama based AI/LLM then gets a prompt with all the information and generates a draft of the source of the test class.
-
-Author: Sven Loesekann
-
-Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, Spring AI, OpenAI, Ollama, Postgresql(vector,hstore), Liquibase, Jpa, Gradle, Java
-
-[![CodeQL](https://github.com/Angular2Guy/AIDocumentLibraryChat/actions/workflows/codeql.yml/badge.svg)](https://github.com/Angular2Guy/AIDocumentLibraryChat/actions/workflows/codeql.yml)
 
 ## Articles
 * [Using Spring AI with LLMs to generate code](https://angular2guy.wordpress.com/2024/07/15/using-spring-ai-with-llms-to-generate-code/)
