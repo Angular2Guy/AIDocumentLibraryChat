@@ -26,19 +26,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.ChatClient;
 import org.springframework.ai.chat.ChatResponse;
-import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.ai.chat.prompt.SystemPromptTemplate;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
+import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.chat.prompt.SystemPromptTemplate;
 import org.springframework.ai.reader.tika.TikaDocumentReader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.aidoclibchat.domain.common.MetaData;
 import ch.xxx.aidoclibchat.domain.common.MetaData.DataType;
 import ch.xxx.aidoclibchat.domain.model.dto.AiDocumentResult;
+import ch.xxx.aidoclibchat.domain.model.dto.Chapter;
 import ch.xxx.aidoclibchat.domain.model.dto.SearchDto;
 import ch.xxx.aidoclibchat.domain.model.entity.Document;
 import ch.xxx.aidoclibchat.domain.model.entity.DocumentRepository;
@@ -84,10 +84,13 @@ public class DocumentService {
 		LOGGER.info("Profile: {}", this.activeProfile);
 	}
 
+	public String summarizeBook(Document document, List<Chapter> chapters) {
+		return "";
+	}
+	
 	public Long storeDocument(Document document) {
 		var myDocument = this.documentRepository.save(document);
-		Resource resource = new ByteArrayResource(document.getDocumentContent());
-		var tikaDocuments = new TikaDocumentReader(resource).get();
+		var tikaDocuments = new TikaDocumentReader(new ByteArrayResource(document.getDocumentContent())).get();
 		record TikaDocumentAndContent(org.springframework.ai.document.Document document, String content) {
 		}
 		var aiDocuments = tikaDocuments.stream()
