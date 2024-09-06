@@ -20,7 +20,7 @@ public class MetaData {
 	};
 
 	public enum DocumentType {
-		PDF, HTML, TEXT, XML, UNKNOWN
+		PDF, HTML, TEXT, XML, UNKNOWN, EPUB
 	};
 
 	public enum ImageType {

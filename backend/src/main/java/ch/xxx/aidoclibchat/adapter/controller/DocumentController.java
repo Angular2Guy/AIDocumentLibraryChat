@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import ch.xxx.aidoclibchat.domain.common.MetaData.DocumentType;
+import ch.xxx.aidoclibchat.domain.model.dto.Chapter;
 import ch.xxx.aidoclibchat.domain.model.dto.DocumentDto;
 import ch.xxx.aidoclibchat.domain.model.dto.DocumentSearchDto;
 import ch.xxx.aidoclibchat.domain.model.dto.SearchDto;
@@ -50,6 +51,12 @@ public class DocumentController {
 		return docSize;
 	}
 
+	@PostMapping("/upload-book")
+	public String handleBookUpload(@RequestParam("file") MultipartFile document, @RequestParam("chapters") List<Chapter> chapters) {
+		var result = this.documentService.summarizeBook(this.documentMapper.toEntity(document), List.of());
+		return result;
+	}
+	
 	@GetMapping("/list")
 	public List<DocumentDto> getDocumentList() {
 		return this.documentService.getDocumentList().stream()
@@ -78,6 +85,7 @@ public class DocumentController {
 		case DocumentType.HTML -> MediaType.TEXT_HTML;
 		case DocumentType.TEXT -> MediaType.TEXT_PLAIN;
 		case DocumentType.XML -> MediaType.APPLICATION_XML;
+		case DocumentType.EPUB -> new MediaType("application", "epub+zip");
 		default -> MediaType.ALL;
 		};
 		return ResponseEntity.ok().contentType(contentType).body(documentDto.getDocumentContent());

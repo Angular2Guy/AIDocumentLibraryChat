@@ -54,15 +54,15 @@ public class DocumentService {
 	private final DocumentVsRepository documentVsRepository;
 	private final ChatClient chatClient;
 	private final String systemPrompt = """
-			You're assisting with questions about documents in a catalog.\n 
-			Use the information from the DOCUMENTS section to provide accurate answers.\n 
-			If unsure, simply state that you don't know.\n" + "\n" + "DOCUMENTS:\n" + "{documents} 
+			You're assisting with questions about documents in a catalog.\n
+			Use the information from the DOCUMENTS section to provide accurate answers.\n
+			If unsure, simply state that you don't know.\n" + "\n" + "DOCUMENTS:\n" + "{documents}
 			""";
 
-	private final String ollamaPrompt = """ 
-			You're assisting with questions about documents in a catalog.\n 
-			Use the information from the DOCUMENTS section to provide accurate answers.\n 
-			If unsure, simply state that you don't know.\n \n" + " {prompt} \n \n" + "DOCUMENTS:\n" + "{documents} 
+	private final String ollamaPrompt = """
+			You're assisting with questions about documents in a catalog.\n
+			Use the information from the DOCUMENTS section to provide accurate answers.\n
+			If unsure, simply state that you don't know.\n \n" + " {prompt} \n \n" + "DOCUMENTS:\n" + "{documents}
 			""";
 
 	@Value("${embedding-token-limit:1000}")
@@ -85,9 +85,14 @@ public class DocumentService {
 	}
 
 	public String summarizeBook(Document document, List<Chapter> chapters) {
+		var tikaDocuments = new TikaDocumentReader(new ByteArrayResource(document.getDocumentContent())).get();
+		var strChapters = chapters.stream()
+				.flatMap(myChapter -> tikaDocuments.stream().skip(myChapter.startPage()).limit(myChapter.endPage()))
+				.map(myDocument -> myDocument.getContent()).toList();
+		LOGGER.info(strChapters.getLast());
 		return "";
 	}
-	
+
 	public Long storeDocument(Document document) {
 		var myDocument = this.documentRepository.save(document);
 		var tikaDocuments = new TikaDocumentReader(new ByteArrayResource(document.getDocumentContent())).get();
@@ -132,7 +137,8 @@ public class DocumentService {
 			this.getSystemMessage(mostSimilar.stream().toList(), this.documentTokenLimit, searchDto.getSearchString());
 		default -> this.getSystemMessage(documentChunks, this.documentTokenLimit, searchDto.getSearchString());
 		};
-		UserMessage userMessage = this.activeProfile.contains("ollama") ? new UserMessage(systemMessage.getContent()) : new UserMessage(searchDto.getSearchString());
+		UserMessage userMessage = this.activeProfile.contains("ollama") ? new UserMessage(systemMessage.getContent())
+				: new UserMessage(searchDto.getSearchString());
 		Prompt prompt = new Prompt(List.of(systemMessage, userMessage));
 		LocalDateTime start = LocalDateTime.now();
 		ChatResponse response = chatClient.call(prompt);
