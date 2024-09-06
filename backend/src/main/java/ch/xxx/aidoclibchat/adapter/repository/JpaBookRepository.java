@@ -10,11 +10,18 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package ch.xxx.aidoclibchat.domain.model.entity;
+package ch.xxx.aidoclibchat.adapter.repository;
 
 import java.util.List;
+import java.util.UUID;
 
-public interface BookRepository {
-	List<Book> findByTitleWithChapters(String title);	
-	Book save(Book book);
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import ch.xxx.aidoclibchat.domain.model.entity.Book;
+
+public interface JpaBookRepository extends JpaRepository<Book, UUID>{
+	@Query("select b from Book b join fetch b.chapters where b.title like CONCAT('%',:title,'%')")
+	List<Book> findByTitleWitChapters(@Param("title") String title);
 }
