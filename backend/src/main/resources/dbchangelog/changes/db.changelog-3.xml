@@ -21,4 +21,29 @@
 			<column name="image_content" type="blob" />
 		</createTable>
 	</changeSet>
+	<changeSet id="20" author="angular2guy">
+		<createTable tableName="book">
+			<column name="id" type="uuid">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="title" type="varchar(255)">
+				<constraints unique="true" nullable="false"/>
+			</column>
+			<column name="document_type" type="varchar(10)"/>
+			<column name="book_file" type="blob"/>
+			<column name="summary" type="text"/>
+		</createTable>
+		<createTable tableName="chapter">
+			<column name="id" type="uuid">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="title" type="varchar(255)"/>				
+			<column name="chapter_text" type="text"/>
+			<column name="summary" type="text"/>
+			<column name="book_id" type="uuid">
+				<constraints nullable="false"
+					foreignKeyName="fk_book_chapter_id" references="book(id)" />
+			</column>
+		</createTable>
+	</changeSet>
 </databaseChangeLog>
