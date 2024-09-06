@@ -27,10 +27,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import ch.xxx.aidoclibchat.domain.common.MetaData.DocumentType;
-import ch.xxx.aidoclibchat.domain.model.dto.Chapter;
+import ch.xxx.aidoclibchat.domain.model.dto.ChapterPages;
 import ch.xxx.aidoclibchat.domain.model.dto.DocumentDto;
 import ch.xxx.aidoclibchat.domain.model.dto.DocumentSearchDto;
 import ch.xxx.aidoclibchat.domain.model.dto.SearchDto;
+import ch.xxx.aidoclibchat.domain.utils.Utils;
+import ch.xxx.aidoclibchat.usecase.mapping.BookMapper;
 import ch.xxx.aidoclibchat.usecase.mapping.DocumentMapper;
 import ch.xxx.aidoclibchat.usecase.service.DocumentService;
 
@@ -39,10 +41,12 @@ import ch.xxx.aidoclibchat.usecase.service.DocumentService;
 public class DocumentController {
 	private final DocumentMapper documentMapper;
 	private final DocumentService documentService;
+	private final BookMapper bookMapper;
 
-	public DocumentController(DocumentMapper documentMapper, DocumentService documentService) {
+	public DocumentController(DocumentMapper documentMapper, DocumentService documentService, BookMapper bookMapper) {
 		this.documentMapper = documentMapper;
 		this.documentService = documentService;
+		this.bookMapper = bookMapper;
 	}
 
 	@PostMapping("/upload")
@@ -52,8 +56,8 @@ public class DocumentController {
 	}
 
 	@PostMapping("/upload-book")
-	public String handleBookUpload(@RequestParam("file") MultipartFile document, @RequestParam("chapters") List<Chapter> chapters) {
-		var result = this.documentService.summarizeBook(this.documentMapper.toEntity(document), List.of());
+	public String handleBookUpload(@RequestParam("file") MultipartFile document, @RequestParam("chapters") List<ChapterPages> chapters) {
+		var result = this.documentService.summarizeBook(this.bookMapper.toEntity(document), chapters);
 		return result;
 	}
 	
@@ -80,15 +84,7 @@ public class DocumentController {
 	}
 
 	private ResponseEntity<byte[]> toResultEntity(DocumentDto documentDto) {
-		var contentType = switch (documentDto.getDocumentType()) {
-		case DocumentType.PDF -> MediaType.APPLICATION_PDF;
-		case DocumentType.HTML -> MediaType.TEXT_HTML;
-		case DocumentType.TEXT -> MediaType.TEXT_PLAIN;
-		case DocumentType.XML -> MediaType.APPLICATION_XML;
-		case DocumentType.EPUB -> new MediaType("application", "epub+zip");
-		default -> MediaType.ALL;
-		};
-		return ResponseEntity.ok().contentType(contentType).body(documentDto.getDocumentContent());
+		return ResponseEntity.ok().contentType(Utils.toMediaType(documentDto.getDocumentType())).body(documentDto.getDocumentContent());
 	}
 
 	@PostMapping("/search")

@@ -12,4 +12,4 @@
  */
 package ch.xxx.aidoclibchat.domain.model.dto;
 
-public record Chapter(int startPage, int endPage) { }
+public record ChapterPages(int startPage, int endPage) { }

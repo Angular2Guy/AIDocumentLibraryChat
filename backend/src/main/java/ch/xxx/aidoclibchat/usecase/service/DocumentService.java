@@ -38,8 +38,10 @@ import org.springframework.stereotype.Service;
 import ch.xxx.aidoclibchat.domain.common.MetaData;
 import ch.xxx.aidoclibchat.domain.common.MetaData.DataType;
 import ch.xxx.aidoclibchat.domain.model.dto.AiDocumentResult;
-import ch.xxx.aidoclibchat.domain.model.dto.Chapter;
+import ch.xxx.aidoclibchat.domain.model.dto.ChapterPages;
 import ch.xxx.aidoclibchat.domain.model.dto.SearchDto;
+import ch.xxx.aidoclibchat.domain.model.entity.Book;
+import ch.xxx.aidoclibchat.domain.model.entity.BookRepository;
 import ch.xxx.aidoclibchat.domain.model.entity.Document;
 import ch.xxx.aidoclibchat.domain.model.entity.DocumentRepository;
 import ch.xxx.aidoclibchat.domain.model.entity.DocumentVsRepository;
@@ -52,6 +54,7 @@ public class DocumentService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DocumentService.class);
 	private final DocumentRepository documentRepository;
 	private final DocumentVsRepository documentVsRepository;
+	private final BookRepository bookRepository;
 	private final ChatClient chatClient;
 	private final String systemPrompt = """
 			You're assisting with questions about documents in a catalog.\n
@@ -73,10 +76,11 @@ public class DocumentService {
 	private String activeProfile;
 
 	public DocumentService(DocumentRepository documentRepository, DocumentVsRepository documentVsRepository,
-			ChatClient chatClient) {
+			ChatClient chatClient, BookRepository bookRepository) {
 		this.documentRepository = documentRepository;
 		this.documentVsRepository = documentVsRepository;
 		this.chatClient = chatClient;
+		this.bookRepository = bookRepository;
 	}
 
 	@PostConstruct
@@ -84,12 +88,14 @@ public class DocumentService {
 		LOGGER.info("Profile: {}", this.activeProfile);
 	}
 
-	public String summarizeBook(Document document, List<Chapter> chapters) {
-		var tikaDocuments = new TikaDocumentReader(new ByteArrayResource(document.getDocumentContent())).get();
-		var strChapters = chapters.stream()
-				.flatMap(myChapter -> tikaDocuments.stream().skip(myChapter.startPage()).limit(myChapter.endPage()))
-				.map(myDocument -> myDocument.getContent()).toList();
-		LOGGER.info(strChapters.getLast());
+	public String summarizeBook(Book book, List<ChapterPages> chapters) {		
+		var tikaDocuments = new TikaDocumentReader(new ByteArrayResource(book.getBookFile())).get();		
+		var myChapters = chapters.stream()
+				.flatMap(myChapter -> tikaDocuments.stream().skip(myChapter.startPage()).limit(myChapter.endPage())).toList();
+		LOGGER.info(myChapters.getLast().getContent());
+		
+		//book.setSummary("");
+		this.bookRepository.save(book);
 		return "";
 	}
 

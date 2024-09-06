@@ -15,7 +15,6 @@ package ch.xxx.aidoclibchat.usecase.mapping;
 import java.io.IOException;
 import java.util.Optional;
 
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,6 +24,7 @@ import ch.xxx.aidoclibchat.domain.model.dto.AiDocumentResult;
 import ch.xxx.aidoclibchat.domain.model.dto.DocumentDto;
 import ch.xxx.aidoclibchat.domain.model.dto.DocumentSearchDto;
 import ch.xxx.aidoclibchat.domain.model.entity.Document;
+import ch.xxx.aidoclibchat.domain.utils.Utils;
 
 @Component
 public class DocumentMapper {
@@ -35,23 +35,11 @@ public class DocumentMapper {
 			entity.setDocumentContent(multipartFile.getBytes());
 			entity.setDocumentName(multipartFile.getOriginalFilename());
 			entity.setDocumentType(Optional.ofNullable(multipartFile.getContentType()).stream()
-					.map(this::toDocumentType).findFirst().orElse(DocumentType.UNKNOWN));
+					.map(Utils::toDocumentType).findFirst().orElse(DocumentType.UNKNOWN));
 		} catch (IOException e) {
 			throw new DocumentException("IOException", e);
 		}
 		return entity;
-	}
-
-	private DocumentType toDocumentType(String myContentType) {
-		var result = switch (myContentType) {
-		case MediaType.APPLICATION_PDF_VALUE -> DocumentType.PDF;
-		case MediaType.TEXT_HTML_VALUE -> DocumentType.HTML;
-		case MediaType.TEXT_PLAIN_VALUE -> DocumentType.TEXT;
-		case MediaType.APPLICATION_XML_VALUE -> DocumentType.XML;
-		case MediaType.TEXT_XML_VALUE -> DocumentType.XML;
-		default -> DocumentType.UNKNOWN;
-		};
-		return result;
 	}
 
 	public Document toEntity(DocumentDto dto) {
