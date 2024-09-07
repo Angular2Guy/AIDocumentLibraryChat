@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.StringTokenizer;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -42,6 +43,7 @@ import ch.xxx.aidoclibchat.domain.model.dto.ChapterPages;
 import ch.xxx.aidoclibchat.domain.model.dto.SearchDto;
 import ch.xxx.aidoclibchat.domain.model.entity.Book;
 import ch.xxx.aidoclibchat.domain.model.entity.BookRepository;
+import ch.xxx.aidoclibchat.domain.model.entity.Chapter;
 import ch.xxx.aidoclibchat.domain.model.entity.Document;
 import ch.xxx.aidoclibchat.domain.model.entity.DocumentRepository;
 import ch.xxx.aidoclibchat.domain.model.entity.DocumentVsRepository;
@@ -89,10 +91,18 @@ public class DocumentService {
 	}
 
 	public String summarizeBook(Book book, List<ChapterPages> chapters) {		
-		var tikaDocuments = new TikaDocumentReader(new ByteArrayResource(book.getBookFile())).get();		
+		var tikaDocuments = new TikaDocumentReader(new ByteArrayResource(book.getBookFile())).get();
+		var atomicInt = new AtomicInteger(0);
 		var myChapters = chapters.stream()
-				.flatMap(myChapter -> tikaDocuments.stream().skip(myChapter.startPage()).limit(myChapter.endPage())).toList();
-		LOGGER.info(myChapters.getLast().getContent());
+				.flatMap(myChapter -> tikaDocuments.stream().skip(myChapter.startPage()).limit(myChapter.endPage())).map(myDoc -> {
+					var result = new Chapter();
+					result.setBook(book);
+					result.setChapterText(myDoc.getContent());
+					result.setTitle("Chapter "+atomicInt.addAndGet(1));					
+					return result;
+				}) .toList();
+		book.getChapters().addAll(myChapters);
+		LOGGER.info(myChapters.getLast().getChapterText());
 		
 		//book.setSummary("");
 		this.bookRepository.save(book);

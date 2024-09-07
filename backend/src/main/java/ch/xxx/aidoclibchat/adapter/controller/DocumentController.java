@@ -15,7 +15,6 @@ package ch.xxx.aidoclibchat.adapter.controller;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import ch.xxx.aidoclibchat.domain.common.MetaData.DocumentType;
 import ch.xxx.aidoclibchat.domain.model.dto.ChapterPages;
 import ch.xxx.aidoclibchat.domain.model.dto.DocumentDto;
 import ch.xxx.aidoclibchat.domain.model.dto.DocumentSearchDto;
@@ -56,8 +54,8 @@ public class DocumentController {
 	}
 
 	@PostMapping("/upload-book")
-	public String handleBookUpload(@RequestParam("file") MultipartFile document, @RequestParam("chapters") List<ChapterPages> chapters) {
-		var result = this.documentService.summarizeBook(this.bookMapper.toEntity(document), chapters);
+	public String handleBookUpload(@RequestParam("file") MultipartFile bookFile, @RequestParam("chapters") List<ChapterPages> chapters) {
+		var result = this.documentService.summarizeBook(this.bookMapper.toEntity(bookFile), chapters);
 		return result;
 	}
 	
