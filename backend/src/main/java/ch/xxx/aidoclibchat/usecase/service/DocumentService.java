@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,6 +71,12 @@ public class DocumentService {
 			If unsure, simply state that you don't know.\n \n" + " {prompt} \n \n" + "DOCUMENTS:\n" + "{documents}
 			""";
 
+	private final String bookPrompt = """
+			You're a language expert for creating a summary of a text.\n
+			Create a concise summary of the text provided. Concentrate on the most important points in the text.\n
+			TEXT: {text}
+			""";
+
 	@Value("${embedding-token-limit:1000}")
 	private Integer embeddingTokenLimit;
 	@Value("${document-token-limit:1000}")
@@ -90,23 +97,38 @@ public class DocumentService {
 		LOGGER.info("Profile: {}", this.activeProfile);
 	}
 
-	public String summarizeBook(Book book, List<ChapterPages> chapters) {		
+	public String summarizeBook(Book book, List<ChapterPages> chapters) {
 		var tikaDocuments = new TikaDocumentReader(new ByteArrayResource(book.getBookFile())).get();
 		var atomicInt = new AtomicInteger(0);
 		var myChapters = chapters.stream()
-				.flatMap(myChapter -> tikaDocuments.stream().skip(myChapter.startPage()).limit(myChapter.endPage())).map(myDoc -> {
-					var result = new Chapter();
-					result.setBook(book);
-					result.setChapterText(myDoc.getContent());
-					result.setTitle("Chapter "+atomicInt.addAndGet(1));					
-					return result;
-				}) .toList();
+				.map(myChapter -> tikaDocuments.stream().skip(myChapter.startPage()).limit(myChapter.endPage()).toList())
+				.flatMap(myDocuments -> createChapter(book, atomicInt, myDocuments))
+				.toList();
 		book.getChapters().addAll(myChapters);
-		LOGGER.info(myChapters.getLast().getChapterText());
-		
-		//book.setSummary("");
-		this.bookRepository.save(book);
-		return "";
+		// LOGGER.info(myChapters.getLast().getChapterText());
+		myChapters = myChapters.stream().map(myChapter -> {
+			Message systemMessage = new SystemPromptTemplate(this.bookPrompt)
+					.createMessage(Map.of("text", myChapter.getChapterText()));
+			myChapter.setSummary(systemMessage.getContent());
+			return myChapter;
+		}).toList();
+		// LOGGER.info(myChapters.getLast().getSummary());
+		var summaries = myChapters.stream().map(myChapter -> myChapter.getChapterText())
+				.reduce((acc, myChapter) -> acc + "\n" + myChapter);
+		book.setSummary(
+				new SystemPromptTemplate(this.bookPrompt).createMessage(Map.of("text", summaries)).getContent());
+		var myBook = this.bookRepository.save(book);
+		// LOGGER.info(myBook.getSummary());
+		return myBook.getSummary();
+	}
+
+	private Stream<? extends Chapter> createChapter(Book book, AtomicInteger atomicInt,
+			List<org.springframework.ai.document.Document> myDocuments) {
+		var result = new Chapter();
+		result.setTitle("Chapter " + atomicInt.addAndGet(1));
+		result.setBook(book);
+		result.setChapterText(myDocuments.stream().map(myDoc -> myDoc.getFormattedContent()).collect(Collectors.joining("\n")));
+		return Stream.of(result);
 	}
 
 	public Long storeDocument(Document document) {
