@@ -50,7 +50,7 @@ export class DocImportComponent {
 
   constructor(
     private dialogRef: MatDialogRef<DocImportComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DocImportComponent,
+    @Inject(MAT_DIALOG_DATA) private data: DocImportComponent,
     private documentService: DocumentService
   ) {}
 
