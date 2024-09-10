@@ -30,6 +30,10 @@ export class DocumentService {
     return this.httpClient.get<DocumentFile>(`/rest/document/id/${id}`);
   }
 
+  public postBookForm(formData: FormData): Observable<string> {
+	return this.httpClient.post<string>('/rest/document/upload-book', formData);
+  }
+  
   public postDocumentForm(formData: FormData): Observable<string> {
     return this.httpClient.post<string>('/rest/document/upload', formData);
   }

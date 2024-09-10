@@ -10,9 +10,12 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { DocumentService } from '../service/document.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { tap } from 'rxjs';
+import { ChapterPages } from '../model/book';
 
 @Component({
   selector: 'app-book-import',
@@ -23,24 +26,26 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class BookImportComponent {
 	protected file: File | null = null;
+	private destroyRef = inject(DestroyRef);
+	protected uploading = false;
 
-	constructor(private http: HttpClient) {}
+	constructor(private documentService: DocumentService) {}
 	
-	onFileSelected($event: Event) {
+	protected onFileSelected($event: Event): void {
 		const files = !$event.target
 		      ? null
 		      : ($event.target as HTMLInputElement).files;
 		    this.file = !!files && files.length > 0 ? files[0] : null;
 
-		this.file?.name
 	    if (!!this.file) {	        
 	        const formData = new FormData();
+			const chapters = [{startPage: 1, endPage: 2} as ChapterPages];
+	        formData.append('book', this.file)
+			formData.append('chapters', JSON.stringify(chapters));
 
-	        formData.append("thumbnail", this.file);
-
-	        const upload$ = this.http.post("/api/thumbnail-upload", formData);
-
-	        upload$.subscribe();
+	        this.documentService.postBookForm(formData).pipe(tap(() => {
+			            this.uploading = true;
+			          }),takeUntilDestroyed(this.destroyRef)).subscribe(result => console.log(result));
 	    }
 	}
 }
