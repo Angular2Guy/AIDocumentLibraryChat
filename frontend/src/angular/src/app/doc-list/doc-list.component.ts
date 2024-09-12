@@ -18,7 +18,6 @@ import { MatTableModule } from '@angular/material/table';
 import { DocumentFile } from '../model/document-file';
 import {
   MatDialog,
-  MatDialogRef,
   MatDialogModule,
 } from '@angular/material/dialog';
 import { DocImportComponent } from '../doc-import/doc-import.component';
@@ -67,6 +66,10 @@ export class DocListComponent implements OnInit {
       .subscribe((result) => (this.documents = result));
   }
 
+  protected bookSummary(): void {
+	this.router.navigate(['/booksummary']);
+  }
+  
   protected search(): void {
     this.router.navigate(['/docsearch']);
   }

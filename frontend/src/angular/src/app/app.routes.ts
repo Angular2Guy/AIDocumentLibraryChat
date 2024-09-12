@@ -34,5 +34,9 @@ export const routes: Routes = [
     path: 'imagequery',
     loadChildren: () => import('./image-query').then((mod) => mod.IMAGEQUERY),
   },
+  {
+    path: 'booksummary',
+    loadChildren: () => import('./book-import').then((mod) => mod.BOOKSUMMARY),
+  },
   { path: '**', redirectTo: 'doclist' },
 ];
