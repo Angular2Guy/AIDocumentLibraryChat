@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import ch.xxx.aidoclibchat.domain.model.dto.BookDto;
 import ch.xxx.aidoclibchat.domain.model.dto.ChapterPages;
 import ch.xxx.aidoclibchat.domain.model.dto.DocumentDto;
 import ch.xxx.aidoclibchat.domain.model.dto.DocumentSearchDto;
@@ -57,6 +58,16 @@ public class DocumentController {
 	public String handleBookUpload(@RequestParam("file") MultipartFile bookFile, @RequestParam("chapters") List<ChapterPages> chapters) {
 		var result = this.documentService.summarizeBook(this.bookMapper.toEntity(bookFile), chapters);
 		return result;
+	}
+	
+	@GetMapping("/search-book-titles/{title}")
+	public List<BookDto> getBooksByTitle(@PathVariable("title") String title) {
+		return List.of();
+	}
+	
+	@GetMapping("/search-book-authors/{author}")
+	public List<BookDto> getBooksByAuthor(@PathVariable("author") String author) {
+		return List.of();
 	}
 	
 	@GetMapping("/list")

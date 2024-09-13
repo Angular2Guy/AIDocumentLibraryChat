@@ -10,24 +10,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
+package ch.xxx.aidoclibchat.domain.model.dto;
 
-export interface ChapterPages {
-	startPage: number;
-	endPage: number;
-}
+import java.util.UUID;
 
-export interface Book {
-	id: string,
-	title: string, 
-	author: string,
-	documentType: string,
-	summary: string,
-	chapters: Chapter[]
-}
+public record ChapterDto(UUID id,String title,String chapterText,String summary) {
 
-export interface Chapter {
-	id: string,
-	title: string,
-	chapterText: string,
-	summary: string	
 }

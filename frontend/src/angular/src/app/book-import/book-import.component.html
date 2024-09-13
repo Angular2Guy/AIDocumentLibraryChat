@@ -1,6 +1,6 @@
 <mat-toolbar color="primary" class="custom-toolbar">
   <div class="toolbar-content">
-    <div i18n="@@imageQueryHeading">Image Query</div>
+    <div i18n="@@bookImportHeading">Book Import</div>
     <div class="example-fill-remaining-space"></div>
     <div>
       <button
@@ -14,9 +14,11 @@
     </div>
   </div>
 </mat-toolbar>
+<div class="base-container">
+
+
 <input type="file" class="file-input"
        (change)="onFileSelected($event)" #fileUpload>
-
 <div class="file-upload">
 
    {{file?.name || "No file uploaded yet."}}
@@ -25,4 +27,5 @@
       (click)="fileUpload.click()">
         <mat-icon>attach_file</mat-icon>
     </button>
+</div>
 </div>

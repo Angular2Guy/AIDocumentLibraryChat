@@ -46,4 +46,9 @@
 			</column>
 		</createTable>
 	</changeSet>
+	<changeSet id="21" author="angular2guy">
+		<addColumn tableName="book">
+			<column name="author" type="varchar(255)"/>
+		</addColumn>
+	</changeSet>
 </databaseChangeLog>

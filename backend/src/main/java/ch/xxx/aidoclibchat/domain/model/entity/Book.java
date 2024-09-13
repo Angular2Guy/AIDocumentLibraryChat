@@ -34,6 +34,7 @@ public class Book {
     private UUID id;
     @Column(unique=true)
     private String title;
+    private String author;
     @Enumerated(EnumType.STRING)
     private DocumentType documentType;
     @Lob    
@@ -91,5 +92,13 @@ public class Book {
 
 	public void setChapters(List<Chapter> chapters) {
 		this.chapters = chapters;
+	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
 	}
 }
