@@ -16,11 +16,13 @@ import { DocumentService } from '../service/document.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs';
 import { ChapterPages } from '../model/book';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-book-import',
   standalone: true,
-  imports: [MatIconModule],
+  imports: [MatIconModule,MatToolbarModule,MatButtonModule,],
   templateUrl: './book-import.component.html',
   styleUrl: './book-import.component.scss'
 })
@@ -30,6 +32,10 @@ export class BookImportComponent {
 	protected uploading = false;
 
 	constructor(private documentService: DocumentService) {}
+	
+	protected logout(): void {
+		console.log('logout');
+	}
 	
 	protected onFileSelected($event: Event): void {
 		const files = !$event.target

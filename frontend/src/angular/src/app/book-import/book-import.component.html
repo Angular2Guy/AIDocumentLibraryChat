@@ -1,3 +1,19 @@
+<mat-toolbar color="primary" class="custom-toolbar">
+  <div class="toolbar-content">
+    <div i18n="@@imageQueryHeading">Image Query</div>
+    <div class="example-fill-remaining-space"></div>
+    <div>
+      <button
+        mat-flat-button
+        color="primary"
+        (click)="logout()"
+        i18n="@@logout"
+      >
+        Logout
+      </button>
+    </div>
+  </div>
+</mat-toolbar>
 <input type="file" class="file-input"
        (change)="onFileSelected($event)" #fileUpload>
 
