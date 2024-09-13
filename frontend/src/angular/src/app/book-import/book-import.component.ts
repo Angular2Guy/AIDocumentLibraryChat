@@ -22,7 +22,7 @@ import { MatButtonModule } from '@angular/material/button';
 @Component({
   selector: 'app-book-import',
   standalone: true,
-  imports: [MatIconModule,MatToolbarModule,MatButtonModule,],
+  imports: [MatIconModule,MatToolbarModule,MatButtonModule],
   templateUrl: './book-import.component.html',
   styleUrl: './book-import.component.scss'
 })

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.StringTokenizer;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -35,6 +36,7 @@ import org.springframework.ai.chat.prompt.SystemPromptTemplate;
 import org.springframework.ai.reader.tika.TikaDocumentReader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.aidoclibchat.domain.common.MetaData;
@@ -97,7 +99,7 @@ public class DocumentService {
 		LOGGER.info("Profile: {}", this.activeProfile);
 	}
 
-	public String summarizeBook(Book book, List<ChapterPages> chapters) {
+	public Book storeBook(Book book, List<ChapterPages> chapters) {
 		var tikaDocuments = new TikaDocumentReader(new ByteArrayResource(book.getBookFile())).get();
 		var atomicInt = new AtomicInteger(0);
 		var myChapters = chapters.stream()
@@ -105,8 +107,18 @@ public class DocumentService {
 				.flatMap(myDocuments -> createChapter(book, atomicInt, myDocuments))
 				.toList();
 		book.getChapters().addAll(myChapters);
-		// LOGGER.info(myChapters.getLast().getChapterText());
-		myChapters = myChapters.stream().map(myChapter -> {
+		// LOGGER.info(myChapters.getLast().getChapterText());		
+		var myBook = this.bookRepository.save(book);		
+		return myBook;
+	}
+
+	public Optional<Book> findBookByUuid(String uuidStr) {
+		return this.bookRepository.findById(UUID.fromString(uuidStr));
+	}
+	
+	@Async
+	public void addBookSummaries(Book book) {
+		var myChapters = book.getChapters().stream().map(myChapter -> {
 			Message systemMessage = new SystemPromptTemplate(this.bookPrompt)
 					.createMessage(Map.of("text", myChapter.getChapterText()));
 			myChapter.setSummary(systemMessage.getContent());
@@ -117,11 +129,10 @@ public class DocumentService {
 				.reduce((acc, myChapter) -> acc + "\n" + myChapter);
 		book.setSummary(
 				new SystemPromptTemplate(this.bookPrompt).createMessage(Map.of("text", summaries)).getContent());
-		var myBook = this.bookRepository.save(book);
 		// LOGGER.info(myBook.getSummary());
-		return myBook.getSummary();
+		this.bookRepository.save(book);
 	}
-
+	
 	private Stream<? extends Chapter> createChapter(Book book, AtomicInteger atomicInt,
 			List<org.springframework.ai.document.Document> myDocuments) {
 		var result = new Chapter();

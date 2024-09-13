@@ -16,8 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 import ch.xxx.aidoclibchat.domain.common.MetaData.DocumentType;
-import ch.xxx.aidoclibchat.domain.model.entity.Chapter;
 
-public record BookDto(UUID id, String title, String author,DocumentType documentType,String summary, List<Chapter> chapters) {
+public record BookDto(UUID id, String title, String author,DocumentType documentType,String summary, List<ChapterDto> chapters) {
 
 }

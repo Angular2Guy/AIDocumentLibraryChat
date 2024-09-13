@@ -13,6 +13,8 @@
 package ch.xxx.aidoclibchat.adapter.repository;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.stereotype.Repository;
 
@@ -33,5 +35,10 @@ public class BookRepositoryBean implements BookRepository {
 	
 	public Book save(Book book) {
 		return this.jpaBookRepository.save(book);
+	}
+
+	@Override
+	public Optional<Book> findById(UUID uuid) {
+		return this.jpaBookRepository.findById(uuid);
 	}
 }

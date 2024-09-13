@@ -55,21 +55,29 @@ public class DocumentController {
 	}
 
 	@PostMapping("/upload-book")
-	public String handleBookUpload(@RequestParam("file") MultipartFile bookFile, @RequestParam("chapters") List<ChapterPages> chapters) {
-		var result = this.documentService.summarizeBook(this.bookMapper.toEntity(bookFile), chapters);
-		return result;
+	public BookDto handleBookUpload(@RequestParam("file") MultipartFile bookFile,
+			@RequestParam("chapters") List<ChapterPages> chapters) {
+		var book = this.documentService.storeBook(this.bookMapper.toEntity(bookFile), chapters);
+		this.documentService.addBookSummaries(book);
+		return BookMapper.toDto(book);
 	}
-	
+
+	@GetMapping("/book/{uuid}")
+	public ResponseEntity<BookDto> getBookByUuid(@PathVariable("uuid") String uuid) {
+		return this.documentService.findBookByUuid(uuid).stream().map(BookMapper::toDto).findFirst()
+				.map(result -> ResponseEntity.ok(result)).orElse(ResponseEntity.notFound().build());
+	}
+
 	@GetMapping("/search-book-titles/{title}")
 	public List<BookDto> getBooksByTitle(@PathVariable("title") String title) {
 		return List.of();
 	}
-	
+
 	@GetMapping("/search-book-authors/{author}")
 	public List<BookDto> getBooksByAuthor(@PathVariable("author") String author) {
 		return List.of();
 	}
-	
+
 	@GetMapping("/list")
 	public List<DocumentDto> getDocumentList() {
 		return this.documentService.getDocumentList().stream()
@@ -81,8 +89,8 @@ public class DocumentController {
 
 	@GetMapping("/doc/{id}")
 	public ResponseEntity<DocumentDto> getDocument(@PathVariable("id") Long id) {
-		return ResponseEntity.ofNullable(this.documentService.getDocumentById(id).stream()
-				.map(this.documentMapper::toDto).findFirst().orElse(null));
+		return this.documentService.getDocumentById(id).stream().map(this.documentMapper::toDto).findFirst()
+				.map(result -> ResponseEntity.ok(result)).orElse(ResponseEntity.notFound().build());
 	}
 
 	@GetMapping("/content/{id}")
@@ -93,7 +101,8 @@ public class DocumentController {
 	}
 
 	private ResponseEntity<byte[]> toResultEntity(DocumentDto documentDto) {
-		return ResponseEntity.ok().contentType(Utils.toMediaType(documentDto.getDocumentType())).body(documentDto.getDocumentContent());
+		return ResponseEntity.ok().contentType(Utils.toMediaType(documentDto.getDocumentType()))
+				.body(documentDto.getDocumentContent());
 	}
 
 	@PostMapping("/search")

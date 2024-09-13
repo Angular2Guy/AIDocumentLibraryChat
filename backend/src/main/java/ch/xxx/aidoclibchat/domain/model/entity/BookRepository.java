@@ -13,8 +13,11 @@
 package ch.xxx.aidoclibchat.domain.model.entity;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public interface BookRepository {
 	List<Book> findByTitleWithChapters(String title);	
+	Optional<Book> findById(UUID uuid);
 	Book save(Book book);
 }
