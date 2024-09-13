@@ -16,16 +16,17 @@
 </mat-toolbar>
 <div class="base-container">
 
-
+<form [formGroup]="bookForm">
 <input type="file" class="file-input"
        (change)="onFileSelected($event)" #fileUpload>
 <div class="file-upload">
 
-   {{file?.name || "No file uploaded yet."}}
+   {{bookForm.controls[FormGroupKey.file].value?.name || "No file uploaded yet."}}
 
     <button mat-mini-fab color="primary" class="upload-btn"
       (click)="fileUpload.click()">
         <mat-icon>attach_file</mat-icon>
     </button>
 </div>
+</form>
 </div>

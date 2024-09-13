@@ -15,21 +15,32 @@ import { MatIconModule } from '@angular/material/icon';
 import { DocumentService } from '../service/document.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs';
-import { ChapterPages } from '../model/book';
+import { Book, ChapterPages } from '../model/book';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+
+enum FormGroupKey{
+	file='file',
+	chapters='chapters'	
+}
 
 @Component({
   selector: 'app-book-import',
   standalone: true,
-  imports: [MatIconModule,MatToolbarModule,MatButtonModule],
+  imports: [MatIconModule,MatToolbarModule,MatButtonModule,ReactiveFormsModule],
   templateUrl: './book-import.component.html',
   styleUrl: './book-import.component.scss'
 })
 export class BookImportComponent {
-	protected file: File | null = null;
+	protected bookForm = new FormGroup({
+		[FormGroupKey.file]: new FormControl<File | null>(null, Validators.required),
+		[FormGroupKey.chapters]: new FormArray([])
+	});
 	private destroyRef = inject(DestroyRef);
+	protected FormGroupKey = FormGroupKey;
 	protected uploading = false;
+	protected book: Book | null = null;
 
 	constructor(private documentService: DocumentService) {}
 	
@@ -41,17 +52,20 @@ export class BookImportComponent {
 		const files = !$event.target
 		      ? null
 		      : ($event.target as HTMLInputElement).files;
-		    this.file = !!files && files.length > 0 ? files[0] : null;
+		    this.bookForm.controls[FormGroupKey.file].setValue(!!files && files.length > 0 ? files[0] : null);
 
-	    if (!!this.file) {	        
+	    if (!!this.bookForm.controls[FormGroupKey.file].value) {	        
 	        const formData = new FormData();
 			const chapters = [{startPage: 1, endPage: 2} as ChapterPages];
-	        formData.append('book', this.file)
+	        formData.append('book', this.bookForm.controls[FormGroupKey.file].value)
 			formData.append('chapters', JSON.stringify(chapters));
 
 	        this.documentService.postBookForm(formData).pipe(tap(() => {
 			            this.uploading = true;
-			          }),takeUntilDestroyed(this.destroyRef)).subscribe(result => console.log(result));
+			          }),takeUntilDestroyed(this.destroyRef)).subscribe(result => {
+						this.uploading = false;
+						this.book = result; 
+					});
 	    }
 	}
 }
