@@ -19,23 +19,26 @@ import { Book, ChapterPages } from '../model/book';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 enum FormGroupKey{
 	file='file',
-	chapters='chapters'	
+	chapters='chapters',
+	chapterStart='chapterStart',
+	chapterEnd='chapterEnd'
 }
 
 @Component({
   selector: 'app-book-import',
   standalone: true,
-  imports: [MatIconModule,MatToolbarModule,MatButtonModule,ReactiveFormsModule],
+  imports: [MatIconModule,MatToolbarModule,MatButtonModule,ReactiveFormsModule, CommonModule],
   templateUrl: './book-import.component.html',
   styleUrl: './book-import.component.scss'
 })
 export class BookImportComponent {
 	protected bookForm = new FormGroup({
 		[FormGroupKey.file]: new FormControl<File | null>(null, Validators.required),
-		[FormGroupKey.chapters]: new FormArray([])
+		[FormGroupKey.chapters]: new FormArray([this.createChapterGroupForm()])
 	});
 	private destroyRef = inject(DestroyRef);
 	protected FormGroupKey = FormGroupKey;
@@ -43,6 +46,17 @@ export class BookImportComponent {
 	protected book: Book | null = null;
 
 	constructor(private documentService: DocumentService) {}
+	
+	get chapters() {
+		return this.bookForm.controls[FormGroupKey.chapters] as FormArray<FormGroup>;
+	}
+	
+	protected createChapterGroupForm(): FormGroup {
+		return new FormGroup({
+			[FormGroupKey.chapterStart]: new FormControl(0, Validators.required),
+			[FormGroupKey.chapterEnd]: new FormControl(0, Validators.required)
+		});
+	} 
 	
 	protected logout(): void {
 		console.log('logout');

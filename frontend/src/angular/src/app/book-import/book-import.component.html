@@ -17,6 +17,16 @@
 <div class="base-container">
 
 <form [formGroup]="bookForm">
+<button mat-flat-button color="primary" i18n="@@bookImportAddChapter">Add Chapter</button>
+<ng-container formArrayName="chapters">
+@for(chaptersForm of chapters.controls;track chaptersForm) {
+	<div class="chapter-container" [formGroup]="chaptersForm">
+		<div>A</div>
+		<div>B</div>
+	</div>
+}
+</ng-container>
+
 <input type="file" class="file-input"
        (change)="onFileSelected($event)" #fileUpload>
 <div class="file-upload">
