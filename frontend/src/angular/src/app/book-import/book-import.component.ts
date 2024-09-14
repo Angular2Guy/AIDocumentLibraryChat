@@ -20,6 +20,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 enum FormGroupKey{
 	file='file',
@@ -31,7 +33,7 @@ enum FormGroupKey{
 @Component({
   selector: 'app-book-import',
   standalone: true,
-  imports: [MatIconModule,MatToolbarModule,MatButtonModule,ReactiveFormsModule, CommonModule],
+  imports: [MatIconModule,MatToolbarModule,MatButtonModule,ReactiveFormsModule, CommonModule,MatFormFieldModule,MatInputModule],
   templateUrl: './book-import.component.html',
   styleUrl: './book-import.component.scss'
 })
@@ -49,6 +51,10 @@ export class BookImportComponent {
 	
 	get chapters() {
 		return this.bookForm.controls[FormGroupKey.chapters] as FormArray<FormGroup>;
+	}
+	
+	protected removeChapter(chapterFg: FormGroup) {
+		console.log(chapterFg);
 	}
 	
 	protected createChapterGroupForm(): FormGroup {

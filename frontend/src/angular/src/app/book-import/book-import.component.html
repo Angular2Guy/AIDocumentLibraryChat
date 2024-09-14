@@ -21,8 +21,17 @@
 <ng-container formArrayName="chapters">
 @for(chaptersForm of chapters.controls;track chaptersForm) {
 	<div class="chapter-container" [formGroup]="chaptersForm">
-		<div>A</div>
-		<div>B</div>
+		<mat-form-field class="chapter-pages">
+    	<mat-label>First Page</mat-label>
+    	<input matInput [formControlName]="FormGroupKey.chapterStart" placeholder="first page">
+  		</mat-form-field>		
+		<mat-form-field class="chapter-pages">
+    	<mat-label>Last Page</mat-label>
+    	<input matInput [formControlName]="FormGroupKey.chapterEnd" placeholder="last page">
+  		</mat-form-field>
+  		<button mat-icon-button (click)="removeChapter(chaptersForm)">
+        <mat-icon>remove</mat-icon>
+      </button>
 	</div>
 }
 </ng-container>
