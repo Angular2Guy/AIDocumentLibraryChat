@@ -54,7 +54,17 @@ export class BookImportComponent {
 	}
 	
 	protected removeChapter(chapterFg: FormGroup) {
-		console.log(chapterFg);
+		const chapterFormArray = this.bookForm.controls[FormGroupKey.chapters] as FormArray<FormGroup>;
+		for(let i = 0;i < chapterFormArray.length;i++) {
+			if(chapterFormArray.at(i) === chapterFg) {
+				chapterFormArray.removeAt(i);
+			}
+		}
+	}
+	
+	protected addChapter(): void {
+		const chapterFormArray = this.bookForm.controls[FormGroupKey.chapters] as FormArray<FormGroup>;
+		chapterFormArray.push(this.createChapterGroupForm());
 	}
 	
 	protected createChapterGroupForm(): FormGroup {
