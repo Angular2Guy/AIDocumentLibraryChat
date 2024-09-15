@@ -20,6 +20,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.client.RestClient;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 @Configuration
 @EnableAsync
@@ -35,5 +37,10 @@ public class ApplicationConfig {
 	@Bean
 	public RestClient createRestClient() {
 		return RestClient.builder().build();
+	}
+	
+	@Bean
+	public ObjectMapper createObjectMapper() {
+		return new ObjectMapper();
 	}
 }

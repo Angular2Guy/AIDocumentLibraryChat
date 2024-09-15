@@ -25,6 +25,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import ch.xxx.aidoclibchat.domain.model.dto.BookDto;
 import ch.xxx.aidoclibchat.domain.model.dto.ChapterPages;
 import ch.xxx.aidoclibchat.domain.model.dto.DocumentDto;
@@ -41,11 +45,13 @@ public class DocumentController {
 	private final DocumentMapper documentMapper;
 	private final DocumentService documentService;
 	private final BookMapper bookMapper;
+	private final ObjectMapper objectMapper;
 
-	public DocumentController(DocumentMapper documentMapper, DocumentService documentService, BookMapper bookMapper) {
+	public DocumentController(DocumentMapper documentMapper, DocumentService documentService, BookMapper bookMapper, ObjectMapper objectMapper) {
 		this.documentMapper = documentMapper;
 		this.documentService = documentService;
 		this.bookMapper = bookMapper;
+		this.objectMapper = objectMapper;
 	}
 
 	@PostMapping("/upload")
@@ -55,8 +61,14 @@ public class DocumentController {
 	}
 
 	@PostMapping("/upload-book")
-	public BookDto handleBookUpload(@RequestParam("file") MultipartFile bookFile,
-			@RequestParam("chapters") List<ChapterPages> chapters) {
+	public BookDto handleBookUpload(@RequestParam("book") MultipartFile bookFile,
+			@RequestParam("chapters") String chaptersStr) {
+		List<ChapterPages> chapters;
+		try {
+			chapters = this.objectMapper.readValue(chaptersStr, new TypeReference<List<ChapterPages>>() {});
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
 		var book = this.documentService.storeBook(this.bookMapper.toEntity(bookFile), chapters);
 		this.documentService.addBookSummaries(book);
 		return BookMapper.toDto(book);
