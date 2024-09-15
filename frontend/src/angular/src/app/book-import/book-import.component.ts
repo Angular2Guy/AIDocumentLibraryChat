@@ -54,7 +54,7 @@ export class BookImportComponent {
 	}
 	
 	protected removeChapter(chapterFg: FormGroup) {
-		const chapterFormArray = this.bookForm.controls[FormGroupKey.chapters] as FormArray<FormGroup>;
+		const chapterFormArray = this.bookForm.controls[FormGroupKey.chapters] as FormArray<FormGroup>;				
 		for(let i = 0;i < chapterFormArray.length;i++) {
 			if(chapterFormArray.at(i) === chapterFg) {
 				chapterFormArray.removeAt(i);
@@ -86,7 +86,11 @@ export class BookImportComponent {
 
 	    if (!!this.bookForm.controls[FormGroupKey.file].value) {	        
 	        const formData = new FormData();
-			const chapters = [{startPage: 1, endPage: 2} as ChapterPages];
+			const chapterFormArray = (this.bookForm.controls[FormGroupKey.chapters] as FormArray<FormGroup>);
+			let chapters = new Array(chapterFormArray.length)
+					    .map((v, index) => chapterFormArray.at(index) as FormGroup)
+						.map(chapterFg => ({startPage: chapterFg.controls[FormGroupKey.chapterStart].value, 
+							endPage: chapterFg.controls[FormGroupKey.chapterEnd].value } as ChapterPages));
 	        formData.append('book', this.bookForm.controls[FormGroupKey.file].value)
 			formData.append('chapters', JSON.stringify(chapters));
 
