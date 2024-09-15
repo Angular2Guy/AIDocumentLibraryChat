@@ -47,6 +47,7 @@ import ch.xxx.aidoclibchat.domain.model.dto.SearchDto;
 import ch.xxx.aidoclibchat.domain.model.entity.Book;
 import ch.xxx.aidoclibchat.domain.model.entity.BookRepository;
 import ch.xxx.aidoclibchat.domain.model.entity.Chapter;
+import ch.xxx.aidoclibchat.domain.model.entity.ChapterRepository;
 import ch.xxx.aidoclibchat.domain.model.entity.Document;
 import ch.xxx.aidoclibchat.domain.model.entity.DocumentRepository;
 import ch.xxx.aidoclibchat.domain.model.entity.DocumentVsRepository;
@@ -60,6 +61,7 @@ public class DocumentService {
 	private final DocumentRepository documentRepository;
 	private final DocumentVsRepository documentVsRepository;
 	private final BookRepository bookRepository;
+	private final ChapterRepository chapterRepository;
 	private final ChatClient chatClient;
 	private final String systemPrompt = """
 			You're assisting with questions about documents in a catalog.\n
@@ -87,11 +89,12 @@ public class DocumentService {
 	private String activeProfile;
 
 	public DocumentService(DocumentRepository documentRepository, DocumentVsRepository documentVsRepository,
-			ChatClient chatClient, BookRepository bookRepository) {
+			ChatClient chatClient, BookRepository bookRepository, ChapterRepository chapterRepository) {
 		this.documentRepository = documentRepository;
 		this.documentVsRepository = documentVsRepository;
 		this.chatClient = chatClient;
 		this.bookRepository = bookRepository;
+		this.chapterRepository = chapterRepository;
 	}
 
 	@PostConstruct
@@ -101,14 +104,15 @@ public class DocumentService {
 
 	public Book storeBook(Book book, List<ChapterPages> chapters) {
 		var tikaDocuments = new TikaDocumentReader(new ByteArrayResource(book.getBookFile())).get();
+		var myBook = this.bookRepository.save(book);		
 		var atomicInt = new AtomicInteger(0);
 		var myChapters = chapters.stream()
 				.map(myChapter -> tikaDocuments.stream().skip(myChapter.startPage()).limit(myChapter.endPage()).toList())
-				.flatMap(myDocuments -> createChapter(book, atomicInt, myDocuments))
+				.flatMap(myDocuments -> createChapter(myBook, atomicInt, myDocuments))
 				.toList();
-		book.getChapters().addAll(myChapters);
-		// LOGGER.info(myChapters.getLast().getChapterText());		
-		var myBook = this.bookRepository.save(book);		
+		myChapters = this.chapterRepository.saveAll(myChapters);
+		// LOGGER.info(myChapters.getLast().getChapterText());	
+		myBook.getChapters().addAll(myChapters);
 		return myBook;
 	}
 
@@ -133,7 +137,7 @@ public class DocumentService {
 		this.bookRepository.save(book);
 	}
 	
-	private Stream<? extends Chapter> createChapter(Book book, AtomicInteger atomicInt,
+	private Stream<Chapter> createChapter(Book book, AtomicInteger atomicInt,
 			List<org.springframework.ai.document.Document> myDocuments) {
 		var result = new Chapter();
 		result.setTitle("Chapter " + atomicInt.addAndGet(1));
