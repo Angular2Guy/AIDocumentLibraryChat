@@ -11,9 +11,8 @@
    limitations under the License.
  */
 
-export interface ChapterPages {
-	startPage: number;
-	endPage: number;
+export interface ChapterHeading {
+	title: string;
 }
 
 export interface Book {

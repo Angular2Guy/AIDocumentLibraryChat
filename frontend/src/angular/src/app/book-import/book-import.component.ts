@@ -15,7 +15,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { DocumentService } from '../service/document.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs';
-import { Book, ChapterPages } from '../model/book';
+import { Book, ChapterHeading } from '../model/book';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -26,8 +26,7 @@ import { MatInputModule } from '@angular/material/input';
 enum FormGroupKey{
 	file='file',
 	chapters='chapters',
-	chapterStart='chapterStart',
-	chapterEnd='chapterEnd'
+	chapterHeading='chapterHeading',
 }
 
 @Component({
@@ -69,8 +68,7 @@ export class BookImportComponent {
 	
 	protected createChapterGroupForm(): FormGroup {
 		return new FormGroup({
-			[FormGroupKey.chapterStart]: new FormControl(0, Validators.required),
-			[FormGroupKey.chapterEnd]: new FormControl(0, Validators.required)
+			[FormGroupKey.chapterHeading]: new FormControl('', Validators.required),
 		});
 	} 
 	
@@ -89,10 +87,9 @@ export class BookImportComponent {
 			const chapterFormArray = (this.bookForm.controls[FormGroupKey.chapters] as FormArray<FormGroup>);
 			let chapters = new Array(chapterFormArray.length)
 					    .map((v, index) => chapterFormArray.at(index) as FormGroup)
-						.map(chapterFg => ({startPage: chapterFg.controls[FormGroupKey.chapterStart].value, 
-							endPage: chapterFg.controls[FormGroupKey.chapterEnd].value } as ChapterPages));
+						.map(chapterFg => ({title: chapterFg.controls[FormGroupKey.chapterHeading].value } as ChapterHeading));
 			// for testing only
-			//chapters = this.frankensteinChapters();
+			chapters = this.frankensteinChapters();
 	        formData.append('book', this.bookForm.controls[FormGroupKey.file].value)
 			formData.append('chapters', JSON.stringify(chapters));
 
@@ -105,30 +102,12 @@ export class BookImportComponent {
 	    }
 	}
 	
-	private frankensteinChapters(): ChapterPages[] {
-		let chapters = [{startPage: 17, endPage: 19} as ChapterPages];
-		chapters.push({startPage: 20, endPage: 23} as ChapterPages);
-		chapters.push({startPage: 24, endPage: 28} as ChapterPages);
-		chapters.push({startPage: 34, endPage: 37} as ChapterPages);
-		chapters.push({startPage: 38, endPage: 42} as ChapterPages);
-		chapters.push({startPage: 43, endPage: 48} as ChapterPages);
-		chapters.push({startPage: 49, endPage: 54} as ChapterPages);
-		chapters.push({startPage: 55, endPage: 58} as ChapterPages);
-		chapters.push({startPage: 59, endPage: 62} as ChapterPages);
-		chapters.push({startPage: 63, endPage: 67} as ChapterPages);
-		chapters.push({startPage: 68, endPage: 71} as ChapterPages);
-		chapters.push({startPage: 72, endPage: 75} as ChapterPages);
-		chapters.push({startPage: 76, endPage: 79} as ChapterPages);
-		chapters.push({startPage: 80, endPage: 85} as ChapterPages);
-		chapters.push({startPage: 86, endPage: 91} as ChapterPages);
-		chapters.push({startPage: 92, endPage: 94} as ChapterPages);
-		chapters.push({startPage: 95, endPage: 99} as ChapterPages);
-		chapters.push({startPage: 100, endPage: 104} as ChapterPages);
-		chapters.push({startPage: 105, endPage: 110} as ChapterPages);
-		chapters.push({startPage: 111, endPage: 117} as ChapterPages);
-		chapters.push({startPage: 118, endPage: 123} as ChapterPages);
-		chapters.push({startPage: 124, endPage: 128} as ChapterPages);
-		chapters.push({startPage: 129, endPage: 142} as ChapterPages);
+	private frankensteinChapters(): ChapterHeading[] {
+		let chapters: ChapterHeading[] = [];
+		for(let i = 1;i<25;i++) {
+			chapters.push({title: `Chapter ${i}`} as ChapterHeading);
+		}
+		chapters.push({title: '*** END OF THE PROJECT GUTENBERG EBOOK'} as ChapterHeading);
 		return chapters;
 	}
 }

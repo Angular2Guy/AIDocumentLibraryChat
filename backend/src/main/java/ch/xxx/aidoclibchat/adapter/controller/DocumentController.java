@@ -30,7 +30,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.xxx.aidoclibchat.domain.model.dto.BookDto;
-import ch.xxx.aidoclibchat.domain.model.dto.ChapterPages;
+import ch.xxx.aidoclibchat.domain.model.dto.ChapterHeading;
 import ch.xxx.aidoclibchat.domain.model.dto.DocumentDto;
 import ch.xxx.aidoclibchat.domain.model.dto.DocumentSearchDto;
 import ch.xxx.aidoclibchat.domain.model.dto.SearchDto;
@@ -63,9 +63,9 @@ public class DocumentController {
 	@PostMapping("/upload-book")
 	public BookDto handleBookUpload(@RequestParam("book") MultipartFile bookFile,
 			@RequestParam("chapters") String chaptersStr) {
-		List<ChapterPages> chapters;
+		List<ChapterHeading> chapters;
 		try {
-			chapters = this.objectMapper.readValue(chaptersStr, new TypeReference<List<ChapterPages>>() {});
+			chapters = this.objectMapper.readValue(chaptersStr, new TypeReference<List<ChapterHeading>>() {});
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
 		}

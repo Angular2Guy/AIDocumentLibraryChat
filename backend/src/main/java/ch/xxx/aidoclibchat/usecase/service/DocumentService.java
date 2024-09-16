@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.StringTokenizer;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -42,7 +43,7 @@ import org.springframework.stereotype.Service;
 import ch.xxx.aidoclibchat.domain.common.MetaData;
 import ch.xxx.aidoclibchat.domain.common.MetaData.DataType;
 import ch.xxx.aidoclibchat.domain.model.dto.AiDocumentResult;
-import ch.xxx.aidoclibchat.domain.model.dto.ChapterPages;
+import ch.xxx.aidoclibchat.domain.model.dto.ChapterHeading;
 import ch.xxx.aidoclibchat.domain.model.dto.SearchDto;
 import ch.xxx.aidoclibchat.domain.model.entity.Book;
 import ch.xxx.aidoclibchat.domain.model.entity.BookRepository;
@@ -102,16 +103,19 @@ public class DocumentService {
 		LOGGER.info("Profile: {}", this.activeProfile);
 	}
 
-	public Book storeBook(Book book, List<ChapterPages> chapters) {
-		var tikaDocuments = new TikaDocumentReader(new ByteArrayResource(book.getBookFile())).get();
-		var myBook = this.bookRepository.save(book);		
-		var atomicInt = new AtomicInteger(0);
-		var myChapters = chapters.stream()
-				.map(myChapter -> tikaDocuments.stream().skip(myChapter.startPage()).limit(myChapter.endPage()).toList())
-				.flatMap(myDocuments -> createChapter(myBook, atomicInt, myDocuments))
-				.toList();
+	public Book storeBook(Book book, List<ChapterHeading> chapterHeadings) {
+		var tikaText = new TikaDocumentReader(new ByteArrayResource(book.getBookFile())).get().stream()
+				.map(document -> document.getFormattedContent()).collect(Collectors.joining("")).lines().toList();
+		var myBook = this.bookRepository.save(book);
+		// TODO split the content of the one tikaDocument
+		var atomicRef = new AtomicReference<List<String>>(tikaText.stream()
+				.dropWhile(myLine -> !chapterHeadings.isEmpty() && !myLine.contains(chapterHeadings.getFirst().title()))
+				.toList());
+		var myChapters = chapterHeadings.stream()
+				.filter(heading -> !chapterHeadings.getFirst().title().equals(heading.title()))
+				.flatMap(heading -> Stream.of(this.createChapter(myBook, heading.title(), atomicRef))).toList();
 		myChapters = this.chapterRepository.saveAll(myChapters);
-		// LOGGER.info(myChapters.getLast().getChapterText());	
+		// LOGGER.info(myChapters.getLast().getChapterText());
 		myBook.getChapters().addAll(myChapters);
 		return myBook;
 	}
@@ -119,7 +123,7 @@ public class DocumentService {
 	public Optional<Book> findBookByUuid(String uuidStr) {
 		return this.bookRepository.findById(UUID.fromString(uuidStr));
 	}
-	
+
 	@Async
 	public void addBookSummaries(Book book) {
 		var myChapters = book.getChapters().stream().map(myChapter -> {
@@ -136,14 +140,16 @@ public class DocumentService {
 		// LOGGER.info(myBook.getSummary());
 		this.bookRepository.save(book);
 	}
-	
-	private Stream<Chapter> createChapter(Book book, AtomicInteger atomicInt,
-			List<org.springframework.ai.document.Document> myDocuments) {
+
+	private Chapter createChapter(Book book, String heading, AtomicReference<List<String>> atomicRef) {
 		var result = new Chapter();
-		result.setTitle("Chapter " + atomicInt.addAndGet(1));
+		result.setTitle(heading);
 		result.setBook(book);
-		result.setChapterText(myDocuments.stream().map(myDoc -> myDoc.getFormattedContent()).collect(Collectors.joining("\n")));
-		return Stream.of(result);
+		var chapterText = atomicRef.get().stream().takeWhile(myLine -> !myLine.contains(heading))
+				.collect(Collectors.joining(""));
+		result.setChapterText(chapterText);
+		atomicRef.set(atomicRef.get().stream().dropWhile(myLine -> !myLine.contains(heading)).toList());
+		return result;
 	}
 
 	public Long storeDocument(Document document) {

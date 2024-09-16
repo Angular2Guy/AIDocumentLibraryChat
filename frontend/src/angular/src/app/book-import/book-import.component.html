@@ -22,13 +22,9 @@
 @for(chaptersForm of chapters.controls;track chaptersForm) {
 	<div class="chapter-container" [formGroup]="chaptersForm">
 		<mat-form-field class="chapter-pages">
-    	<mat-label>First Page</mat-label>
-    	<input matInput [formControlName]="FormGroupKey.chapterStart" placeholder="first page">
+    	<mat-label>Chapter Heading</mat-label>
+    	<input matInput [formControlName]="FormGroupKey.chapterHeading" placeholder="chapter heading">
   		</mat-form-field>		
-		<mat-form-field class="chapter-pages">
-    	<mat-label>Last Page</mat-label>
-    	<input matInput [formControlName]="FormGroupKey.chapterEnd" placeholder="last page">
-  		</mat-form-field>
   		<button mat-icon-button (click)="removeChapter(chaptersForm)">
         <mat-icon>remove</mat-icon>
       </button>
