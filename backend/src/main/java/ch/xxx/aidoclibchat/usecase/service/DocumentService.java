@@ -139,16 +139,16 @@ public class DocumentService {
 	@Async
 	public void addBookSummaries(Book book) {
 		var myChapters = book.getChapters().stream().map(myChapter -> {
-			Message systemMessage = new SystemPromptTemplate(this.bookPrompt)
-					.createMessage(Map.of("text", myChapter.getChapterText()));
-			myChapter.setSummary(systemMessage.getContent());
+			var answer = this.chatClient.call(new SystemPromptTemplate(this.bookPrompt)
+					.createMessage(Map.of("text", myChapter.getChapterText())).getContent());
+			myChapter.setSummary(answer);
 			return myChapter;
 		}).toList();
 		// LOGGER.info(myChapters.getLast().getSummary());
 		var summaries = myChapters.stream().map(myChapter -> myChapter.getChapterText())
 				.reduce((acc, myChapter) -> acc + "\n" + myChapter);
-		book.setSummary(
-				new SystemPromptTemplate(this.bookPrompt).createMessage(Map.of("text", summaries)).getContent());
+		book.setSummary(this.chatClient.call( 
+				new SystemPromptTemplate(this.bookPrompt).createMessage(Map.of("text", summaries)).getContent()));
 		// LOGGER.info(myBook.getSummary());
 		this.bookRepository.save(book);
 	}
