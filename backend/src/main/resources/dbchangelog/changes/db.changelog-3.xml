@@ -51,4 +51,9 @@
 			<column name="author" type="varchar(255)"/>
 		</addColumn>
 	</changeSet>
+	<changeSet id="22" author="angular2guy">
+		<modifyDataType tableName="book" columnName="summary" newDataType="clob"/>
+		<modifyDataType tableName="chapter" columnName="summary" newDataType="clob"/>
+		<modifyDataType tableName="chapter" columnName="chapter_text" newDataType="clob"/>
+	</changeSet>
 </databaseChangeLog>

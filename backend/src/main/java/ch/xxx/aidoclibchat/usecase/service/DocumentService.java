@@ -77,8 +77,18 @@ public class DocumentService {
 			""";
 
 	private final String bookPrompt = """
-			You're a language expert for creating a summary of a text.\n
-			Create a concise summary of the text provided. Concentrate on the most important points in the text.\n
+			You're a english professor and expert in long text summaries. Your job is creating a summary of a text.\n
+			Create a summary in bullit points of the most important points of the text. Create a short and precise description of the most important points. \n
+			
+			Follow these Rules:
+			If a new character is mentioned introduce the character. \n
+			-Write in english language and grammar.
+			-Write in third person.
+			-Write in present tense.
+			-Write the summary in short and precise bullet points.
+			-Write as few and precise bullet points as possible.
+			-Write short logical grounded descriptions of the most important points in the text.
+			
 			TEXT: {text}
 			""";
 
@@ -108,9 +118,11 @@ public class DocumentService {
 				.map(document -> document.getFormattedContent()).collect(Collectors.joining("")).lines().toList();
 		var myBook = this.bookRepository.save(book);
 		// TODO split the content of the one tikaDocument
-		var atomicRef = new AtomicReference<List<String>>(tikaText.stream()
-				.dropWhile(myLine -> !chapterHeadings.isEmpty() && !myLine.contains(chapterHeadings.getFirst().title()))
-				.toList());
+		int dropLines = 0;
+		for(int i = 0;i<tikaText.size();i++) {
+			dropLines = tikaText.get(i).equalsIgnoreCase(chapterHeadings.getFirst().title()) ? i : dropLines;
+		}		
+		var atomicRef = new AtomicReference<List<String>>(tikaText.stream().skip(dropLines > 0 ? dropLines -1 : 0).toList());		
 		var myChapters = chapterHeadings.stream()
 				.filter(heading -> !chapterHeadings.getFirst().title().equals(heading.title()))
 				.flatMap(heading -> Stream.of(this.createChapter(myBook, heading.title(), atomicRef))).toList();
@@ -142,11 +154,11 @@ public class DocumentService {
 	}
 
 	private Chapter createChapter(Book book, String heading, AtomicReference<List<String>> atomicRef) {
-		var result = new Chapter();
-		result.setTitle(heading);
+		var result = new Chapter();		
+		result.setTitle(atomicRef.get().stream().filter(myLine -> !myLine.isBlank()).findFirst().orElse(""));
 		result.setBook(book);
 		var chapterText = atomicRef.get().stream().takeWhile(myLine -> !myLine.contains(heading))
-				.collect(Collectors.joining(""));
+				.collect(Collectors.joining(System.lineSeparator()));
 		result.setChapterText(chapterText);
 		atomicRef.set(atomicRef.get().stream().dropWhile(myLine -> !myLine.contains(heading)).toList());
 		return result;
