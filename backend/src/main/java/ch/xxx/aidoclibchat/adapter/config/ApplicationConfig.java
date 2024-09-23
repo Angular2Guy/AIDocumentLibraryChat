@@ -21,6 +21,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.client.RestClient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 
 @Configuration
@@ -41,6 +42,8 @@ public class ApplicationConfig {
 	
 	@Bean
 	public ObjectMapper createObjectMapper() {
-		return new ObjectMapper();
+		var objectMapper = new ObjectMapper();
+		objectMapper.registerModule(new JavaTimeModule());
+		return objectMapper;
 	}
 }
