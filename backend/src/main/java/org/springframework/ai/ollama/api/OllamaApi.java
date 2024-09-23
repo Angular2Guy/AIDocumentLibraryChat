@@ -502,6 +502,7 @@ public class OllamaApi {
 			@JsonProperty("created_at") Instant createdAt,
 			@JsonProperty("message") Message message,
 			@JsonProperty("done") Boolean done,
+			@JsonProperty("done_reason") String doneReason,
 			@JsonProperty("total_duration") Duration totalDuration,
 			@JsonProperty("load_duration") Duration loadDuration,
 			@JsonProperty("prompt_eval_count") Integer promptEvalCount,
