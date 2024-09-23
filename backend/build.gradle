@@ -36,6 +36,7 @@ dependencies {
 	implementation 'org.springframework.ai:spring-ai-tika-document-reader:0.8.1-SNAPSHOT'
 	implementation 'org.liquibase:liquibase-core'
 	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv'
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 	implementation 'net.javacrumbs.shedlock:shedlock-spring:5.2.0'
 	implementation 'net.javacrumbs.shedlock:shedlock-provider-jdbc-template:5.2.0'
 	implementation 'org.springframework.ai:spring-ai-pgvector-store-spring-boot-starter:0.8.1-SNAPSHOT'
