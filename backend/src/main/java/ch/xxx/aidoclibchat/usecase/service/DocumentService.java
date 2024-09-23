@@ -142,6 +142,7 @@ public class DocumentService {
 			var answer = this.chatClient.call(new SystemPromptTemplate(this.bookPrompt)
 					.createMessage(Map.of("text", myChapter.getChapterText())).getContent());
 			myChapter.setSummary(answer);
+			LOGGER.info("Summary generated for: {}", myChapter.getTitle());
 			return myChapter;
 		}).toList();
 		// LOGGER.info(myChapters.getLast().getSummary());
@@ -150,6 +151,7 @@ public class DocumentService {
 		book.setSummary(this.chatClient.call( 
 				new SystemPromptTemplate(this.bookPrompt).createMessage(Map.of("text", summaries)).getContent()));
 		// LOGGER.info(myBook.getSummary());
+		LOGGER.info("Summary generated file: {}", book.getTitle());
 		this.bookRepository.save(book);
 	}
 

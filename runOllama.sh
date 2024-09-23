@@ -11,4 +11,5 @@ docker exec -it ollama ollama run stable-beluga:13bc
 #docker exec -it ollama ollama run granite-code:20b
 #docker exec -it ollama ollama run deepseek-coder-v2:16b
 #docker exec -it ollama ollama run llama3.1:70b
+#docker exec -it ollama ollama run qwen:32b
 #docker exec -it ollama bash
