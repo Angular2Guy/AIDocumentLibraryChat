@@ -11,13 +11,15 @@
    limitations under the License.
  */
 import { Component } from '@angular/core';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import {AsyncPipe} from '@angular/common';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatInputModule} from '@angular/material/input';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
+import { Book } from '../model/book';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-book-list',
@@ -32,8 +34,20 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './book-list.component.scss'
 })
 export class BookListComponent {
-
+	protected myControl = new FormControl<string | Book>('');
+	protected filteredOptions: Book[] = [];
+	
+	constructor(private router: Router) { }
+	
+	protected displayFn(book: Book): string {
+	  return book && book?.title ? book.title : '';
+	}
+	
 	protected logout(): void {
 		console.log('logout');
+	}
+	
+	protected addBook(): void {
+		this.router.navigate(['bookimport']);
 	}
 }

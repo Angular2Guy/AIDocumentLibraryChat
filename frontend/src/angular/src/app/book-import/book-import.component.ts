@@ -22,6 +22,7 @@ import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } fr
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { Router } from '@angular/router';
 
 enum FormGroupKey{
 	file='file',
@@ -46,7 +47,7 @@ export class BookImportComponent {
 	protected uploading = false;
 	protected book: Book | null = null;
 
-	constructor(private documentService: DocumentService) {}
+	constructor(private documentService: DocumentService, private router: Router) {}
 	
 	get chapters() {
 		return this.bookForm.controls[FormGroupKey.chapters] as FormArray<FormGroup>;
@@ -74,6 +75,10 @@ export class BookImportComponent {
 	
 	protected logout(): void {
 		console.log('logout');
+	}
+	
+	protected bookList(): void {
+		this.router.navigate(['booklist']);
 	}
 	
 	protected onFileSelected($event: Event): void {
