@@ -16,4 +16,5 @@ import java.util.List;
 
 public interface ChapterRepository {
 	List<Chapter> saveAll(Iterable<Chapter> chapters);
+	Chapter save(Chapter chaper);
 }

@@ -31,4 +31,9 @@ public class ChapterRepositoryBean implements ChapterRepository {
 	public List<Chapter> saveAll(Iterable<Chapter> chapters) {
 		return this.jpaChapterRepository.saveAll(chapters);
 	}
+	
+	@Override
+	public Chapter save(Chapter chaper) {
+		return this.jpaChapterRepository.save(chaper);
+	}
 }

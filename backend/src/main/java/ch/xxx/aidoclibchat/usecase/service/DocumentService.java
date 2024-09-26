@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.StringTokenizer;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -116,6 +115,8 @@ public class DocumentService {
 	public Book storeBook(Book book, List<ChapterHeading> chapterHeadings) {
 		var tikaText = new TikaDocumentReader(new ByteArrayResource(book.getBookFile())).get().stream()
 				.map(document -> document.getFormattedContent()).collect(Collectors.joining("")).lines().toList();
+		book.setTitle(tikaText.stream().filter(myLine -> myLine.contains("Title:")).map(myLine -> myLine.replace("Title:", "").trim()).findFirst().orElse("Unknown"));
+		book.setAuthor(tikaText.stream().filter(myLine -> myLine.contains("Author:")).map(myLine -> myLine.replace("Author:", "").trim()).findFirst().orElse("Unknown"));
 		var myBook = this.bookRepository.save(book);
 		// TODO split the content of the one tikaDocument
 		int dropLines = 0;
@@ -138,13 +139,7 @@ public class DocumentService {
 
 	@Async
 	public void addBookSummaries(Book book) {
-		var myChapters = book.getChapters().stream().map(myChapter -> {
-			var answer = this.chatClient.call(new SystemPromptTemplate(this.bookPrompt)
-					.createMessage(Map.of("text", myChapter.getChapterText())).getContent());
-			myChapter.setSummary(answer);
-			LOGGER.info("Summary generated for: {}", myChapter.getTitle());
-			return myChapter;
-		}).toList();
+		var myChapters = book.getChapters().stream().map(myChapter -> this.addChapterSummary(myChapter)).toList();
 		// LOGGER.info(myChapters.getLast().getSummary());
 		var summaries = myChapters.stream().map(myChapter -> myChapter.getChapterText())
 				.reduce((acc, myChapter) -> acc + "\n" + myChapter);
@@ -153,6 +148,15 @@ public class DocumentService {
 		// LOGGER.info(myBook.getSummary());
 		LOGGER.info("Summary generated file: {}", book.getTitle());
 		this.bookRepository.save(book);
+	}
+
+	private Chapter addChapterSummary(Chapter myChapter) {
+		var answer = this.chatClient.call(new SystemPromptTemplate(this.bookPrompt)
+				.createMessage(Map.of("text", myChapter.getChapterText())).getContent());
+		myChapter.setSummary(answer);
+		myChapter = this.chapterRepository.save(myChapter);
+		LOGGER.info("Summary generated for: {}", myChapter.getTitle());
+		return myChapter;
 	}
 
 	private Chapter createChapter(Book book, String heading, AtomicReference<List<String>> atomicRef) {
