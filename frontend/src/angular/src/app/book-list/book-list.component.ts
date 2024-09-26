@@ -36,6 +36,7 @@ import { Router } from '@angular/router';
 export class BookListComponent {
 	protected myControl = new FormControl<string | Book>('');
 	protected filteredOptions: Book[] = [];
+	protected selBook: Book | null = null;
 	
 	constructor(private router: Router) { }
 	

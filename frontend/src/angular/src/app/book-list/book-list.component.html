@@ -25,6 +25,7 @@
         Add Book
       </button>
 </div>
+<div class="base-container">
 <form class="example-form">
   <mat-form-field class="example-full-width">
     <mat-label i18n="@@bookListTitleAuthor">Title / Author</mat-label>
@@ -36,5 +37,23 @@
     </mat-autocomplete>
   </mat-form-field>
 </form>
-	
+
+<div>
+  <h3 i18n="@@bookListBookSummary">Book Summary</h3>
+  <mat-form-field class="example-full-width">
+    <mat-label>Book Summary</mat-label>
+    <textarea matInput placeholder="summary" readonly="true">{{selBook?.summary}}</textarea>
+  </mat-form-field>
+  </div>
+  
+  @for(chapter of selBook?.chapters; track chapter) {
+  <div>
+  	<h4 i18n="@@bookListChapterSummary">Chapter Summary: {{chapter.title}}</h4>
+  <mat-form-field class="example-full-width">
+    <mat-label>Chapter Summary</mat-label>
+    <textarea matInput placeholder="summary" readonly="true"></textarea>
+  </mat-form-field>
+  </div>  
+  }
+</div>
 </div>
