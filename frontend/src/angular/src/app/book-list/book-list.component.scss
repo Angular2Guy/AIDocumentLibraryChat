@@ -10,13 +10,22 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Routes } from '@angular/router';
-import { BookImportComponent } from './book-import.component';
-
-export const BOOKIMPORT: Routes = [
-  {
-    path: '',
-    component: BookImportComponent,
-  },
-  { path: '**', redirectTo: '' },
-];
+ 
+ .example-fill-remaining-space {
+   // This fills the remaining space, by using flexbox.
+   // Every toolbar row uses a flexbox row layout.
+   flex: 1 1 auto;
+ }
+ 
+ .toolbar-content {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   flex-wrap: wrap;
+   width: 100%;
+ }
+ 
+ .base-container {
+ 	margin: 20px 5px 0 5px;
+ }
+ 

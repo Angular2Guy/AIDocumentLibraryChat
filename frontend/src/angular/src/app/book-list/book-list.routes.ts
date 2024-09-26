@@ -11,12 +11,12 @@
    limitations under the License.
  */
 import { Routes } from '@angular/router';
-import { BookImportComponent } from './book-import.component';
+import { BookListComponent } from './book-list.component';
 
-export const BOOKIMPORT: Routes = [
+export const BOOKLIST: Routes = [
   {
     path: '',
-    component: BookImportComponent,
+    component: BookListComponent,
   },
   { path: '**', redirectTo: '' },
 ];

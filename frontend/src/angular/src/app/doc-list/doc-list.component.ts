@@ -67,7 +67,7 @@ export class DocListComponent implements OnInit {
   }
 
   protected bookSummary(): void {
-	this.router.navigate(['/booksummary']);
+	this.router.navigate(['/booklist']);
   }
   
   protected search(): void {
