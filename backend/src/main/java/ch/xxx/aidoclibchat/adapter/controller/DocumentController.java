@@ -82,7 +82,7 @@ public class DocumentController {
 
 	@GetMapping("/search-books/{titleAuthor}")
 	public List<BookDto> getBooksByTitleAuthor(@PathVariable("titleAuthor") String titleAuthor) {
-		return List.of();
+		return this.documentService.findBooksByTitleAuthor(titleAuthor).stream().map(BookMapper::toDto).toList();
 	}
 
 	@GetMapping("/list")
