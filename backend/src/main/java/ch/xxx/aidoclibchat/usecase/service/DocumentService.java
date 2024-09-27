@@ -78,7 +78,7 @@ public class DocumentService {
 	private final String bookPrompt = """
 			You're a english professor and expert in long text summaries. Your job is creating a summary of a text.\n
 			Create a summary in bullit points of the most important points of the text. Create a short and precise description of the most important points. \n
-			
+
 			Follow these Rules:
 			If a new character is mentioned introduce the character. \n
 			-Write in english language and grammar.
@@ -87,7 +87,7 @@ public class DocumentService {
 			-Write the summary in short and precise bullet points.
 			-Write as few and precise bullet points as possible.
 			-Write short logical grounded descriptions of the most important points in the text.
-			
+
 			TEXT: {text}
 			""";
 
@@ -115,15 +115,18 @@ public class DocumentService {
 	public Book storeBook(Book book, List<ChapterHeading> chapterHeadings) {
 		var tikaText = new TikaDocumentReader(new ByteArrayResource(book.getBookFile())).get().stream()
 				.map(document -> document.getFormattedContent()).collect(Collectors.joining("")).lines().toList();
-		book.setTitle(tikaText.stream().filter(myLine -> myLine.contains("Title:")).map(myLine -> myLine.replace("Title:", "").trim()).findFirst().orElse("Unknown"));
-		book.setAuthor(tikaText.stream().filter(myLine -> myLine.contains("Author:")).map(myLine -> myLine.replace("Author:", "").trim()).findFirst().orElse("Unknown"));
+		book.setTitle(tikaText.stream().filter(myLine -> myLine.contains("Title:"))
+				.map(myLine -> myLine.replace("Title:", "").trim()).findFirst().orElse("Unknown"));
+		book.setAuthor(tikaText.stream().filter(myLine -> myLine.contains("Author:"))
+				.map(myLine -> myLine.replace("Author:", "").trim()).findFirst().orElse("Unknown"));
 		var myBook = this.bookRepository.save(book);
 		// TODO split the content of the one tikaDocument
 		int dropLines = 0;
-		for(int i = 0;i<tikaText.size();i++) {
+		for (int i = 0; i < tikaText.size(); i++) {
 			dropLines = tikaText.get(i).equalsIgnoreCase(chapterHeadings.getFirst().title()) ? i : dropLines;
-		}		
-		var atomicRef = new AtomicReference<List<String>>(tikaText.stream().skip(dropLines > 0 ? dropLines -1 : 0).toList());		
+		}
+		var atomicRef = new AtomicReference<List<String>>(
+				tikaText.stream().skip(dropLines > 0 ? dropLines - 1 : 0).toList());
 		var myChapters = chapterHeadings.stream()
 				.filter(heading -> !chapterHeadings.getFirst().title().equals(heading.title()))
 				.flatMap(heading -> Stream.of(this.createChapter(myBook, heading.title(), atomicRef))).toList();
@@ -137,14 +140,20 @@ public class DocumentService {
 		return this.bookRepository.findById(UUID.fromString(uuidStr));
 	}
 
+	public List<Book> findBooksByTitleAuthor(String titleAuthor) {
+		return Optional.ofNullable(titleAuthor).stream().filter(myStr -> myStr.length() > 2)
+				.flatMap(myStr -> Stream.of(this.bookRepository.findByTitleAuthorWithChapters(myStr)))
+				.flatMap(myList -> myList.stream()).toList();
+	}
+
 	@Async
 	public void addBookSummaries(Book book) {
 		var myChapters = book.getChapters().stream().map(myChapter -> this.addChapterSummary(myChapter)).toList();
 		// LOGGER.info(myChapters.getLast().getSummary());
 		var summaries = myChapters.stream().map(myChapter -> myChapter.getChapterText())
 				.reduce((acc, myChapter) -> acc + "\n" + myChapter);
-		book.setSummary(this.chatClient.call( 
-				new SystemPromptTemplate(this.bookPrompt).createMessage(Map.of("text", summaries)).getContent()));
+		book.setSummary(this.chatClient
+				.call(new SystemPromptTemplate(this.bookPrompt).createMessage(Map.of("text", summaries)).getContent()));
 		// LOGGER.info(myBook.getSummary());
 		LOGGER.info("Summary generated file: {}", book.getTitle());
 		this.bookRepository.save(book);
@@ -160,7 +169,7 @@ public class DocumentService {
 	}
 
 	private Chapter createChapter(Book book, String heading, AtomicReference<List<String>> atomicRef) {
-		var result = new Chapter();		
+		var result = new Chapter();
 		result.setTitle(atomicRef.get().stream().filter(myLine -> !myLine.isBlank()).findFirst().orElse(""));
 		result.setBook(book);
 		var chapterText = atomicRef.get().stream().takeWhile(myLine -> !myLine.contains(heading))

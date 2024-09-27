@@ -38,7 +38,15 @@ export class DocumentService {
   public postDocumentForm(formData: FormData): Observable<string> {
     return this.httpClient.post<string>('/rest/document/upload', formData);
   }
+  
+  public getBookById(id: string): Observable<Book> {
+	return this.httpClient.get<Book>(`/rest/document/book/${id}`);
+  }
 
+  public getBooksByTitleAuthor(searchKey: string): Observable<Book[]> {
+	return this.httpClient.get<Book[]>(`/rest/document/search-books/${encodeURI(searchKey)}`);
+  }
+  
   public postDocumentSearch(
     documentSearch: DocumentSearch
   ): Observable<DocumentSearchResult> {

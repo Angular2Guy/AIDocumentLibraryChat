@@ -80,13 +80,8 @@ public class DocumentController {
 				.map(result -> ResponseEntity.ok(result)).orElse(ResponseEntity.notFound().build());
 	}
 
-	@GetMapping("/search-book-titles/{title}")
-	public List<BookDto> getBooksByTitle(@PathVariable("title") String title) {
-		return List.of();
-	}
-
-	@GetMapping("/search-book-authors/{author}")
-	public List<BookDto> getBooksByAuthor(@PathVariable("author") String author) {
+	@GetMapping("/search-books/{titleAuthor}")
+	public List<BookDto> getBooksByTitleAuthor(@PathVariable("titleAuthor") String titleAuthor) {
 		return List.of();
 	}
 

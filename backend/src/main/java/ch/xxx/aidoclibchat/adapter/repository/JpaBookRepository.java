@@ -22,6 +22,6 @@ import org.springframework.data.repository.query.Param;
 import ch.xxx.aidoclibchat.domain.model.entity.Book;
 
 public interface JpaBookRepository extends JpaRepository<Book, UUID>{
-	@Query("select b from Book b join fetch b.chapters where b.title like CONCAT('%',:title,'%')")
-	List<Book> findByTitleWitChapters(@Param("title") String title);
+	@Query("select b from Book b join fetch b.chapters where b.title like CONCAT('%',:titleAuthor,'%') or b.author like CONCAT('%',:titleAuthor,'%')")
+	List<Book> findByTitleAuthorWithChapters(@Param("titleAuthor") String titleAuthor);
 }

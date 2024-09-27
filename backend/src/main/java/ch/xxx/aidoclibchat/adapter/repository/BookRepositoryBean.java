@@ -29,10 +29,12 @@ public class BookRepositoryBean implements BookRepository {
 		this.jpaBookRepository = jpaBookRepository;
 	}
 	
-	public List<Book> findByTitleWithChapters(String title) {
-		return this.jpaBookRepository.findByTitleWitChapters(title);
+	@Override
+	public List<Book> findByTitleAuthorWithChapters(String titleAuthor) {
+		return this.jpaBookRepository.findByTitleAuthorWithChapters(titleAuthor);
 	}
 	
+	@Override
 	public Book save(Book book) {
 		return this.jpaBookRepository.save(book);
 	}
