@@ -1,6 +1,15 @@
 {
   "locale": "de",
   "translations": {
+    "bookImportHeading": "Book Import",
+    "bookImportBookList": " Booklist ",
+    "bookImportAddChapter": "Add Chapter",
+    "bookListHeading": "Book List",
+    "back": " Back ",
+    "bookListAddBook": " Add Book ",
+    "bookListTitleAuthor": "Title / Author",
+    "bookListBookSummary": "Book Summary",
+    "bookListChapterSummary": "Chapter Summary: {$INTERPOLATION}",
     "docimportImportFile": "Import file",
     "docimportFileToImport": "File to import",
     "docimportFileName": "Name: {$INTERPOLATION}",
@@ -9,6 +18,7 @@
     "cancel": "Cancel",
     "upload": "Upload",
     "doclistHeading": "Document List",
+	"bookSummary": "Book summary",
     "imageQuery": "Image query",
     "function": "Function",
     "table": "Table",

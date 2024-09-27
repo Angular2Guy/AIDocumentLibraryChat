@@ -48,6 +48,10 @@ export class BookListComponent {
 		console.log('logout');
 	}
 	
+	protected back(): void {
+		this.router.navigate(['doclist']);
+	}
+	
 	protected addBook(): void {
 		this.router.navigate(['bookimport']);
 	}
