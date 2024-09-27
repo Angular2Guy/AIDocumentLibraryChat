@@ -50,10 +50,12 @@
 
 <div>
   <h3 i18n="@@bookListBookSummary">Book Summary</h3>
+  @if(!!selBook?.summary?.trim()) {
   <mat-form-field class="example-full-width">
     <mat-label>Book Summary</mat-label>
     <textarea matInput placeholder="summary" readonly="true">{{selBook?.summary}}</textarea>
   </mat-form-field>
+  }
   </div>
   
   @for(chapter of selBook?.chapters; track chapter) {

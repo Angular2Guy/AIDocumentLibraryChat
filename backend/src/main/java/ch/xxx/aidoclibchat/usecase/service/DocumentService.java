@@ -76,17 +76,19 @@ public class DocumentService {
 			""";
 
 	private final String bookPrompt = """
-			You're a english professor and expert in long text summaries. Your job is creating a summary of a text.\n
+			You're an english professor and expert in long text summaries. Your job is creating a summary of a text.\n
 			Create a summary in bullit points of the most important points of the text. Create a short and precise description of the most important points. \n
+			Write the summary only in english language and grammar. \n
 
 			Follow these Rules:
-			If a new character is mentioned introduce the character. \n
-			-Write in english language and grammar.
-			-Write in third person.
-			-Write in present tense.
-			-Write the summary in short and precise bullet points.
-			-Write as few and precise bullet points as possible.
-			-Write short logical grounded descriptions of the most important points in the text.
+			-If a new character is mentioned introduce the character. \n
+			-Write only in english language and grammar. \n
+			-Write  in third person. \n
+			-Write in present tense. \n
+			-Address characters by name. Do not use words like narrator or protagonist. \n
+			-Write the summary in short and precise bullet points. \n
+			-Write as few and precise bullet points as possible. \n
+			-Write short logical grounded descriptions of the most important points in the text. \n
 
 			TEXT: {text}
 			""";
@@ -141,7 +143,8 @@ public class DocumentService {
 	}
 
 	public List<Book> findBooksByTitleAuthor(String titleAuthor) {
-		return Optional.ofNullable(titleAuthor).stream().filter(myStr -> myStr.length() > 2)
+		return Optional.ofNullable(titleAuthor).stream().filter(myStr -> myStr.trim().length() > 2)
+				.map(myStr -> myStr.toLowerCase())
 				.flatMap(myStr -> Stream.of(this.bookRepository.findByTitleAuthorWithChapters(myStr)))
 				.flatMap(myList -> myList.stream()).toList();
 	}
