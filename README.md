@@ -27,7 +27,7 @@ The project uses Spring AI to turn questions about books into a rest function ca
 The project uses Spring AI to generate test classes. To do that the class to test is provided and the classes the class to test depends on. A test example class can also be provided. The ollama based AI/LLM then gets a prompt with all the information and generates a draft of the source of the test class.
 
 ## Articles
-* [Using Spring AI with LLMs to generate code](https://angular2guy.wordpress.com/2024/07/15/using-spring-ai-with-llms-to-generate-code/)
+* [Using Spring AI with LLMs to generate Java tests](https://angular2guy.wordpress.com/2024/07/15/using-spring-ai-with-llms-to-generate-code/)
 * [Questioning an Image Database with local AI/LLM on Ollama and Spring AI](https://angular2guy.wordpress.com/2024/05/17/questioning-an-image-database-with-ai-llm-and-spring-ai/)
 * [Extending AI/LLM Capabilities with Rag and Function calls](https://angular2guy.wordpress.com/2024/03/17/extending-ai-llm-capabilities/)
 * [Using Spring AI with LLMs to query relational databases](https://angular2guy.wordpress.com/2024/03/01/using-spring-ai-with-ai-llms-to-query-relational-databases/)
