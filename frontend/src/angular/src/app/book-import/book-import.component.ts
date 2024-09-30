@@ -94,7 +94,7 @@ export class BookImportComponent {
 					    .map((v, index) => chapterFormArray.at(index) as FormGroup)
 						.map(chapterFg => ({title: chapterFg.controls[FormGroupKey.chapterHeading].value } as ChapterHeading));
 			// for testing only
-			chapters = this.frankensteinChapters();
+			//chapters = this.frankensteinChapters();
 	        formData.append('book', this.bookForm.controls[FormGroupKey.file].value)
 			formData.append('chapters', JSON.stringify(chapters));
 

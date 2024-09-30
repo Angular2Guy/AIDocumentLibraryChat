@@ -26,6 +26,9 @@ The project uses Spring AI to turn questions about books into a rest function ca
 ### Generating code
 The project uses Spring AI to generate test classes. To do that the class to test is provided and the classes the class to test depends on. A test example class can also be provided. The ollama based AI/LLM then gets a prompt with all the information and generates a draft of the source of the test class.
 
+### Generating book summaries
+The project uses Spring AI to generate summaries of books. To generate the summaries the chapter headings and the heading after the last chapter have to be provided. Then summaries of the chapters in form of bullet points are generated. A book summary is created of the chapter summaries. 
+
 ## Articles
 * [Using Spring AI with LLMs to generate Java tests](https://angular2guy.wordpress.com/2024/07/15/using-spring-ai-with-llms-to-generate-code/)
 * [Questioning an Image Database with local AI/LLM on Ollama and Spring AI](https://angular2guy.wordpress.com/2024/05/17/questioning-an-image-database-with-ai-llm-and-spring-ai/)
@@ -42,6 +45,7 @@ The project uses Spring AI to generate test classes. To do that the class to tes
 5. It displays the results of the rest api with parameters based on to question.
 6. It displays the results of the questions to the image database.
 7. It generates tests for sources in public Github repositories
+8. It generates book summaries of epub of pdf books.
 
 ## Mission Statement
 The project shows howto use Spring AI to generate answers based on a provided set of documents with a link to the source. The Angular frontend provides the user interface for the backend and shows the responses. 
