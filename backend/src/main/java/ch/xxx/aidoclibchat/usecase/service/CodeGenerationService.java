@@ -53,7 +53,9 @@ public class CodeGenerationService {
 			1. Analyse the source class
 			2. Analyse the context classes for the classes used by the source class
 			3. Analyse the class in test example to base the code of the generated test class on it.
-			4. Generate a test class for the source class, use the context classes as sources for it and base the code of the test class on the test example. 
+			4. Generate a test class for the source class and use the context classes as sources for creating the test class. 
+			5. Use the code of the test class as test example.
+			6. Generate tests for each of the public methods of the source class. 
 			Generate the complete source code of the test class implementing the tests.						
 
 			{testExample}
