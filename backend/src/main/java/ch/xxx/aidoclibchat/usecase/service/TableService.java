@@ -25,10 +25,10 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.ai.chat.ChatClient;
-import org.springframework.ai.chat.ChatResponse;
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
+import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
 import org.springframework.ai.document.Document;
@@ -36,6 +36,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Service;
+import org.springframework.ai.chat.client.ChatClient.Builder;
 
 import ch.xxx.aidoclibchat.domain.client.ImportClient;
 import ch.xxx.aidoclibchat.domain.common.MetaData;
@@ -97,12 +98,12 @@ public class TableService {
 	@Value("${spring.profiles.active:}")
 	private String activeProfile;
 
-	public TableService(ImportClient importClient, ImportService importService, ChatClient chatClient,
+	public TableService(ImportClient importClient, ImportService importService, Builder builder,
 			JdbcTemplate jdbcTemplate, TableMetadataRepository tableMetadataRepository,
 			DocumentVsRepository documentVsRepository) {
 		this.importClient = importClient;
 		this.importService = importService;
-		this.chatClient = chatClient;
+		this.chatClient = builder.build();
 		this.documentVsRepository = documentVsRepository;
 		this.tableMetadataRepository = tableMetadataRepository;
 		this.jdbcTemplate = jdbcTemplate;
@@ -122,7 +123,7 @@ public class TableService {
 
 	private String createQuery(Prompt prompt) {
 		var chatStart = new Date();
-		ChatResponse response = chatClient.call(prompt);
+		ChatResponse response = chatClient.prompt().user(u -> u.text(prompt.getContents())).call().chatResponse();
 		String chatResult = response.getResults().stream().map(myGen -> myGen.getOutput().getContent())
 				.collect(Collectors.joining(","));
 		LOGGER.info("AI response time: {}ms", new Date().getTime() - chatStart.getTime());

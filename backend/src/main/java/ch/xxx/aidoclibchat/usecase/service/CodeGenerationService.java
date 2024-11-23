@@ -21,10 +21,10 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.ai.chat.ChatClient;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.ai.chat.client.ChatClient.Builder;
 
 import ch.xxx.aidoclibchat.domain.model.dto.GithubClient;
 import ch.xxx.aidoclibchat.domain.model.dto.GithubSource;
@@ -33,22 +33,22 @@ import ch.xxx.aidoclibchat.domain.model.dto.GithubSource;
 public class CodeGenerationService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CodeGenerationService.class);
 	private final GithubClient githubClient;
-	private final ChatClient chatClient;
+	private final org.springframework.ai.chat.client.ChatClient chatClient;
 	private final String ollamaPrompt = """
-			You are an assistant to generate spring tests for the class under test. 
+			You are an assistant to generate spring tests for the class under test.
 			Analyse the classes provided and generate tests for all methods. Base your tests on the example.
 			Generate and implement the test methods. Generate and implement complete tests methods.
 			Generate the complete source of the test class.
 
-	                Your additional guidelines:
-                        1.Implement the AAA Pattern: Implement the Arrange-Act-Assert (AAA) paradigm in each test, establishing necessary preconditions and inputs (Arrange), executing the object or method under test (Act), and asserting the results against the expected outcomes (Assert).
-                        2.Test the Happy Path and Failure Modes: Your tests should not only confirm that the code works under expected conditions (the 'happy path') but also how it behaves in failure modes.
-                        3.Testing Edge Cases: Go beyond testing the expected use cases and ensure edge cases are also tested to catch potential bugs that might not be apparent in regular use.
-                        4.Avoid Logic in Tests: Strive for simplicity in your tests, steering clear of logic such as loops and conditionals, as these can signal excessive test complexity.
-                        5.Leverage TypeScript's Type System: Leverage static typing to catch potential bugs before they occur, potentially reducing the number of tests needed.
-                        6.Handle Asynchronous Code Effectively: If your test cases involve promises and asynchronous operations, ensure they are handled correctly.
-                        7.Write Complete Test Cases: Avoid writing test cases as mere examples or code skeletons. You have to write a complete set of tests. They should effectively validate the functionality under test.
-					 
+			              Your additional guidelines:
+			                     1.Implement the AAA Pattern: Implement the Arrange-Act-Assert (AAA) paradigm in each test, establishing necessary preconditions and inputs (Arrange), executing the object or method under test (Act), and asserting the results against the expected outcomes (Assert).
+			                     2.Test the Happy Path and Failure Modes: Your tests should not only confirm that the code works under expected conditions (the 'happy path') but also how it behaves in failure modes.
+			                     3.Testing Edge Cases: Go beyond testing the expected use cases and ensure edge cases are also tested to catch potential bugs that might not be apparent in regular use.
+			                     4.Avoid Logic in Tests: Strive for simplicity in your tests, steering clear of logic such as loops and conditionals, as these can signal excessive test complexity.
+			                     5.Leverage TypeScript's Type System: Leverage static typing to catch potential bugs before they occur, potentially reducing the number of tests needed.
+			                     6.Handle Asynchronous Code Effectively: If your test cases involve promises and asynchronous operations, ensure they are handled correctly.
+			                     7.Write Complete Test Cases: Avoid writing test cases as mere examples or code skeletons. You have to write a complete set of tests. They should effectively validate the functionality under test.
+
 			Generate tests for this class:
 			{classToTest}
 
@@ -56,41 +56,41 @@ public class CodeGenerationService {
 			{contextClasses}
 
 			{testExample}
-			""";	
+			""";
 	private final String ollamaPrompt1 = """
 			You are an assistant to generate a spring test class for the source class.
 			1. Analyse the source class
 			2. Analyse the context classes for the classes used by the source class
 			3. Analyse the class in test example to base the code of the generated test class on it.
-			4. Generate a test class for the source class and use the context classes as sources for creating the test class. 
+			4. Generate a test class for the source class and use the context classes as sources for creating the test class.
 			5. Use the code of the test class as test example.
-			6. Generate tests for each of the public methods of the source class. 
-			
-            Your additional guidelines:
-            1.Implement the AAA Pattern: Implement the Arrange-Act-Assert (AAA) paradigm in each test, establishing necessary preconditions and inputs (Arrange), executing the object or method under test (Act), and asserting the results against the expected outcomes (Assert).
-            2.Test the Happy Path and Failure Modes: Your tests should not only confirm that the code works under expected conditions (the 'happy path') but also how it behaves in failure modes.
-            3.Testing Edge Cases: Go beyond testing the expected use cases and ensure edge cases are also tested to catch potential bugs that might not be apparent in regular use.
-            4.Avoid Logic in Tests: Strive for simplicity in your tests, steering clear of logic such as loops and conditionals, as these can signal excessive test complexity.
-            5.Leverage Java's Type System: Leverage static typing to catch potential bugs before they occur, potentially reducing the number of tests needed.                        
-            6.Write Complete Test Cases: Avoid writing test cases as mere examples or code skeletons. You have to write a complete set of tests. They should effectively validate the functionality under test.
-			
-			Generate the complete source code of the test class implementing the tests.						
+			6. Generate tests for each of the public methods of the source class.
+
+			         Your additional guidelines:
+			         1.Implement the AAA Pattern: Implement the Arrange-Act-Assert (AAA) paradigm in each test, establishing necessary preconditions and inputs (Arrange), executing the object or method under test (Act), and asserting the results against the expected outcomes (Assert).
+			         2.Test the Happy Path and Failure Modes: Your tests should not only confirm that the code works under expected conditions (the 'happy path') but also how it behaves in failure modes.
+			         3.Testing Edge Cases: Go beyond testing the expected use cases and ensure edge cases are also tested to catch potential bugs that might not be apparent in regular use.
+			         4.Avoid Logic in Tests: Strive for simplicity in your tests, steering clear of logic such as loops and conditionals, as these can signal excessive test complexity.
+			         5.Leverage Java's Type System: Leverage static typing to catch potential bugs before they occur, potentially reducing the number of tests needed.
+			         6.Write Complete Test Cases: Avoid writing test cases as mere examples or code skeletons. You have to write a complete set of tests. They should effectively validate the functionality under test.
+
+			Generate the complete source code of the test class implementing the tests.
 
 			{testExample}
 
 			Use these context classes as extension for the source class:
 			{contextClasses}
-			
+
 			Generate the complete source code of the test class implementing the tests.
 			Generate tests for this source class:
-			{classToTest}	
+			{classToTest}
 			""";
 	@Value("${spring.ai.ollama.chat.options.num-ctx:0}")
 	private Long contextWindowSize;
 
-	public CodeGenerationService(GithubClient githubClient, ChatClient chatClient) {
+	public CodeGenerationService(GithubClient githubClient, Builder builder) {
 		this.githubClient = githubClient;
-		this.chatClient = chatClient;
+		this.chatClient = builder.build();
 	}
 
 	public String generateTest(String url, Optional<String> testUrlOpt) {
@@ -98,8 +98,7 @@ public class CodeGenerationService {
 		var githubSource = this.createTestSources(url, true);
 		var githubTestSource = testUrlOpt.map(testUrl -> this.createTestSources(testUrl, false))
 				.orElse(new GithubSource(null, null, List.of(), List.of()));
-		String contextClasses = githubSource.dependencies().stream()
-				.filter(x -> this.contextWindowSize >= 16 * 1024)
+		String contextClasses = githubSource.dependencies().stream().filter(x -> this.contextWindowSize >= 16 * 1024)
 				.map(myGithubSource -> myGithubSource.sourceName() + ":" + System.getProperty("line.separator")
 						+ myGithubSource.lines().stream()
 								.collect(Collectors.joining(System.getProperty("line.separator"))))
@@ -113,11 +112,15 @@ public class CodeGenerationService {
 		String classToTest = githubSource.lines().stream()
 				.collect(Collectors.joining(System.getProperty("line.separator")));
 		LOGGER.debug(new PromptTemplate(this.contextWindowSize >= 16 * 1024 ? this.ollamaPrompt1 : this.ollamaPrompt,
-				Map.of("classToTest", classToTest, "contextClasses", contextClasses, "testExample", testExample)).createMessage().getContent());
+				Map.of("classToTest", classToTest, "contextClasses", contextClasses, "testExample", testExample))
+				.createMessage().getContent());
 		LOGGER.info("Generation started with context window: {}", this.contextWindowSize);
-		var response = chatClient.call(new PromptTemplate(this.contextWindowSize >= 16 * 1024 ? this.ollamaPrompt1 : this.ollamaPrompt,
-				Map.of("classToTest", classToTest, "contextClasses", contextClasses, "testExample", testExample)).create());
-		if((Instant.now().getEpochSecond() - start.getEpochSecond()) >= 300) {
+		var response = chatClient.prompt()
+				.user(u -> u.text(this.contextWindowSize >= 16 * 1024 ? this.ollamaPrompt1 : this.ollamaPrompt)
+						.params(Map.of("classToTest", classToTest, "contextClasses", contextClasses, "testExample",
+								testExample)))
+				.call().chatResponse();
+		if ((Instant.now().getEpochSecond() - start.getEpochSecond()) >= 300) {
 			LOGGER.info(response.getResult().getOutput().getContent());
 		}
 		LOGGER.info("Prompt tokens: " + response.getMetadata().getUsage().getPromptTokens());
@@ -144,7 +147,8 @@ public class CodeGenerationService {
 		return sourceLines.stream().filter(x -> referencedSources).filter(myLine -> myLine.contains("import"))
 				.filter(myLine -> myLine.contains(basePackage))
 				.map(myLine -> String.format("%s%s%s", myUrl.split(basePackage.replace(".", "/"))[0].trim(),
-						myLine.split("import")[1].split(";")[0].replaceAll("\\.", "/").trim(), myUrl.substring(myUrl.lastIndexOf('.'))))
+						myLine.split("import")[1].split(";")[0].replaceAll("\\.", "/").trim(),
+						myUrl.substring(myUrl.lastIndexOf('.'))))
 				.map(myLine -> this.createTestSources(myLine, false)).toList();
 	}
 

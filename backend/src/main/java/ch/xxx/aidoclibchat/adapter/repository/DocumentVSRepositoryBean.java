@@ -16,11 +16,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
 
 import org.postgresql.util.PGobject;
 import org.springframework.ai.document.Document;
-import org.springframework.ai.embedding.EmbeddingClient;
+import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.ai.vectorstore.PgVectorStore;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
@@ -49,12 +48,13 @@ public class DocumentVSRepositoryBean implements DocumentVsRepository {
 	private final ObjectMapper objectMapper;
 	private final FilterExpressionConverter filterExpressionConverter;
 
-	public DocumentVSRepositoryBean(JdbcTemplate jdbcTemplate, EmbeddingClient embeddingClient, ObjectMapper objectMapper) {
+	public DocumentVSRepositoryBean(JdbcTemplate jdbcTemplate, EmbeddingModel embeddingClient,
+			ObjectMapper objectMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.objectMapper = objectMapper;
 		this.vectorStore = new PgVectorStore(jdbcTemplate, embeddingClient);
 		this.filterExpressionConverter = ((PgVectorStore) this.vectorStore).filterExpressionConverter;
-		this.vectorTableName = PgVectorStore.VECTOR_TABLE_NAME;
+		this.vectorTableName = PgVectorStore.DEFAULT_TABLE_NAME;
 	}
 
 	@Override
@@ -86,21 +86,21 @@ public class DocumentVSRepositoryBean implements DocumentVsRepository {
 
 	@Override
 	public List<Document> findAllTableDocuments() {
-		String nativeFilterExpression = this.filterExpressionConverter.convertExpression(new Filter.Expression(ExpressionType.NE,
-				new Key(MetaData.DATATYPE), new Value(DataType.DOCUMENT.toString())));
+		String nativeFilterExpression = this.filterExpressionConverter.convertExpression(new Filter.Expression(
+				ExpressionType.NE, new Key(MetaData.DATATYPE), new Value(DataType.DOCUMENT.toString())));
 
 		String jsonPathFilter = " WHERE metadata::jsonb @@ '" + nativeFilterExpression + "'::jsonpath ";
 
 		return this.jdbcTemplate.query(
 				String.format("SELECT * FROM %s %s LIMIT ? ", this.vectorTableName, jsonPathFilter),
-				new DocumentRowMapper(this.objectMapper), 100000);		
+				new DocumentRowMapper(this.objectMapper), 100000);
 	}
 
 	@Override
 	public void deleteByIds(List<String> ids) {
 		this.vectorStore.delete(ids);
 	}
-	
+
 	private static class DocumentRowMapper implements RowMapper<Document> {
 
 		private static final String COLUMN_EMBEDDING = "embedding";
@@ -127,14 +127,13 @@ public class DocumentVSRepositoryBean implements DocumentVsRepository {
 			Map<String, Object> metadata = toMap(pgMetadata);
 
 			Document document = new Document(id, content, metadata);
-			document.setEmbedding(toDoubleList(embedding));
+			document.setEmbedding(toDoubleArray(embedding));
 
 			return document;
 		}
 
-		private List<Double> toDoubleList(PGobject embedding) throws SQLException {
-			float[] floatArray = new PGvector(embedding.getValue()).toArray();
-			return IntStream.range(0, floatArray.length).mapToDouble(i -> floatArray[i]).boxed().toList();
+		private float[] toDoubleArray(PGobject embedding) throws SQLException {
+			return new PGvector(embedding.getValue()).toArray();
 		}
 
 		@SuppressWarnings("unchecked")
@@ -143,8 +142,7 @@ public class DocumentVSRepositoryBean implements DocumentVsRepository {
 			String source = pgObject.getValue();
 			try {
 				return (Map<String, Object>) objectMapper.readValue(source, Map.class);
-			}
-			catch (JsonProcessingException e) {
+			} catch (JsonProcessingException e) {
 				throw new RuntimeException(e);
 			}
 		}

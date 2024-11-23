@@ -18,7 +18,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.ai.chat.ChatClient;
+import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.ChatClient.Builder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.bind.ConstructorBinding;
 import org.springframework.stereotype.Service;
@@ -70,9 +71,9 @@ public class FunctionService {
 	@Value("${spring.profiles.active:}")
 	private String activeProfile;
 
-	public FunctionService(ObjectMapper objectMapper, ChatClient chatClient, OpenLibraryClient openLibraryClient) {
+	public FunctionService(ObjectMapper objectMapper, Builder builder, OpenLibraryClient openLibraryClient) {
 		this.objectMapper = objectMapper;
-		this.chatClient = chatClient;
+		this.chatClient = builder.build();
 		this.openLibraryClient = openLibraryClient;
 	}
 
@@ -96,7 +97,7 @@ public class FunctionService {
 		List<Tool> myToolsList = List.of();
 		while (aiCallCounter < 3 && myToolsList.isEmpty()) {
 			aiCallCounter += 1;
-			var response = this.chatClient.call(query);
+			var response = this.chatClient.prompt().user(u -> u.text(query)).call().chatResponse().getResult().getOutput().getContent();
 			try {
 				response = response.substring(response.indexOf("{"), response.lastIndexOf("}") + 1);
 				final var atomicResponse = new AtomicReference<String>(response);
