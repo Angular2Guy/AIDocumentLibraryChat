@@ -39,23 +39,22 @@ interface TreeNode {
 }
 
 @Component({
-  selector: 'app-function-search',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatInputModule,
-    MatTooltipModule,
-    MatTreeModule,
-    MatIconModule,
-    MatFormFieldModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatProgressSpinnerModule,
-  ],
-  templateUrl: './function-search.component.html',
-  styleUrl: './function-search.component.scss',
+    selector: 'app-function-search',
+    imports: [
+        CommonModule,
+        MatToolbarModule,
+        MatButtonModule,
+        MatInputModule,
+        MatTooltipModule,
+        MatTreeModule,
+        MatIconModule,
+        MatFormFieldModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatProgressSpinnerModule,
+    ],
+    templateUrl: './function-search.component.html',
+    styleUrl: './function-search.component.scss'
 })
 export class FunctionSearchComponent {
   private repeatSub: Subscription | null = null;

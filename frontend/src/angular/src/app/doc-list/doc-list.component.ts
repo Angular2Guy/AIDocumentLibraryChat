@@ -27,17 +27,16 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-doclist',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatTableModule,
-    MatDialogModule,
-  ],
-  templateUrl: './doc-list.component.html',
-  styleUrls: ['./doc-list.component.scss'],
+    selector: 'app-doclist',
+    imports: [
+        CommonModule,
+        MatToolbarModule,
+        MatButtonModule,
+        MatTableModule,
+        MatDialogModule,
+    ],
+    templateUrl: './doc-list.component.html',
+    styleUrls: ['./doc-list.component.scss']
 })
 export class DocListComponent implements OnInit {
   protected displayedColumns: string[] = [
