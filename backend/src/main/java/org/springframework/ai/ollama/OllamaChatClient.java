@@ -101,11 +101,11 @@ public class OllamaChatClient implements ChatClient, StreamingChatClient {
 					|| message.getMessageType() == MessageType.ASSISTANT
 					|| message.getMessageType() == MessageType.SYSTEM)
 			.map(m -> {
-				var messageBuilder = OllamaApi.Message.builder(toRole(m)).withContent(m.getContent());
+				var messageBuilder = OllamaApi.Message.builder(OllamaChatClient.toRole(m)).withContent(m.getContent());
 
 				if (!CollectionUtils.isEmpty(m.getMedia())) {
 					messageBuilder
-						.withImages(m.getMedia().stream().map(media -> this.fromMediaData(media.getData())).toList());
+						.withImages(m.getMedia().stream().map(media -> OllamaChatClient.fromMediaData(media.getData())).toList());
 				}
 				return messageBuilder.build();
 			})
@@ -148,7 +148,7 @@ public class OllamaChatClient implements ChatClient, StreamingChatClient {
 		return requestBuilder.build();
 	}
 
-	private String fromMediaData(Object mediaData) {
+	private static String fromMediaData(Object mediaData) {
 		if (mediaData instanceof byte[] bytes) {
 			return Base64.getEncoder().encodeToString(bytes);
 		}
@@ -161,7 +161,7 @@ public class OllamaChatClient implements ChatClient, StreamingChatClient {
 
 	}
 
-	private OllamaApi.Message.Role toRole(Message message) {
+	private static OllamaApi.Message.Role toRole(Message message) {
 
 		switch (message.getMessageType()) {
 			case USER:
