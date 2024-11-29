@@ -16,6 +16,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -41,7 +42,7 @@ public class OpenLibraryRestClient implements OpenLibraryClient {
 		var titleOpt = this.createParamOpt(request.title(), "title");
 		var subjectOpt = this.createParamOpt(request.subject(), "subject");
 		var paramsStr = List.of(authorOpt, titleOpt, subjectOpt).stream()
-				.filter(Optional::isPresent).map(myOpt -> myOpt.get()).collect(Collectors.joining("&"));
+				.filter(Optional::isPresent).map(Optional::get).collect(Collectors.joining("&"));
 		var urlStr = 
 				String.format("%s?%s", this.baseUrl, paramsStr);
 		LOGGER.info(urlStr);
@@ -50,7 +51,7 @@ public class OpenLibraryRestClient implements OpenLibraryClient {
 	}
 
 	private Optional<String> createParamOpt(String valueStr, String keyStr) {
-		return Optional.ofNullable(valueStr).stream().filter(myAuthor -> !myAuthor.isBlank())
+		return Optional.ofNullable(valueStr).stream().filter(Predicate.not(String::isBlank))
 				.map(myAuthor -> String.format("%s=%s", keyStr, URLEncoder.encode(myAuthor, StandardCharsets.UTF_8))).findFirst();
 	}
 }
