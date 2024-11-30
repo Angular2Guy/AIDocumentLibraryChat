@@ -31,11 +31,10 @@ enum FormGroupKey{
 }
 
 @Component({
-  selector: 'app-book-import',
-  standalone: true,
-  imports: [MatIconModule,MatToolbarModule,MatButtonModule,ReactiveFormsModule, CommonModule,MatFormFieldModule,MatInputModule],
-  templateUrl: './book-import.component.html',
-  styleUrl: './book-import.component.scss'
+    selector: 'app-book-import',
+    imports: [MatIconModule, MatToolbarModule, MatButtonModule, ReactiveFormsModule, CommonModule, MatFormFieldModule, MatInputModule],
+    templateUrl: './book-import.component.html',
+    styleUrl: './book-import.component.scss'
 })
 export class BookImportComponent {
 	protected bookForm = new FormGroup({

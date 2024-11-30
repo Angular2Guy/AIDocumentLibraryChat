@@ -32,22 +32,21 @@ import { TableSearch } from '../model/table-search';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
-  selector: 'app-table-search',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatTableModule,
-    MatInputModule,
-    MatTooltipModule,
-    MatFormFieldModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatProgressSpinnerModule,
-  ],
-  templateUrl: './table-search.component.html',
-  styleUrl: './table-search.component.scss',
+    selector: 'app-table-search',
+    imports: [
+        CommonModule,
+        MatToolbarModule,
+        MatButtonModule,
+        MatTableModule,
+        MatInputModule,
+        MatTooltipModule,
+        MatFormFieldModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatProgressSpinnerModule,
+    ],
+    templateUrl: './table-search.component.html',
+    styleUrl: './table-search.component.scss'
 })
 export class TableSearchComponent {
   protected searchValueControl = new FormControl('', [

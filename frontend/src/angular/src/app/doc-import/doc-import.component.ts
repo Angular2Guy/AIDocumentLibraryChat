@@ -29,19 +29,18 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 export interface DocImportData {}
 
 @Component({
-  selector: 'app-docimport',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatFormFieldModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatInputModule,
-    FormsModule,
-    MatProgressSpinnerModule,
-  ],
-  templateUrl: './doc-import.component.html',
-  styleUrls: ['./doc-import.component.scss'],
+    selector: 'app-docimport',
+    imports: [
+        CommonModule,
+        MatFormFieldModule,
+        MatDialogModule,
+        MatButtonModule,
+        MatInputModule,
+        FormsModule,
+        MatProgressSpinnerModule,
+    ],
+    templateUrl: './doc-import.component.html',
+    styleUrls: ['./doc-import.component.scss']
 })
 export class DocImportComponent {
   protected file: File | null = null;

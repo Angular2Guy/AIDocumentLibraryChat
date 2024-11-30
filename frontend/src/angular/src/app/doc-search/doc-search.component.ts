@@ -37,22 +37,21 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Subscription, interval, of } from 'rxjs';
 
 @Component({
-  selector: 'app-doc-search',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatTableModule,
-    MatInputModule,
-    MatFormFieldModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatProgressSpinnerModule,
-    MatRadioModule,
-  ],
-  templateUrl: './doc-search.component.html',
-  styleUrls: ['./doc-search.component.scss'],
+    selector: 'app-doc-search',
+    imports: [
+        CommonModule,
+        MatToolbarModule,
+        MatButtonModule,
+        MatTableModule,
+        MatInputModule,
+        MatFormFieldModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatProgressSpinnerModule,
+        MatRadioModule,
+    ],
+    templateUrl: './doc-search.component.html',
+    styleUrls: ['./doc-search.component.scss']
 })
 export class DocSearchComponent {
   protected searchValueControl = new FormControl('', [

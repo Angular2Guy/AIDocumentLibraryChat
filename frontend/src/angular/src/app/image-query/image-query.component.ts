@@ -29,18 +29,17 @@ import { Router } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
-  selector: 'app-image-query',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatProgressSpinnerModule,
-    MatInputModule,
-    MatButtonModule,
-    ReactiveFormsModule,
-    MatToolbarModule,
-  ],
-  templateUrl: './image-query.component.html',
-  styleUrl: './image-query.component.scss',
+    selector: 'app-image-query',
+    imports: [
+        CommonModule,
+        MatProgressSpinnerModule,
+        MatInputModule,
+        MatButtonModule,
+        ReactiveFormsModule,
+        MatToolbarModule,
+    ],
+    templateUrl: './image-query.component.html',
+    styleUrl: './image-query.component.scss'
 })
 export class ImageQueryComponent {
   //'What do you see in the image? Describe the background. Describe the colors.'

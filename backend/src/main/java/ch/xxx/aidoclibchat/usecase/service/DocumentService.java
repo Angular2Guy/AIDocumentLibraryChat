@@ -18,10 +18,12 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.StringTokenizer;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -142,16 +144,16 @@ public class DocumentService {
 
 	public List<Book> findBooksByTitleAuthor(String titleAuthor) {
 		return Optional.ofNullable(titleAuthor).stream().filter(myStr -> myStr.trim().length() > 2)
-				.map(myStr -> myStr.toLowerCase())
+				.map(String::toLowerCase)
 				.flatMap(myStr -> Stream.of(this.bookRepository.findByTitleAuthorWithChapters(myStr)))
-				.flatMap(myList -> myList.stream()).toList();
+				.flatMap(List::stream).toList();
 	}
 
 	@Async
 	public void addBookSummaries(Book book) {
 		var myChapters = book.getChapters().stream().map(myChapter -> this.addChapterSummary(myChapter)).toList();
 		// LOGGER.info(myChapters.getLast().getSummary());
-		var summaries = myChapters.stream().map(myChapter -> myChapter.getChapterText())
+		var summaries = myChapters.stream().map(Chapter::getChapterText)
 				.reduce((acc, myChapter) -> acc + "\n" + myChapter);
 		book.setSummary(this.chatClient.prompt().user(u -> u.text(this.bookPrompt).params(Map.of("text", summaries)))
 				.call().content());
@@ -171,7 +173,7 @@ public class DocumentService {
 
 	private Chapter createChapter(Book book, String heading, AtomicReference<List<String>> atomicRef) {
 		var result = new Chapter();
-		result.setTitle(atomicRef.get().stream().filter(myLine -> !myLine.isBlank()).findFirst().orElse(""));
+		result.setTitle(atomicRef.get().stream().filter(Predicate.not(String::isBlank)).findFirst().orElse(""));
 		result.setBook(book);
 		var chapterText = atomicRef.get().stream().takeWhile(myLine -> !myLine.contains(heading))
 				.collect(Collectors.joining(System.lineSeparator()));
@@ -249,8 +251,9 @@ public class DocumentService {
 	private Message getSystemMessage(List<org.springframework.ai.document.Document> similarDocuments, int tokenLimit,
 			String prompt) {
 		String documentStr = this.cutStringToTokenLimit(
-				similarDocuments.stream().map(entry -> entry.getContent())
-						.filter(myStr -> myStr != null && !myStr.isBlank()).collect(Collectors.joining("\n")),
+				similarDocuments.stream().map(entry -> entry.getContent())				
+				.filter(Predicate.not(Objects::isNull))
+						.filter(Predicate.not(String::isBlank)).collect(Collectors.joining("\n")),
 				tokenLimit);
 		SystemPromptTemplate systemPromptTemplate = this.activeProfile.contains("ollama")
 				? new SystemPromptTemplate(this.ollamaPrompt)

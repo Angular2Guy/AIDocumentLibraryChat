@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -226,7 +227,7 @@ public class TableService {
 								.collect(Collectors.joining(" ")));
 			}
 		}
-		var rowDocuments = rowSearchStrs.stream().filter(myStr -> !myStr.isBlank())
+		var rowDocuments = rowSearchStrs.stream().filter(Predicate.not(String::isBlank))
 				.flatMap(myStr -> this.documentVsRepository
 						.retrieve(myStr, MetaData.DataType.ROW, searchDto.getResultAmount()).stream())
 				.toList();
@@ -286,10 +287,10 @@ public class TableService {
 		List<Document> rowDocs = Stream.concat(
 				this.importService.findAllSubjects().stream()
 						.filter(mySubject -> Optional.ofNullable(mySubject.getSubject()).stream()
-								.allMatch(mySubjectStr -> !mySubjectStr.isBlank()))
+								.allMatch(Predicate.not(String::isBlank)))
 						.map(this::map),
 				this.importService.findAllWorks().stream().filter(myWork -> Optional.ofNullable(myWork.getStyle())
-						.stream().allMatch(myStyle -> !myStyle.isBlank())).map(this::map))
+						.stream().allMatch(Predicate.not(String::isBlank))).map(this::map))
 				.toList();
 		this.importService.addDocuments(rowDocs);
 		LOGGER.info("Row Embeddings updated {}ms", new Date().getTime() - rowStart.getTime());
@@ -320,9 +321,9 @@ public class TableService {
 		result.getMetadata().put(MetaData.DATANAME, columnMetadata.getColumnName());
 		result.getMetadata().put(MetaData.TABLE_NAME, columnMetadata.getTableMetadata().getTableName());
 		result.getMetadata().put(MetaData.PRIMARY_KEY, columnMetadata.isColumnPrimaryKey());
-		Optional.ofNullable(columnMetadata.getReferenceTableName()).stream().filter(myStr -> !myStr.isBlank())
+		Optional.ofNullable(columnMetadata.getReferenceTableName()).stream().filter(Predicate.not(String::isBlank))
 				.findFirst().ifPresent(myStr -> result.getMetadata().put(MetaData.REFERENCE_TABLE, myStr));
-		Optional.ofNullable(columnMetadata.getReferenceTableColumn()).stream().filter(myStr -> !myStr.isBlank())
+		Optional.ofNullable(columnMetadata.getReferenceTableColumn()).stream().filter(Predicate.not(String::isBlank))
 				.findFirst().ifPresent(myStr -> result.getMetadata().put(MetaData.REFERENCE_COLUMN, myStr));
 		return result;
 	}

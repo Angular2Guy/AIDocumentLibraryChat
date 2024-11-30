@@ -13,7 +13,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import {AsyncPipe} from '@angular/common';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatInputModule} from '@angular/material/input';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -24,16 +23,15 @@ import { DocumentService } from '../service/document.service';
 import { Observable, catchError, debounceTime, distinct, of, switchMap, tap } from 'rxjs';
 
 @Component({
-  selector: 'app-book-list',
-  standalone: true,
-  imports: [  FormsModule,
-      MatFormFieldModule,
-      MatInputModule,
-      MatAutocompleteModule,
-      ReactiveFormsModule,
-      AsyncPipe, MatToolbarModule, MatButtonModule],
-  templateUrl: './book-list.component.html',
-  styleUrl: './book-list.component.scss'
+    selector: 'app-book-list',
+    imports: [FormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatAutocompleteModule,
+        ReactiveFormsModule,
+        MatToolbarModule, MatButtonModule],
+    templateUrl: './book-list.component.html',
+    styleUrl: './book-list.component.scss'
 })
 export class BookListComponent implements OnInit {
 	protected myControl = new FormControl<string | Book>('');
