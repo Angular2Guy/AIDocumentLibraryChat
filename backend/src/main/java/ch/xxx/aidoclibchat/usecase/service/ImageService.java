@@ -119,10 +119,10 @@ public class ImageService {
 			imageDto = this.resizeImage(imageDto);
 		}
 		var prompt = new Prompt(
-				new UserMessage(this.systemPrompt, new Media(MimeType.valueOf(imageDto.getImageType().getMediaType()),
+				new UserMessage(imageDto.getQuery(), new Media(MimeType.valueOf(imageDto.getImageType().getMediaType()),
 						new ByteArrayResource(imageDto.getImageContent()))));
 
-		var response = this.chatClient.prompt(prompt).user(imageDto.getQuery()).call().chatResponse();
+		var response = this.chatClient.prompt(prompt).call().chatResponse();
 		var resultData = new ResultData(response.getResult().getOutput().getContent(), imageDto);
 		return resultData;
 	}

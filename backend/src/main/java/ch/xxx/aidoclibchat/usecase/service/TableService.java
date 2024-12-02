@@ -124,7 +124,7 @@ public class TableService {
 
 	private String createQuery(Prompt prompt) {
 		var chatStart = new Date();
-		ChatResponse response = chatClient.prompt().user(u -> u.text(prompt.getContents())).call().chatResponse();
+		ChatResponse response = chatClient.prompt(prompt).call().chatResponse();
 		String chatResult = response.getResults().stream().map(myGen -> myGen.getOutput().getContent())
 				.collect(Collectors.joining(","));
 		LOGGER.info("AI response time: {}ms", new Date().getTime() - chatStart.getTime());
