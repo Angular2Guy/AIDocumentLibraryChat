@@ -19,6 +19,7 @@ import java.util.function.Function;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Description;
 
 import ch.xxx.aidoclibchat.domain.client.OpenLibraryClient;
 
@@ -31,6 +32,7 @@ public class FunctionConfig {
 	}
 	
 	@Bean
+	@Description("Search for books by author, title or subject.")
 	public Function<OpenLibraryClient.Request, OpenLibraryClient.Response> openLibraryClient() {		
 		return this.openLibraryClient::apply;
 	}
