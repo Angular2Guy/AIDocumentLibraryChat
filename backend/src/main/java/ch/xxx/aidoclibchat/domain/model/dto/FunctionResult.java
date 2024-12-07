@@ -12,4 +12,4 @@
  */
 package ch.xxx.aidoclibchat.domain.model.dto;
 
-public record FunctionSearch(String question, Long resultAmount) { }
+public record FunctionResult(String result) { }

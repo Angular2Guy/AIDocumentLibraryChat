@@ -68,6 +68,7 @@ export class FunctionSearchComponent {
     (node) => node.children
   );
   protected dataSource = new MatTreeNestedDataSource<TreeNode>();
+  protected response = '';
 
   constructor(
     private router: Router,
@@ -105,7 +106,9 @@ export class FunctionSearchComponent {
         takeUntilDestroyed(this.destroyRef),
         tap(() => (this.searching = false))
       )
-      .subscribe((value) => (this.dataSource.data = this.mapResult(value)));
+	  .subscribe(value => this.response = value.result
+	  );
+      //.subscribe((value) => (this.dataSource.data = this.mapResult(value)));
   }
 
   private mapResult(functionResponse: FunctionResponse): TreeNode[] {

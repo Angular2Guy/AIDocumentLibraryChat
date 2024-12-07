@@ -35,3 +35,7 @@ export interface FunctionResponse {
   numFoundExact: boolean;
   docs: Book[];
 }
+
+export interface FunctionResult {
+	result: string;
+}

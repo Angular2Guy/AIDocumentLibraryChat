@@ -1,8 +1,9 @@
 {
   "locale": "de",
   "translations": {
-    "bookImportHeading": "Book Import",
-    "bookImportBookList": " Booklist ",
+    "bookImportHeading": "Buch Import",
+    "bookImportBookList": " Bücher Liste ",
+    "logout": " Logout ",
     "bookImportAddChapter": "Add Chapter",
     "bookListHeading": "Book List",
     "back": " Back ",

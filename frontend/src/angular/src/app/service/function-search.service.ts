@@ -13,7 +13,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { FunctionResponse, FunctionSearch } from '../model/functions';
+import { FunctionResult, FunctionSearch } from '../model/functions';
 
 @Injectable({
   providedIn: 'root',
@@ -23,8 +23,8 @@ export class FunctionSearchService {
 
   postLibraryFunction(
     functionSearch: FunctionSearch
-  ): Observable<FunctionResponse> {
-    return this.httpClient.post<FunctionResponse>(
+  ): Observable<FunctionResult> {
+    return this.httpClient.post<FunctionResult>(
       '/rest/function/books',
       functionSearch
     );
