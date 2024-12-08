@@ -21,7 +21,7 @@ The project uses Spring Boot with Spring AI to question a image database that us
 The project uses Spring AI to turn questions with a LLMs into Sql queries and display the result in the frontend. Based on metadata that is provided for the relational dataset the LLM is able to create embeddings for the metadata of the tables and columns. The project also creates embeddings for the content of certain columns to be able to decide if the column should be used as join in the Sql query. With that embedding metadata the LLM is able to turn a question in a reasonable Sql query and display the result in the frontend. The frontend uses a Angular Material Table with a flexible amount of columns and rows. 
 
 ### Function calls for book search
-The project uses Spring AI to turn questions about books into a rest function call to the OpenLibrary Api. It uses the Ollama Mixtral model to take the parameters from the question and turn them in a Json format that can be used to call the Api.
+The project uses Spring AI to turn questions about books into a rest function call to the OpenLibrary Api. It uses the Llama3.1 model and the Spring AI function calling api. The api response is used to create the response.
 
 ### Generating code
 The project uses Spring AI to generate test classes. To do that the class to test is provided and the classes the class to test depends on. A test example class can also be provided. The ollama based AI/LLM then gets a prompt with all the information and generates a draft of the source of the test class.
@@ -42,7 +42,7 @@ The project uses Spring AI to generate summaries of books. To generate the summa
 2. It uploads new documents and creates the embeddings.
 3. It provides a chat box and shows the AI answers based on the nearest document with a link.
 4. It displays the result of the Sql query based on the question.
-5. It displays the results of the rest api with parameters based on to question.
+5. It displays the responses based on the results of the api requested based on the user question.
 6. It displays the results of the questions to the image database.
 7. It generates tests for sources in public Github repositories
 8. It generates book summaries of epub of pdf books.
