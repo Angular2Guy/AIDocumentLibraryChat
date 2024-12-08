@@ -44,7 +44,7 @@ public class OpenLibraryRestClient implements OpenLibraryClient {
 		var paramsStr = List.of(authorOpt, titleOpt, subjectOpt).stream()
 				.filter(Optional::isPresent).map(Optional::get).collect(Collectors.joining("&"));
 		var urlStr = 
-				String.format("%s?%s", this.baseUrl, paramsStr);
+				String.format("%s?%s&limit=10", this.baseUrl, paramsStr);
 		LOGGER.info(urlStr);
 		var response = this.restClient.get().uri(urlStr).retrieve().body(Response.class);
 		return response;
