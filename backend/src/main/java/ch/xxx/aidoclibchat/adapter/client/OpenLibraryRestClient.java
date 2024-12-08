@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
@@ -31,6 +32,8 @@ public class OpenLibraryRestClient implements OpenLibraryClient {
 	private static final Logger LOGGER = LoggerFactory.getLogger(OpenLibraryRestClient.class);
 	private final String baseUrl = "https://openlibrary.org/search.json";
 	private final RestClient restClient;
+	@Value("${openlibrary.result-size:10}")
+	private int resultLimit;
 	
 	public OpenLibraryRestClient(RestClient restClient) {
 		this.restClient = restClient;
@@ -44,7 +47,7 @@ public class OpenLibraryRestClient implements OpenLibraryClient {
 		var paramsStr = List.of(authorOpt, titleOpt, subjectOpt).stream()
 				.filter(Optional::isPresent).map(Optional::get).collect(Collectors.joining("&"));
 		var urlStr = 
-				String.format("%s?%s&limit=10", this.baseUrl, paramsStr);
+				String.format("%s?%s&limit=%d", this.baseUrl, paramsStr, this.resultLimit);
 		LOGGER.info(urlStr);
 		var response = this.restClient.get().uri(urlStr).retrieve().body(Response.class);
 		return response;

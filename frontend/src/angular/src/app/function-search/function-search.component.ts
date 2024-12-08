@@ -98,8 +98,7 @@ export class FunctionSearchComponent {
       );
     this.functionSearchService
       .postLibraryFunction({
-        question: this.searchValueControl.value,
-        resultAmount: 10,
+        question: this.searchValueControl.value
       } as FunctionSearch)
       .pipe(
         tap(() => this.repeatSub?.unsubscribe()),

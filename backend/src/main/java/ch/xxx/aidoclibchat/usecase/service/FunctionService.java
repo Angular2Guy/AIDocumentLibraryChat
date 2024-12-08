@@ -39,7 +39,7 @@ public class FunctionService {
 		this.chatClient = builder.build();
 	}
 
-	public String functionCall(String question, Long resultsAmount) {
+	public String functionCall(String question) {
 		if (!this.activeProfile.contains("ollama")) {
 			return "";
 		}

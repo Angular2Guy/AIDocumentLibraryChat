@@ -12,7 +12,6 @@
  */
 export interface FunctionSearch {
   question: string;
-  resultAmount: number;
 }
 
 export interface Book {
