@@ -32,6 +32,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subscription, interval, map, tap } from 'rxjs';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatIconModule } from '@angular/material/icon';
+import {MatRadioModule} from '@angular/material/radio';
 
 interface TreeNode {
   name: string;
@@ -48,6 +49,7 @@ interface TreeNode {
         MatTooltipModule,
         MatTreeModule,
         MatIconModule,
+		MatRadioModule,
         MatFormFieldModule,
         FormsModule,
         ReactiveFormsModule,
@@ -69,6 +71,8 @@ export class FunctionSearchComponent {
   );
   protected dataSource = new MatTreeNestedDataSource<TreeNode>();
   protected response = '';
+  protected resultFormats = ['text','json'];
+  protected resultFormatControl = new FormControl(this.resultFormats[0]);
 
   constructor(
     private router: Router,
@@ -98,7 +102,8 @@ export class FunctionSearchComponent {
       );
     this.functionSearchService
       .postLibraryFunction({
-        question: this.searchValueControl.value
+        question: this.searchValueControl.value,
+		resultFormat: this.resultFormatControl.value
       } as FunctionSearch)
       .pipe(
         tap(() => this.repeatSub?.unsubscribe()),

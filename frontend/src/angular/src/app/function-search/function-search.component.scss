@@ -38,6 +38,12 @@
   margin: 10px;
 }
 
+.my-radio-group {
+	display: flex;
+	flex-direction: column;	
+	align-items: flex-start;
+}
+
 .spinner-container {
   display: flex;
   align-content: center;

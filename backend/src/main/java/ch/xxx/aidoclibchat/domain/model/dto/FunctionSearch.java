@@ -12,4 +12,18 @@
  */
 package ch.xxx.aidoclibchat.domain.model.dto;
 
-public record FunctionSearch(String question) { }
+import com.fasterxml.jackson.annotation.JsonValue;
+
+public record FunctionSearch(String question, ResultFormat resultFormat) { 
+	public enum ResultFormat {Text("text"), Json("json"); 
+		private final String value;
+
+		private ResultFormat(String value) {
+			this.value = value;
+		}
+		@JsonValue
+		public String getValue() {
+			return this.value;
+		}
+	}
+}

@@ -12,6 +12,7 @@
  */
 export interface FunctionSearch {
   question: string;
+  resultFormat: string;
 }
 
 export interface Book {

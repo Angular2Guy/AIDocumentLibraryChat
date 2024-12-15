@@ -27,9 +27,16 @@
 <div class="search-bar">
   <mat-form-field class="example-full-width">
     <mat-label i18n="@@search">Search</mat-label>
-    <textarea matInput [formControl]="searchValueControl"></textarea>
+    <textarea matInput rows="5" [formControl]="searchValueControl"></textarea>
   </mat-form-field>
   <div class="search-button-box">
+  <mat-radio-group
+  class="my-radio-group"
+  [formControl]="resultFormatControl">
+  @for (myResultFormat of resultFormats; track myResultFormat) {
+    <mat-radio-button class="example-radio-button" [value]="myResultFormat">{{myResultFormat.charAt(0).toUpperCase() + myResultFormat.slice(1)}}</mat-radio-button>
+  }
+</mat-radio-group>
     <button
       mat-flat-button
       color="primary"
