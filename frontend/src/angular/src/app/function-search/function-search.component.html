@@ -60,7 +60,8 @@
   </div>
 </div>
 } @else {
-<p class="result-text">{{responseText}}</p>
+<p *ngIf="!!responseText" class="result-text">{{responseText}}</p>
+<p *ngIf="!!responseJson?.author" class="result-text">{{responseJson | json}}</p>
 <!-- 
 <mat-tree
   [dataSource]="dataSource"

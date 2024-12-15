@@ -26,7 +26,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Book, FunctionResponse, FunctionSearch } from '../model/functions';
+import { Book, FunctionResponse, FunctionSearch, JsonResult } from '../model/functions';
 import { FunctionSearchService } from '../service/function-search.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subscription, interval, map, tap } from 'rxjs';
@@ -71,6 +71,7 @@ export class FunctionSearchComponent {
   );
   protected dataSource = new MatTreeNestedDataSource<TreeNode>();
   protected responseText = '';
+  protected responseJson = {author: "", books: []} as JsonResult;
   protected resultFormats = ['text','json'];
   protected resultFormatControl = new FormControl(this.resultFormats[0]);
 
@@ -110,9 +111,9 @@ export class FunctionSearchComponent {
         takeUntilDestroyed(this.destroyRef),
         tap(() => (this.searching = false))
       )
-	  .subscribe(value => this.responseText = value.result ?? ''
+	  .subscribe(value => this.resultFormatControl.value === this.resultFormats[0] ? 
+		 this.responseText = value.result || '' : this.responseJson = value.jsonResult || this.responseJson		 
 	  );
-      //.subscribe((value) => (this.dataSource.data = this.mapResult(value)));
   }
 
   private mapResult(functionResponse: FunctionResponse): TreeNode[] {
