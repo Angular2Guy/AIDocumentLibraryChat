@@ -39,7 +39,7 @@ public class FunctionController {
 	
 	@PostMapping(path="/books", produces = MediaType.APPLICATION_JSON_VALUE)
 	public FunctionResult postQuestion(@RequestBody FunctionSearch functionSearch) {
-		return new FunctionResult(this.functionService.functionCall(functionSearch.question()));
+		return this.functionService.functionCall(functionSearch.question(), functionSearch.resultFormat());
 	}
 	
 }

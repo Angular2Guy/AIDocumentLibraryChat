@@ -37,5 +37,16 @@ export interface FunctionResponse {
 }
 
 export interface FunctionResult {
-	result: string;
+	result?: string;
+	jsonResult?: JsonResult;
+}
+
+export interface JsonResult {
+	author: string;
+	books: JsonBook[];
+}
+
+export interface JsonBook {
+	title: string;
+	summary: string;
 }

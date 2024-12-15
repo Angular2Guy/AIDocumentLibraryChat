@@ -12,4 +12,6 @@
  */
 package ch.xxx.aidoclibchat.domain.model.dto;
 
-public record FunctionResult(String result) { }
+import ch.xxx.aidoclibchat.usecase.service.FunctionService.JsonResult;
+
+public record FunctionResult(String result, JsonResult jsonResult) { }

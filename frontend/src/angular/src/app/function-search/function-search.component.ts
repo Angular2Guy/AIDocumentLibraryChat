@@ -70,7 +70,7 @@ export class FunctionSearchComponent {
     (node) => node.children
   );
   protected dataSource = new MatTreeNestedDataSource<TreeNode>();
-  protected response = '';
+  protected responseText = '';
   protected resultFormats = ['text','json'];
   protected resultFormatControl = new FormControl(this.resultFormats[0]);
 
@@ -110,7 +110,7 @@ export class FunctionSearchComponent {
         takeUntilDestroyed(this.destroyRef),
         tap(() => (this.searching = false))
       )
-	  .subscribe(value => this.response = value.result
+	  .subscribe(value => this.responseText = value.result ?? ''
 	  );
       //.subscribe((value) => (this.dataSource.data = this.mapResult(value)));
   }

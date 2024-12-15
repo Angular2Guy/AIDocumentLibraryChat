@@ -12,6 +12,8 @@
  */
 package ch.xxx.aidoclibchat.usecase.service;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
@@ -19,14 +21,28 @@ import org.springframework.ai.chat.client.ChatClient.Builder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+import ch.xxx.aidoclibchat.domain.model.dto.FunctionResult;
+import ch.xxx.aidoclibchat.domain.model.dto.FunctionSearch.ResultFormat;
+
 @Service
 public class FunctionService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FunctionService.class);
 	private final ChatClient chatClient;
+
+	@JsonPropertyOrder({ "title", "summary" })
+	public record JsonBook(String title, String summary) {
+	}
+
+	@JsonPropertyOrder({ "author", "books" })
+	public record JsonResult(String author, List<JsonBook> books) {
+	}
+
 	private final String promptStr = """
-			Make sure to have a parameter when calling a function. 
+			Make sure to have a parameter when calling a function.
 			If no parameter is provided ask the user for the parameter.
-			Create a summary for each book based on the function response subject.			
+			Create a summary for each book based on the function response subject.
 
 			User Query:
 			%s
@@ -39,13 +55,27 @@ public class FunctionService {
 		this.chatClient = builder.build();
 	}
 
-	public String functionCall(String question) {
+	public FunctionResult functionCall(String question, ResultFormat resultFormat) {
 		if (!this.activeProfile.contains("ollama")) {
-			return "";
+			return new FunctionResult(" ", null);
 		}
 
-		var result = this.chatClient.prompt().user(this.promptStr + question).functions("openLibraryClient").call().content();
+		FunctionResult result = switch (resultFormat) {
+		case ResultFormat.Text -> this.functionCallText(question);
+		case ResultFormat.Json -> this.functionCallJson(question);
+		};
 		return result;
 	}
 
+	private FunctionResult functionCallText(String question) {
+		var result = this.chatClient.prompt().user(this.promptStr + question).functions("openLibraryClient").call()
+				.content();
+		return new FunctionResult(result, null);
+	}
+
+	private FunctionResult functionCallJson(String question) {
+		var result = this.chatClient.prompt().user(this.promptStr + question).functions("openLibraryClient").call()
+				.entity(JsonResult.class);
+		return new FunctionResult(null, result);
+	}
 }
