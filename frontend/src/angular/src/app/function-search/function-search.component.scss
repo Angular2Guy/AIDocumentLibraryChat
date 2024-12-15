@@ -44,6 +44,12 @@
 	align-items: flex-start;
 }
 
+.tree-node {
+	display: block;
+	width: 90vw;
+	white-space: wrap;
+}
+
 .spinner-container {
   display: flex;
   align-content: center;

@@ -35,7 +35,8 @@ import { MatIconModule } from '@angular/material/icon';
 import {MatRadioModule} from '@angular/material/radio';
 
 interface TreeNode {
-  name: string;
+  value1: string;
+  value2: string;
   children?: TreeNode[];
 }
 
@@ -71,7 +72,7 @@ export class FunctionSearchComponent {
   );
   protected dataSource = new MatTreeNestedDataSource<TreeNode>();
   protected responseText = '';
-  protected responseJson = {author: "", books: []} as JsonResult;
+  protected responseJson = {value1: "", value2: ""} as TreeNode;
   protected resultFormats = ['text','json'];
   protected resultFormatControl = new FormControl(this.resultFormats[0]);
 
@@ -112,59 +113,19 @@ export class FunctionSearchComponent {
         tap(() => (this.searching = false))
       )
 	  .subscribe(value => this.resultFormatControl.value === this.resultFormats[0] ? 
-		 this.responseText = value.result || '' : this.responseJson = value.jsonResult || this.responseJson		 
+		 this.responseText = value.result || '' : this.responseJson = this.addToDataSource(this.mapResult(value.jsonResult || {author: "", books: []} as JsonResult))		 
 	  );
   }
 
-  private mapResult(functionResponse: FunctionResponse): TreeNode[] {
-    return functionResponse.docs.map((myBook) => this.mapBook(myBook));
+  private addToDataSource(treeNode: TreeNode): TreeNode {
+	this.dataSource.data = [treeNode];
+	return treeNode;
   }
-
-  private mapBook(book: Book): TreeNode {
-    const rootNode = { name: book.title, children: [] } as TreeNode;
-    rootNode.children?.push({ name: 'Title: ' + book.title } as TreeNode);
-    rootNode.children?.push({ name: 'Type: ' + book.type } as TreeNode);
-    rootNode.children?.push({
-      name: 'Average Ratings: ' + book.ratings_average,
-    } as TreeNode);
-    rootNode.children?.push({
-      name: 'Authors',
-      children: this.mapArray(book.author_name),
-    } as TreeNode);
-    rootNode.children?.push({
-      name: 'Languages',
-      children: this.mapArray(book.language),
-    } as TreeNode);
-    rootNode.children?.push({
-      name: 'Persons',
-      children: this.mapArray(book.person),
-    } as TreeNode);
-    rootNode.children?.push({
-      name: 'Places',
-      children: this.mapArray(book.place),
-    } as TreeNode);
-    rootNode.children?.push({
-      name: 'Publishdates',
-      children: this.mapArray(book.publish_date),
-    } as TreeNode);
-    rootNode.children?.push({
-      name: 'Publishers',
-      children: this.mapArray(book.publisher),
-    } as TreeNode);
-    rootNode.children?.push({
-      name: 'Subjects',
-      children: this.mapArray(book.subject),
-    } as TreeNode);
-    rootNode.children?.push({
-      name: 'Times',
-      children: this.mapArray(book.time),
-    } as TreeNode);
-    console.log(rootNode);
+  
+  private mapResult(jsonResult: JsonResult): TreeNode {
+	const children = jsonResult?.books.map(value => ({value1: value.title, value2: value.summary} as TreeNode));
+	const rootNode = {value1: jsonResult.author, value2: "", children: children} as TreeNode;
     return rootNode;
-  }
-
-  private mapArray(values: string[]): TreeNode[] {
-    return !!values ? values.map((myStr) => ({ name: myStr } as TreeNode)) : [];
   }
 
   protected logout(): void {
