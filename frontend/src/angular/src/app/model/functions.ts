@@ -38,7 +38,7 @@ export interface FunctionResponse {
 
 export interface FunctionResult {
 	result?: string;
-	jsonResult?: JsonResult;
+	jsonResult?: JsonResult[];
 }
 
 export interface JsonResult {

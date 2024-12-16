@@ -12,6 +12,8 @@
  */
 package ch.xxx.aidoclibchat.domain.model.dto;
 
+import java.util.List;
+
 import ch.xxx.aidoclibchat.usecase.service.FunctionService.JsonResult;
 
-public record FunctionResult(String result, JsonResult jsonResult) { }
+public record FunctionResult(String result, List<JsonResult> jsonResult) { }

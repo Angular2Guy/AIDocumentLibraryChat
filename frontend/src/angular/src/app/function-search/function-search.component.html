@@ -61,7 +61,7 @@
 </div>
 } @else {
 <p *ngIf="!!responseText" class="result-text">{{responseText}}</p>
-<p *ngIf="!!responseJson?.value1" class="result-text">
+<p *ngIf="!!responseJson?.at(0)?.value1" class="result-text">
 <!-- {{responseJson | json}}  -->
 <mat-tree
   [dataSource]="dataSource"
@@ -88,7 +88,7 @@
           {{ treeControl.isExpanded(node) ? "expand_more" : "chevron_right" }}
         </mat-icon>
       </button>
-      <span i18n="@@fuctionSearchAuthor">Author</span>: {{ node.value1 }}
+      <span class="book-author" i18n="@@functionSearchAuthor">Author</span><span class="book-author">: {{ node.value1 }}</span>
     </div>    
     <div
       [class.example-tree-invisible]="!treeControl.isExpanded(node)"

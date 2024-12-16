@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.ChatClient.Builder;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -75,7 +76,7 @@ public class FunctionService {
 
 	private FunctionResult functionCallJson(String question) {
 		var result = this.chatClient.prompt().user(this.promptStr + question).functions("openLibraryClient").call()
-				.entity(JsonResult.class);
+				.entity(new ParameterizedTypeReference<List<JsonResult>>() {});
 		return new FunctionResult(null, result);
 	}
 }
