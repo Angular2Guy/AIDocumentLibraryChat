@@ -188,7 +188,7 @@ public class DocumentService {
 		record TikaDocumentAndContent(org.springframework.ai.document.Document document, String content) {
 		}
 		var aiDocuments = tikaDocuments.stream()
-				.flatMap(myDocument1 -> this.splitStringToTokenLimit(myDocument1.getContent(), embeddingTokenLimit)
+				.flatMap(myDocument1 -> this.splitStringToTokenLimit(myDocument1.getText(), embeddingTokenLimit)
 						.stream().map(myStr -> new TikaDocumentAndContent(myDocument1, myStr)))
 				.map(myTikaRecord -> new org.springframework.ai.document.Document(myTikaRecord.content(),
 						myTikaRecord.document().getMetadata()))
@@ -226,10 +226,10 @@ public class DocumentService {
 			this.getSystemMessage(mostSimilar.stream().toList(), this.documentTokenLimit, searchDto.getSearchString());
 		default -> this.getSystemMessage(documentChunks, this.documentTokenLimit, searchDto.getSearchString());
 		};
-		UserMessage userMessage = this.activeProfile.contains("ollama") ? new UserMessage(systemMessage.getContent())
+		UserMessage userMessage = this.activeProfile.contains("ollama") ? new UserMessage(systemMessage.getText())
 				: new UserMessage(searchDto.getSearchString());
 		LocalDateTime start = LocalDateTime.now();
-		var response = chatClient.prompt().system(s -> s.text(systemMessage.getContent()))
+		var response = chatClient.prompt().system(s -> s.text(systemMessage.getText()))
 				.user(u -> u.text(userMessage.getContent())).call().chatResponse();
 		LOGGER.info("AI response time: {}ms",
 				ZonedDateTime.of(LocalDateTime.now(), ZoneId.systemDefault()).toInstant().toEpochMilli()
@@ -251,7 +251,7 @@ public class DocumentService {
 	private Message getSystemMessage(List<org.springframework.ai.document.Document> similarDocuments, int tokenLimit,
 			String prompt) {
 		String documentStr = this.cutStringToTokenLimit(
-				similarDocuments.stream().map(entry -> entry.getContent())				
+				similarDocuments.stream().map(entry -> entry.getText())				
 				.filter(Predicate.not(Objects::isNull))
 						.filter(Predicate.not(String::isBlank)).collect(Collectors.joining("\n")),
 				tokenLimit);

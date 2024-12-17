@@ -113,7 +113,7 @@ public class CodeGenerationService {
 				.collect(Collectors.joining(System.getProperty("line.separator")));
 		LOGGER.debug(new PromptTemplate(this.contextWindowSize >= 16 * 1024 ? this.ollamaPrompt1 : this.ollamaPrompt,
 				Map.of("classToTest", classToTest, "contextClasses", contextClasses, "testExample", testExample))
-				.createMessage().getContent());
+				.createMessage().getText());
 		LOGGER.info("Generation started with context window: {}", this.contextWindowSize);
 		var response = chatClient.prompt()
 				.user(u -> u.text(this.contextWindowSize >= 16 * 1024 ? this.ollamaPrompt1 : this.ollamaPrompt)

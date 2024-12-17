@@ -20,7 +20,6 @@ import org.springframework.stereotype.Repository;
 
 import ch.xxx.aidoclibchat.domain.model.entity.Subject;
 import ch.xxx.aidoclibchat.domain.model.entity.SubjectRepository;
-import ch.xxx.aidoclibchat.domain.model.entity.Work;
 
 @Repository
 public class SubjectRepositoryBean implements SubjectRepository {

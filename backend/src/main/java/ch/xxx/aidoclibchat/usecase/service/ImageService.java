@@ -57,7 +57,7 @@ public class ImageService {
 	private DocumentVsRepository documentVsRepository;
 	@Value("${image.result-size:20}")
 	private Long resultSize;
-	private final String systemPrompt = "You are a helpful assistent searching image descriptions.";
+	//private final String systemPrompt = "You are a helpful assistent searching image descriptions.";
 
 	private record ResultData(String answer, ImageQueryDto imageQueryDto) {
 	}
@@ -97,7 +97,7 @@ public class ImageService {
 				.stream().collect(Collectors.toMap(myDoc -> myDoc.getId(), myDoc -> myDoc));
 		return imageMap.entrySet().stream().map(myEntry -> createImageContainer(aiDocuments, myEntry))
 				.sorted((containerA, containerB) -> containerA.distance().compareTo(containerB.distance()))
-				.map(myContainer -> new ImageDto(myContainer.document().getContent(),
+				.map(myContainer -> new ImageDto(myContainer.document().getText(),
 						Base64.getEncoder().encodeToString(myContainer.image().getImageContent()),
 						myContainer.image().getImageType()))
 				.limit(this.resultSize).toList();

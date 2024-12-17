@@ -20,7 +20,6 @@ import java.util.Map;
 import org.postgresql.util.PGobject;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.embedding.EmbeddingModel;
-import org.springframework.ai.vectorstore.pgvector.PgVectorStore;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.ai.vectorstore.filter.Filter;
@@ -28,6 +27,7 @@ import org.springframework.ai.vectorstore.filter.Filter.ExpressionType;
 import org.springframework.ai.vectorstore.filter.Filter.Key;
 import org.springframework.ai.vectorstore.filter.Filter.Value;
 import org.springframework.ai.vectorstore.filter.FilterExpressionConverter;
+import org.springframework.ai.vectorstore.pgvector.PgVectorStore;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -52,7 +52,7 @@ public class DocumentVSRepositoryBean implements DocumentVsRepository {
 			ObjectMapper objectMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.objectMapper = objectMapper;
-		this.vectorStore = new PgVectorStore(jdbcTemplate, embeddingClient);
+		this.vectorStore = PgVectorStore.builder().embeddingModel(embeddingClient).jdbcTemplate(jdbcTemplate).build();		
 		this.filterExpressionConverter = ((PgVectorStore) this.vectorStore).filterExpressionConverter;
 		this.vectorTableName = PgVectorStore.DEFAULT_TABLE_NAME;
 	}

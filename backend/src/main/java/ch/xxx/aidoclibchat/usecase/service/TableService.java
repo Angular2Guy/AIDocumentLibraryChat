@@ -161,7 +161,7 @@ public class TableService {
 					joinTable.set(((String) myRowDoc.getMetadata().get(MetaData.TABLE_NAME)));
 					joinColumn.set(((String) myRowDoc.getMetadata().get(MetaData.DATANAME)));
 					tableColumnNames.columnNames().add(((String) myRowDoc.getMetadata().get(MetaData.DATANAME)));
-					columnValue.set(myRowDoc.getContent());
+					columnValue.set(myRowDoc.getText());
 					this.tableMetadataRepository
 							.findByTableNameIn(List.of(((String) myRowDoc.getMetadata().get(MetaData.TABLE_NAME))))
 							.stream()
@@ -190,7 +190,7 @@ public class TableService {
 						tableRecords.stream().map(myRecord -> myRecord.schema()).collect(Collectors.joining(";")),
 						"prompt", searchDto.getSearchString(), "joinColumn", joinColumn.get(), "joinTable",
 						joinTable.get(), "columnValue", columnValue.get()));
-		UserMessage userMessage = this.activeProfile.contains("ollama") ? new UserMessage(systemMessage.getContent())
+		UserMessage userMessage = this.activeProfile.contains("ollama") ? new UserMessage(systemMessage.getText())
 				: new UserMessage(searchDto.getSearchString());
 		return List.of(systemMessage, userMessage);
 	}
