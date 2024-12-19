@@ -14,4 +14,7 @@
 	<changeSet id="8" author="angular2guy">
 		<modifyDataType tableName="vector_store" columnName="embedding" newDataType="vector(384)"/> 
 	</changeSet>
+	<changeSet id="8.1" author="angular2guy">
+		<modifyDataType tableName="vector_store" columnName="embedding" newDataType="vector(1024)"/> 
+	</changeSet>
 </databaseChangeLog>
