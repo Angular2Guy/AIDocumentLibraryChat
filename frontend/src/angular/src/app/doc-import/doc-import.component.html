@@ -1,10 +1,23 @@
 <h1 mat-dialog-title i18n="@@docimportImportFile">Import file</h1>
 <div mat-dialog-content>
-  <p i18n="@@docimportFileToImport">File to import</p>
+  <div i18n="@@docimportFileToImport">File to import</div>
   @if(uploading) {
   <div class="upload-spinner"><mat-spinner></mat-spinner></div>
   } @else {
+  <!-- 
   <input type="file" (change)="onFileInputChange($event)" />
+   -->
+  <input type="file" class="file-input"
+       (change)="onFileInputChange($event)" #fileUpload>
+<div class="file-upload">
+
+   {{file?.name || "No file uploaded yet."}}
+
+    <button mat-mini-fab color="primary" class="upload-btn"
+      (click)="fileUpload.click()">
+        <mat-icon>attach_file</mat-icon>
+    </button>
+</div>
   } @if(!!file) {
   <div>
     <ul>

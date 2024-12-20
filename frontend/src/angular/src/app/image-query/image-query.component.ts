@@ -26,6 +26,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
@@ -35,6 +36,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
         MatProgressSpinnerModule,
         MatInputModule,
         MatButtonModule,
+		MatIconModule,
         ReactiveFormsModule,
         MatToolbarModule,
     ],
@@ -67,8 +69,8 @@ export class ImageQueryComponent {
     private router: Router
   ) {}
 
-  protected onFileInputChange($event: Event): void {
-    this.result = null;
+  protected onFileInputChange($event: Event): void {    
+	this.result = null;
     const files = !$event.target
       ? null
       : ($event.target as HTMLInputElement).files;

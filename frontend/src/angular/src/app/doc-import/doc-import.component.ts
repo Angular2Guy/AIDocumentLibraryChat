@@ -22,6 +22,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 import { DocumentService } from '../service/document.service';
 import { tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -36,6 +37,7 @@ export interface DocImportData {}
         MatDialogModule,
         MatButtonModule,
         MatInputModule,
+		MatIconModule,
         FormsModule,
         MatProgressSpinnerModule,
     ],

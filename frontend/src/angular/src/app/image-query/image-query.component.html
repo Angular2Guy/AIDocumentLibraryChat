@@ -64,12 +64,20 @@
       <div><img [src]="result.b64Image" /></div>
       <div>{{ result.answer }}</div>
     </div>
-    } @else {
-    <input
-      type="file"
-      class="vertical-margin"
-      (change)="onFileInputChange($event)"
-    />
+    } @else {    
+    <div>
+      <input type="file" class="file-input" 
+       (change)="onFileInputChange($event)" #fileUpload>
+<div class="file-upload">
+
+   {{this.imageForm.controls['file'].value?.name || "No file uploaded yet."}}
+
+    <button mat-mini-fab color="primary" class="upload-btn"
+      (click)="fileUpload.click()">
+        <mat-icon>attach_file</mat-icon>
+    </button>
+    </div>
+</div>   
     <mat-form-field class="example-full-width">
       <mat-label i18n="@@imageQueryPrompt">Image prompt</mat-label>
       <input
