@@ -52,7 +52,7 @@ public class DocumentVSRepositoryBean implements DocumentVsRepository {
 			ObjectMapper objectMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.objectMapper = objectMapper;
-		this.vectorStore = PgVectorStore.builder().embeddingModel(embeddingClient).jdbcTemplate(jdbcTemplate).build();		
+		this.vectorStore = PgVectorStore.builder(jdbcTemplate, embeddingClient).build();
 		this.filterExpressionConverter = ((PgVectorStore) this.vectorStore).filterExpressionConverter;
 		this.vectorTableName = PgVectorStore.DEFAULT_TABLE_NAME;
 	}
@@ -64,24 +64,25 @@ public class DocumentVSRepositoryBean implements DocumentVsRepository {
 
 	@Override
 	public List<Document> retrieve(String query, DataType dataType, int k, double threshold) {
-		return this.vectorStore
-				.similaritySearch(SearchRequest
-						.query(query).withFilterExpression(new Filter.Expression(ExpressionType.EQ,
-								new Key(MetaData.DATATYPE), new Value(dataType.toString())))
-						.withTopK(k).withSimilarityThreshold(threshold));
+		return this.vectorStore.similaritySearch(SearchRequest
+				.builder().query(query).filterExpression(new Filter.Expression(ExpressionType.EQ,
+						new Key(MetaData.DATATYPE), new Value(dataType.toString())))
+				.topK(k).similarityThreshold(threshold).build());
+
 	}
 
 	@Override
 	public List<Document> retrieve(String query, DataType dataType, int k) {
-		return this.vectorStore.similaritySearch(SearchRequest.query(query).withFilterExpression(
+		return this.vectorStore.similaritySearch(SearchRequest.builder().query(query).filterExpression(
 				new Filter.Expression(ExpressionType.EQ, new Key(MetaData.DATATYPE), new Value(dataType.toString())))
-				.withTopK(k));
+				.topK(k).build());
 	}
 
 	@Override
 	public List<Document> retrieve(String query, DataType dataType) {
-		return this.vectorStore.similaritySearch(SearchRequest.query(query).withFilterExpression(
-				new Filter.Expression(ExpressionType.EQ, new Key(MetaData.DATATYPE), new Value(dataType.toString()))));
+		return this.vectorStore.similaritySearch(SearchRequest.builder().query(query).filterExpression(
+				new Filter.Expression(ExpressionType.EQ, new Key(MetaData.DATATYPE), new Value(dataType.toString())))
+				.build());
 	}
 
 	@Override
@@ -125,9 +126,9 @@ public class DocumentVSRepositoryBean implements DocumentVsRepository {
 			PGobject embedding = rs.getObject(COLUMN_EMBEDDING, PGobject.class);
 
 			Map<String, Object> metadata = toMap(pgMetadata);
+			metadata.put(COLUMN_EMBEDDING, this.toDoubleArray(embedding));
 
 			Document document = new Document(id, content, metadata);
-			document.setEmbedding(toDoubleArray(embedding));
 
 			return document;
 		}
@@ -146,6 +147,6 @@ public class DocumentVSRepositoryBean implements DocumentVsRepository {
 				throw new RuntimeException(e);
 			}
 		}
-
 	}
+
 }
