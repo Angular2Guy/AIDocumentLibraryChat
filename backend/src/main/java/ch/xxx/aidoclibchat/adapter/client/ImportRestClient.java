@@ -55,7 +55,7 @@ public class ImportRestClient implements ImportClient {
 		String result = this.restClient.get().uri(
 				"https://raw.githubusercontent.com/Angular2Guy/AIDocumentLibraryChat/master/museumDataset/artist.csv")
 				.retrieve().body(String.class);
-		return this.mapString(result, ArtistDto.class).stream().map(myDto -> this.tableMapper.map(myDto)).toList();
+		return this.mapString(result, ArtistDto.class).stream().map(this.tableMapper::map).toList();
 	}
 
 	private <T> List<T> mapString(String result, Class<T> myClass) {

@@ -34,20 +34,19 @@ public class OpenLibraryRestClient implements OpenLibraryClient {
 	private final RestClient restClient;
 	@Value("${openlibrary.result-size:10}")
 	private int resultLimit;
-	
+
 	public OpenLibraryRestClient(RestClient restClient) {
 		this.restClient = restClient;
 	}
-	
+
 	@Override
 	public Response apply(Request request) {
 		var authorOpt = this.createParamOpt(request.author(), "author");
 		var titleOpt = this.createParamOpt(request.title(), "title");
 		var subjectOpt = this.createParamOpt(request.subject(), "subject");
-		var paramsStr = List.of(authorOpt, titleOpt, subjectOpt).stream()
-				.filter(Optional::isPresent).map(Optional::get).collect(Collectors.joining("&"));
-		var urlStr = 
-				String.format("%s?%s&limit=%d", this.baseUrl, paramsStr, this.resultLimit);
+		var paramsStr = List.of(authorOpt, titleOpt, subjectOpt).stream().flatMap(Optional::stream)
+				.collect(Collectors.joining("&"));
+		var urlStr = String.format("%s?%s&limit=%d", this.baseUrl, paramsStr, this.resultLimit);
 		LOGGER.info(urlStr);
 		var response = this.restClient.get().uri(urlStr).retrieve().body(Response.class);
 		return response;
@@ -55,6 +54,7 @@ public class OpenLibraryRestClient implements OpenLibraryClient {
 
 	private Optional<String> createParamOpt(String valueStr, String keyStr) {
 		return Optional.ofNullable(valueStr).stream().filter(Predicate.not(String::isBlank))
-				.map(myAuthor -> String.format("%s=%s", keyStr, URLEncoder.encode(myAuthor, StandardCharsets.UTF_8))).findFirst();
+				.map(myAuthor -> String.format("%s=%s", keyStr, URLEncoder.encode(myAuthor, StandardCharsets.UTF_8)))
+				.findFirst();
 	}
 }
