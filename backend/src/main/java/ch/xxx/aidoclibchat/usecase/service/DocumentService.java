@@ -230,7 +230,7 @@ public class DocumentService {
 				: new UserMessage(searchDto.getSearchString());
 		LocalDateTime start = LocalDateTime.now();
 		var response = chatClient.prompt().system(s -> s.text(systemMessage.getText()))
-				.user(u -> u.text(userMessage.getContent())).call().chatResponse();
+				.user(u -> u.text(userMessage.getText())).call().chatResponse();
 		LOGGER.info("AI response time: {}ms",
 				ZonedDateTime.of(LocalDateTime.now(), ZoneId.systemDefault()).toInstant().toEpochMilli()
 						- ZonedDateTime.of(start, ZoneId.systemDefault()).toInstant().toEpochMilli());

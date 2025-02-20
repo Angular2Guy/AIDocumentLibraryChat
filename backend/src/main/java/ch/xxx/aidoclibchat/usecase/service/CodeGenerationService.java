@@ -121,13 +121,13 @@ public class CodeGenerationService {
 								testExample)))
 				.call().chatResponse();
 		if ((Instant.now().getEpochSecond() - start.getEpochSecond()) >= 300) {
-			LOGGER.info(response.getResult().getOutput().getContent());
+			LOGGER.info(response.getResult().getOutput().getText());
 		}
 		LOGGER.info("Prompt tokens: " + response.getMetadata().getUsage().getPromptTokens());
 		LOGGER.info("Generation tokens: " + response.getMetadata().getUsage().getGenerationTokens());
 		LOGGER.info("Total tokens: " + response.getMetadata().getUsage().getTotalTokens());
 		LOGGER.info("Time in seconds: {}", (Instant.now().toEpochMilli() - start.toEpochMilli()) / 1000.0);
-		return response.getResult().getOutput().getContent();
+		return response.getResult().getOutput().getText();
 	}
 
 	public GithubSource createTestSources(String url, final boolean referencedSources) {

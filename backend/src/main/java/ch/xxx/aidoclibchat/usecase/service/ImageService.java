@@ -123,7 +123,7 @@ public class ImageService {
 						new ByteArrayResource(imageDto.getImageContent()))));
 
 		var response = this.chatClient.prompt(prompt).call().chatResponse();
-		var resultData = new ResultData(response.getResult().getOutput().getContent(), imageDto);
+		var resultData = new ResultData(response.getResult().getOutput().getText(), imageDto);
 		return resultData;
 	}
 

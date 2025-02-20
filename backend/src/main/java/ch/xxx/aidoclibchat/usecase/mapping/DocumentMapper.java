@@ -71,7 +71,7 @@ public class DocumentMapper {
 	public DocumentSearchDto toDto(AiDocumentResult aiResult) {
 		var dto = new DocumentSearchDto();
 		dto.setDocuments(aiResult.documents().stream().map(this::toDtoNoContent).toList());
-		dto.setResultStrings(aiResult.generations().stream().map(myGen -> myGen.getOutput().getContent()).toList());
+		dto.setResultStrings(aiResult.generations().stream().map(myGen -> myGen.getOutput().getText()).toList());
 		dto.setSearchString(aiResult.searchString());
 		return dto;
 	}
