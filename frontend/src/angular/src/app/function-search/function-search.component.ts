@@ -113,7 +113,7 @@ export class FunctionSearchComponent {
 				tap(() => (this.searching = false))
 			)
 			.subscribe(value => this.resultFormatControl.value === this.resultFormats[0] ?
-				this.responseText = value.result || '' : this.responseJson = this.addToDataSource(this.mapResult(value.jsonResult || [{ author: "", books: [] }] as JsonResult[]))
+				this.responseText = value.result?.trim() || '' : this.responseJson = this.addToDataSource(this.mapResult(value.jsonResult || [{ author: "", books: [] }] as JsonResult[]))
 			);
 	}
 

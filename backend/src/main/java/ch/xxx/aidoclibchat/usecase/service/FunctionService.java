@@ -61,23 +61,33 @@ public class FunctionService {
 		if (!this.activeProfile.contains("ollama")) {
 			return new FunctionResult(" ", null);
 		}
+		var result = new FunctionResult(" ", null);
 
-		FunctionResult result = switch (resultFormat) {
-		case ResultFormat.Text -> this.functionCallText(question);
-		case ResultFormat.Json -> this.functionCallJson(question);
-		};
+		int i = 0;
+		while (i < 3 && (result.jsonResult() == null && result.result() == " ")) {
+			try {
+				result = switch (resultFormat) {
+				case ResultFormat.Text -> this.functionCallText(question);
+				case ResultFormat.Json -> this.functionCallJson(question);
+				};
+			} catch (Exception e) {
+				LOGGER.warn("AI Call failed.", e);
+			}
+			i++;
+		}
 		return result;
 	}
 
 	private FunctionResult functionCallText(String question) {
-		var result = this.chatClient.prompt().user(this.promptStr + question).tools(FunctionConfig.OPEN_LIBRARY_CLIENT).call()
-				.content();
+		var result = this.chatClient.prompt().user(this.promptStr + question).tools(FunctionConfig.OPEN_LIBRARY_CLIENT)
+				.call().content();
 		return new FunctionResult(result, null);
 	}
 
 	private FunctionResult functionCallJson(String question) {
-		var result = this.chatClient.prompt().user(this.promptStr + question).tools(FunctionConfig.OPEN_LIBRARY_CLIENT).call()
-				.entity(new ParameterizedTypeReference<List<JsonResult>>() {});
+		var result = this.chatClient.prompt().user(this.promptStr + question).tools(FunctionConfig.OPEN_LIBRARY_CLIENT)
+				.call().entity(new ParameterizedTypeReference<List<JsonResult>>() {
+				});
 		return new FunctionResult(null, result);
 	}
 }
