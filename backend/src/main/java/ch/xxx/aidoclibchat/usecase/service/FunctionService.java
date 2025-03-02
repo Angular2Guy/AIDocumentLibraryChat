@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import ch.xxx.aidoclibchat.adapter.config.FunctionConfig;
 import ch.xxx.aidoclibchat.domain.model.dto.FunctionResult;
 import ch.xxx.aidoclibchat.domain.model.dto.FunctionSearch.ResultFormat;
 
@@ -69,13 +70,13 @@ public class FunctionService {
 	}
 
 	private FunctionResult functionCallText(String question) {
-		var result = this.chatClient.prompt().user(this.promptStr + question).functions("openLibraryClient").call()
+		var result = this.chatClient.prompt().user(this.promptStr + question).tools(FunctionConfig.OPEN_LIBRARY_CLIENT).call()
 				.content();
 		return new FunctionResult(result, null);
 	}
 
 	private FunctionResult functionCallJson(String question) {
-		var result = this.chatClient.prompt().user(this.promptStr + question).functions("openLibraryClient").call()
+		var result = this.chatClient.prompt().user(this.promptStr + question).tools(FunctionConfig.OPEN_LIBRARY_CLIENT).call()
 				.entity(new ParameterizedTypeReference<List<JsonResult>>() {});
 		return new FunctionResult(null, result);
 	}

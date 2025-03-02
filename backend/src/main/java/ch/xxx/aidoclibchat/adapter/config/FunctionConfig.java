@@ -17,22 +17,23 @@ package ch.xxx.aidoclibchat.adapter.config;
 
 import java.util.function.Function;
 
+import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Description;
 
 import ch.xxx.aidoclibchat.domain.client.OpenLibraryClient;
 
 @Configuration
 public class FunctionConfig {
 	private final OpenLibraryClient openLibraryClient;
+	public static final String OPEN_LIBRARY_CLIENT = "openLibraryClient";
 	
 	public FunctionConfig(OpenLibraryClient openLibraryClient) {
 		this.openLibraryClient = openLibraryClient;
 	}
 	
-	@Bean
-	@Description("Search for books by author, title or subject.")
+	@Bean(OPEN_LIBRARY_CLIENT)
+	@Tool(description = "Search for books by author, title or subject.")
 	public Function<OpenLibraryClient.Request, OpenLibraryClient.Response> openLibraryClient() {		
 		return this.openLibraryClient::apply;
 	}
