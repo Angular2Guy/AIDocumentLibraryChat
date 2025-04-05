@@ -31,8 +31,8 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.ChatClient.Builder;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.content.Media;
 import org.springframework.ai.document.Document;
-import org.springframework.ai.model.Media;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
@@ -119,8 +119,8 @@ public class ImageService {
 			imageDto = this.resizeImage(imageDto);
 		}
 		var prompt = new Prompt(
-				new UserMessage(imageDto.getQuery(), new Media(MimeType.valueOf(imageDto.getImageType().getMediaType()),
-						new ByteArrayResource(imageDto.getImageContent()))));
+				new UserMessage(imageDto.getQuery(), List.of(new Media(MimeType.valueOf(imageDto.getImageType().getMediaType()),
+						new ByteArrayResource(imageDto.getImageContent())))));
 
 		var response = this.chatClient.prompt(prompt).call().chatResponse();
 		var resultData = new ResultData(response.getResult().getOutput().getText(), imageDto);
