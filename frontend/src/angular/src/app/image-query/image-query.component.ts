@@ -111,6 +111,11 @@ export class ImageQueryComponent {
       );
   }
 
+  protected reset(): void {
+	this.result = null;
+	this.imageForm.controls['file'].reset();
+  }
+  
   protected upload(): void {
     //console.log(this.file);
     if (!!this.imageForm.controls.file.value) {

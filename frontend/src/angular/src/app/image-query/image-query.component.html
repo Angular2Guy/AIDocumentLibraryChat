@@ -89,6 +89,14 @@
     }
   </form>
   <div class="horizontal-container">
+  	<button class="my-button"
+      mat-flat-button
+      color="primary"
+      [disabled]="uploading || !result"
+      (click)="reset()"
+      i18n="@@reset">
+  		Reset
+  	</button>
     <button
       class="my-button"
       mat-flat-button
