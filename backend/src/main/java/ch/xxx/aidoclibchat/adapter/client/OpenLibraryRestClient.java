@@ -32,7 +32,7 @@ public class OpenLibraryRestClient implements OpenLibraryClient {
 	private static final Logger LOGGER = LoggerFactory.getLogger(OpenLibraryRestClient.class);
 	private final String baseUrl = "https://openlibrary.org/search.json";
 	private final RestClient restClient;
-	@Value("${openlibrary.result-size:10}")
+	@Value("${openlibrary.result-size:5}")
 	private int resultLimit;
 
 	public OpenLibraryRestClient(RestClient restClient) {
@@ -46,7 +46,7 @@ public class OpenLibraryRestClient implements OpenLibraryClient {
 		var subjectOpt = this.createParamOpt(request.subject(), "subject");
 		var paramsStr = List.of(authorOpt, titleOpt, subjectOpt).stream().flatMap(Optional::stream)
 				.collect(Collectors.joining("&"));
-		var urlStr = String.format("%s?%s&limit=%d", this.baseUrl, paramsStr, this.resultLimit);
+		var urlStr = String.format("%s?%s&fields=*&limit=%d", this.baseUrl, paramsStr, this.resultLimit);
 		LOGGER.info(urlStr);
 		var response = this.restClient.get().uri(urlStr).retrieve().body(Response.class);
 		return response;
