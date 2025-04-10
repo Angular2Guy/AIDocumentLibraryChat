@@ -44,7 +44,7 @@ public class FunctionService {
 	private final String promptStr = """
 			Make sure to have a parameter when calling a function.
 			If no parameter is provided ask the user for the parameter.
-			Create a summary for each book based on the function response subject.
+			Create a summary of two full sentences based on the subject property for each book and put it in the function response subject.
 
 			User Query:
 			%s
