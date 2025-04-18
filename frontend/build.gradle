@@ -11,7 +11,7 @@
    limitations under the License.
  */
  plugins {
-	id 'java'
+	id 'java'	
 }
  
 group = 'ch.xxx'
@@ -30,7 +30,7 @@ task cleanAngular {
 
 task buildAngular {
 	if(project.hasProperty('withAngular')) {		
-		exec {
+		providers.exec {
 			logger.info('Task buildAngular - npm install')		
 			workingDir 'src/angular'
 			if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
@@ -39,7 +39,7 @@ task buildAngular {
 				commandLine('npm', 'install')
 			}
 		}
-		exec {
+		providers.exec {
 			logger.info('Task buildAngular - npm run build')
 			workingDir 'src/angular'
 			if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
@@ -53,7 +53,7 @@ task buildAngular {
 
 task testAngular {
 	if(project.hasProperty('withAngular')) {		
-		exec {
+		providers.exec {
 			workingDir 'src/angular'
 			if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
 				logger.info('Task buildAngular - npm run test')		

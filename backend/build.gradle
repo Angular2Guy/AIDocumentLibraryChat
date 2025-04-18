@@ -20,12 +20,14 @@ group = 'ch.xxx'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '21'
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
 }
 
 repositories {
 	mavenCentral()
-	maven { url "https://repo.spring.io/snapshot" }
+	maven { url = 'https://repo.spring.io/snapshot' }
 }
 
 dependencies {

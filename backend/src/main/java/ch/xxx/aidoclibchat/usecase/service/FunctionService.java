@@ -64,7 +64,7 @@ public class FunctionService {
 		var result = new FunctionResult(" ", null);
 
 		int i = 0;
-		while (i < 3 && (result.jsonResult() == null && result.result() == " ")) {
+		while (i < 3 && (result.jsonResult() == null && " ".equals(result.result()))) {
 			try {
 				result = switch (resultFormat) {
 				case ResultFormat.Text -> this.functionCallText(question);
