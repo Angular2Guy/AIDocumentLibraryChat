@@ -17,10 +17,6 @@
 group = 'ch.xxx'
 version = '0.0.1-SNAPSHOT'
 
-java {
-	sourceCompatibility = '21'
-}
-
 task cleanAngular {
 	if(project.hasProperty('withAngular')) {	
 		logger.info('Task cleanAngular')	
@@ -30,7 +26,7 @@ task cleanAngular {
 
 task buildAngular {
 	if(project.hasProperty('withAngular')) {		
-		providers.exec {
+		exec {
 			logger.info('Task buildAngular - npm install')		
 			workingDir 'src/angular'
 			if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
@@ -39,7 +35,7 @@ task buildAngular {
 				commandLine('npm', 'install')
 			}
 		}
-		providers.exec {
+		exec {
 			logger.info('Task buildAngular - npm run build')
 			workingDir 'src/angular'
 			if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
@@ -53,7 +49,7 @@ task buildAngular {
 
 task testAngular {
 	if(project.hasProperty('withAngular')) {		
-		providers.exec {
+		exec {
 			workingDir 'src/angular'
 			if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
 				logger.info('Task buildAngular - npm run test')		
