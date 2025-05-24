@@ -118,10 +118,8 @@ public class ImageService {
 		if (ImageType.JPEG.equals(imageDto.getImageType()) || ImageType.PNG.equals(imageDto.getImageType())) {
 			imageDto = this.resizeImage(imageDto);
 		}
-		var prompt = new Prompt(
-				new UserMessage(imageDto.getQuery(), List.of(new Media(MimeType.valueOf(imageDto.getImageType().getMediaType()),
-						new ByteArrayResource(imageDto.getImageContent())))));
-
+		var prompt = new Prompt(UserMessage.builder().text(imageDto.getQuery())
+		  .media(Media.builder().data(new ByteArrayResource(imageDto.getImageContent())).mimeType(MimeType.valueOf(imageDto.getImageType().getMediaType())).build()).build());
 		var response = this.chatClient.prompt(prompt).call().chatResponse();
 		var resultData = new ResultData(response.getResult().getOutput().getText(), imageDto);
 		return resultData;

@@ -21,10 +21,10 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.ai.chat.client.ChatClient.Builder;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.ai.chat.client.ChatClient.Builder;
 
 import ch.xxx.aidoclibchat.domain.model.dto.GithubClient;
 import ch.xxx.aidoclibchat.domain.model.dto.GithubSource;
@@ -111,9 +111,8 @@ public class CodeGenerationService {
 				.orElse("");
 		String classToTest = githubSource.lines().stream()
 				.collect(Collectors.joining(System.getProperty("line.separator")));
-		LOGGER.debug(new PromptTemplate(this.contextWindowSize >= 16 * 1024 ? this.ollamaPrompt1 : this.ollamaPrompt,
-				Map.of("classToTest", classToTest, "contextClasses", contextClasses, "testExample", testExample))
-				.createMessage().getText());
+		LOGGER.debug(PromptTemplate.builder().template(this.contextWindowSize >= 16 * 1024 ? this.ollamaPrompt1 : this.ollamaPrompt)
+		  .variables(Map.of("classToTest", classToTest, "contextClasses", contextClasses, "testExample", testExample)).build().getTemplate());		
 		LOGGER.info("Generation started with context window: {}", this.contextWindowSize);
 		var response = chatClient.prompt()
 				.user(u -> u.text(this.contextWindowSize >= 16 * 1024 ? this.ollamaPrompt1 : this.ollamaPrompt)
