@@ -7,7 +7,7 @@ Technologies: Angular, Angular-Cli, Angular-Material, Typescript, Spring Boot, S
 [![CodeQL](https://github.com/Angular2Guy/AIDocumentLibraryChat/actions/workflows/codeql.yml/badge.svg)](https://github.com/Angular2Guy/AIDocumentLibraryChat/actions/workflows/codeql.yml)
 
 ### DocumentLibraryChat
-This is a project to show howto use SpringAI to chat with the documents in a library. Document can be uploaded are then stored in a normal and vector database. The AI is used to create embeddings from the chunks of the documents that are stored in the vector database. In the chat questions can be asked that are turned in embeddings and are used for requests to the vector database. The document vector with the lowest distance is used to load the document from the database and to request an answer from the AI based on document content tokens. That enables the AI to generate the answer based on the content of the document and limits hallucinations. A link to the source document is provided for further research.
+This is a project to show howto use SpringAI 1.0.0+ to chat with the documents in a library. Document can be uploaded are then stored in a normal and vector database. The AI is used to create embeddings from the chunks of the documents that are stored in the vector database. In the chat questions can be asked that are turned in embeddings and are used for requests to the vector database. The document vector with the lowest distance is used to load the document from the database and to request an answer from the AI based on document content tokens. That enables the AI to generate the answer based on the content of the document and limits hallucinations. A link to the source document is provided for further research.
 
 The project uses Spring Boot with Spring AI to access OpenAI and the vector database. The Postgresql DB is used with the vector, hstore and the uuid-ossp extensions. Liquibase is used to manage the database migrations. Jpa is used for database access in the services by the rest controllers. For the frontend Angular, Angular Material and Typescript is used to create the table of documents, the upload dialog and the document chat. Angular Cli is used for the frontend build and Gradle for the project build.
 
@@ -70,10 +70,6 @@ In the helm directory is a kubernetes setup to run the AIDocumentLibraryChat pro
 
 ## Postgresql setup
 In the [runPostgresql.sh](https://github.com/Angular2Guy/AIDocumentLibraryChat/blob/master/runPostgresql.sh) file are the commands to pull and run the Postgresql Docker image with vector extension locally. 
-
-## OpenAI Api key
-To get the OpenAI api key you need to create a account at [https://platform.openai.com](https://platform.openai.com) and create a key in the user settings. That key has to be added in the [application.properties](https://github.com/Angular2Guy/AIDocumentLibraryChat/blob/master/backend/src/main/resources/application.properties) at the key: 'spring.ai.openai.api-key'.
-As alternative it can be provided as the environment variable 'OPEN-API-KEY'.
 
 ## Ollama setup
 [Ollama](https://ollama.ai/) can run the AI model locally. The file [runOllama.sh](https://github.com/Angular2Guy/AIDocumentLibraryChat/blob/master/runOllama.sh) has the commands to run it as Docker container. The application needs to be build with the 'useOllama=true' Gradle build property to include the dependencies. The application needs to be started with the 'ollama' profile to switch on the configs/features to use Ollama based models. Ollama has support for GPU acceleration.
