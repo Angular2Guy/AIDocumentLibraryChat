@@ -52,9 +52,9 @@ import jakarta.transaction.Transactional;
 @Transactional
 public class ImageService {
 	private static final Logger LOG = LoggerFactory.getLogger(ImageService.class);
-	private ChatClient chatClient;
-	private ImageRepository imageRepository;
-	private DocumentVsRepository documentVsRepository;
+	private final ChatClient chatClient;
+	private final ImageRepository imageRepository;
+	private final DocumentVsRepository documentVsRepository;
 	@Value("${image.result-size:20}")
 	private Long resultSize;
 	//private final String systemPrompt = "You are a helpful assistent searching image descriptions.";
