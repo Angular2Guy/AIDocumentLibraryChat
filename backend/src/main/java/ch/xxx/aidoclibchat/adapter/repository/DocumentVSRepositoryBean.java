@@ -113,7 +113,7 @@ public class DocumentVSRepositoryBean implements DocumentVsRepository {
 
 		private static final String COLUMN_CONTENT = "content";
 
-		private ObjectMapper objectMapper;
+		private final ObjectMapper objectMapper;
 
 		public DocumentRowMapper(ObjectMapper objectMapper) {
 			this.objectMapper = objectMapper;
