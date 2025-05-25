@@ -27,14 +27,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 @Configuration
 @EnableAsync
 public class ApplicationConfig {
-	
-//	@Primary
-//	@Profile("ollama")
-//	@Bean
-//	public EmbeddingClient embeddingClient() {
-//		return new TransformersEmbeddingClient();
-//	}
-	
+
 	@Bean
 	public RestClient createRestClient() {
 		return RestClient.builder().build();

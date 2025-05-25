@@ -28,6 +28,7 @@ import org.springframework.ai.vectorstore.filter.Filter.Key;
 import org.springframework.ai.vectorstore.filter.Filter.Value;
 import org.springframework.ai.vectorstore.filter.FilterExpressionConverter;
 import org.springframework.ai.vectorstore.pgvector.PgVectorStore;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -48,7 +49,7 @@ public class DocumentVSRepositoryBean implements DocumentVsRepository {
 	private final ObjectMapper objectMapper;
 	private final FilterExpressionConverter filterExpressionConverter;
 
-	public DocumentVSRepositoryBean(JdbcTemplate jdbcTemplate, EmbeddingModel embeddingClient,
+	public DocumentVSRepositoryBean(JdbcTemplate jdbcTemplate, @Qualifier("embeddingModel") EmbeddingModel embeddingClient,
 			ObjectMapper objectMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.objectMapper = objectMapper;
