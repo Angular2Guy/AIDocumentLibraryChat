@@ -63,7 +63,7 @@
   @if (!!responseText) {
     <p class="result-text">{{responseText}}</p>
   }
-  @if (!!responseJson?.at(0)?.value1) {
+  @if (!!responseJson.at(0)?.value1) {
     <p class="result-text">
       <!-- {{responseJson | json}}  -->
       <mat-tree

@@ -47,6 +47,7 @@
     "imageQueryPrompt": "Image prompt",
     "tableSearchHeading": "Table Search",
     "tableSearchDataImport": "A new DB instance needs a data import first.",
-    "tableSearchImportData": " Import Data "
+    "tableSearchImportData": " Import Data ",
+    "reset": "Reset"
   }
 }
