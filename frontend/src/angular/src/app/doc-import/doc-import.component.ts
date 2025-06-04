@@ -11,7 +11,7 @@
    limitations under the License.
  */
 import { Component, DestroyRef, Inject, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import {
   MAT_DIALOG_DATA,
   MatDialogRef,
@@ -32,15 +32,14 @@ export interface DocImportData {}
 @Component({
     selector: 'app-docimport',
     imports: [
-        CommonModule,
-        MatFormFieldModule,
-        MatDialogModule,
-        MatButtonModule,
-        MatInputModule,
-		MatIconModule,
-        FormsModule,
-        MatProgressSpinnerModule,
-    ],
+    MatFormFieldModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatInputModule,
+    MatIconModule,
+    FormsModule,
+    MatProgressSpinnerModule
+],
     templateUrl: './doc-import.component.html',
     styleUrls: ['./doc-import.component.scss']
 })

@@ -11,7 +11,7 @@
    limitations under the License.
  */
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
@@ -29,12 +29,11 @@ import { Router } from '@angular/router';
 @Component({
     selector: 'app-doclist',
     imports: [
-        CommonModule,
-        MatToolbarModule,
-        MatButtonModule,
-        MatTableModule,
-        MatDialogModule,
-    ],
+    MatToolbarModule,
+    MatButtonModule,
+    MatTableModule,
+    MatDialogModule
+],
     templateUrl: './doc-list.component.html',
     styleUrls: ['./doc-list.component.scss']
 })
