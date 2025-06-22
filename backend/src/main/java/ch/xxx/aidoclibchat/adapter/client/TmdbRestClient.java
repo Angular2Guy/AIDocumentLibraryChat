@@ -12,15 +12,33 @@
  */
 package ch.xxx.aidoclibchat.adapter.client;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
 @Component
 public class TmdbRestClient {
-    private static final String BASE_URL = "get https://api.themoviedb.org/3/";
+    private static final Logger LOG = LoggerFactory.getLogger(TmdbRestClient.class);
+    private static final String BASE_URL = "https://api.themoviedb.org/3/";
     private final RestClient restClient;
+    @Value("${tmdb.api.key:}")
+    private String apiKey;
 
     public TmdbRestClient(RestClient restClient) {
         this.restClient = restClient;
     }
+    
+    public void searchMovie(String query) {
+        var url = BASE_URL + "search/movie?query=" + query;
+        var response = restClient.get()
+                .uri(url)
+                .header("accept", "application/json")
+                .header("Authorization", "Bearer "+this.apiKey)
+                .retrieve()
+                .body(String.class);
+        LOG.info("Response from TMDB: {}", response);
+    }
+
 }
