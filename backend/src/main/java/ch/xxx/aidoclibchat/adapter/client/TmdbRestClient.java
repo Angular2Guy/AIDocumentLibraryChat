@@ -18,8 +18,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
+import ch.xxx.aidoclibchat.domain.client.TmdbClient;
+
 @Component
-public class TmdbRestClient {
+public class TmdbRestClient implements TmdbClient {
     private static final Logger LOG = LoggerFactory.getLogger(TmdbRestClient.class);
     private static final String BASE_URL = "https://api.themoviedb.org/3/";
     private final RestClient restClient;
@@ -29,9 +31,10 @@ public class TmdbRestClient {
     public TmdbRestClient(RestClient restClient) {
         this.restClient = restClient;
     }
-    
-    public void searchMovie(String query) {
-        var url = BASE_URL + "search/movie?query=" + query;
+
+    @Override
+    public Response apply(Request request) {
+        var url = BASE_URL + "search/movie?query=" + request.query();
         var response = restClient.get()
                 .uri(url)
                 .header("accept", "application/json")
@@ -39,6 +42,7 @@ public class TmdbRestClient {
                 .retrieve()
                 .body(String.class);
         LOG.info("Response from TMDB: {}", response);
+        return new Response(response);
     }
 
 }
