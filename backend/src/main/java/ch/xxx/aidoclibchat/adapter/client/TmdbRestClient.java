@@ -40,9 +40,9 @@ public class TmdbRestClient implements TmdbClient {
                 .header("accept", "application/json")
                 .header("Authorization", "Bearer "+this.apiKey)
                 .retrieve()
-                .body(String.class);
+                .body(Response.class);
         LOG.info("Response from TMDB: {}", response);
-        return new Response(response);
+        return response;
     }
 
 }
