@@ -15,8 +15,12 @@ package ch.xxx.aidoclibchat.adapter.client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.xxx.aidoclibchat.domain.client.TmdbClient;
 
@@ -32,6 +36,13 @@ public class TmdbRestClient implements TmdbClient {
         this.restClient = restClient;
     }
 
+    //@EventListener
+    public void onApplicationEvent(ApplicationReadyEvent event) {
+        var request = new Request("Alien");
+        var response = this.apply(request);
+        LOG.info("TMDB Response: {}", toJson(response));
+    }
+
     @Override
     public Response apply(Request request) {
         var url = BASE_URL + "search/movie?query=" + request.query();
@@ -40,9 +51,19 @@ public class TmdbRestClient implements TmdbClient {
                 .header("accept", "application/json")
                 .header("Authorization", "Bearer "+this.apiKey)
                 .retrieve()
-                .body(Response.class);
-        LOG.info("Response from TMDB: {}", response);
+                .body(Response.class);        
+        //LOG.info("TMDB Response: {}", toJson(response));
         return response;
+    }
+
+    private static String toJson(Object obj) {
+        var result = "";
+        try {
+            result = new ObjectMapper().writeValueAsString(obj);
+        } catch (JsonProcessingException e) {
+            LOG.error("Error converting object to JSON", e);            
+        }
+        return result;
     }
 
 }
