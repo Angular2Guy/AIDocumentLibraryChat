@@ -22,19 +22,29 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import ch.xxx.aidoclibchat.domain.client.OpenLibraryClient;
+import ch.xxx.aidoclibchat.domain.client.TmdbClient;
 
 @Configuration
 public class FunctionConfig {
 	private final OpenLibraryClient openLibraryClient;
+	private final TmdbClient tmdbClient;
 	public static final String OPEN_LIBRARY_CLIENT = "openLibraryClient";
+	public static final String THE_MOVIE_DATABASE_CLIENT = "theMovieDatabaseClient";
 	
-	public FunctionConfig(OpenLibraryClient openLibraryClient) {
+	public FunctionConfig(OpenLibraryClient openLibraryClient, TmdbClient tmdbClient) {
 		this.openLibraryClient = openLibraryClient;
+		this.tmdbClient = tmdbClient;
 	}
 	
 	@Bean(OPEN_LIBRARY_CLIENT)
 	@Tool(description = "Search for books by author, title or subject.")
 	public Function<OpenLibraryClient.Request, OpenLibraryClient.Response> openLibraryClient() {		
 		return this.openLibraryClient::apply;
+	}
+
+	@Bean(THE_MOVIE_DATABASE_CLIENT)
+	@Tool(description = "Search for movies by title.")
+	public Function<TmdbClient.Request, TmdbClient.Response> theMovieDatabaseClient() {
+		return this.tmdbClient::apply;
 	}
 }
