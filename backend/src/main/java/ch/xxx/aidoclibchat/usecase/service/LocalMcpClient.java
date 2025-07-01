@@ -14,13 +14,23 @@ package ch.xxx.aidoclibchat.usecase.service;
 
 import java.util.List;
 
+import org.springframework.ai.support.ToolCallbacks;
+import org.springframework.ai.tool.ToolCallback;
+import org.springframework.ai.tool.ToolCallbackProvider;
+import org.springframework.context.annotation.Bean;
+
+import ch.xxx.aidoclibchat.adapter.config.FunctionConfig;
 import io.modelcontextprotocol.client.McpSyncClient;
 
 public class LocalMcpClient {
-    private List<McpSyncClient> mcpSyncClients;
+    private final List<McpSyncClient> mcpSyncClients;    
 
     public LocalMcpClient(List<McpSyncClient> mcpSyncClients) {
-        this.mcpSyncClients = mcpSyncClients;
+        this.mcpSyncClients = mcpSyncClients;        
     }
 
+    @Bean
+    public ToolCallbackProvider myTools(FunctionConfig functionConfig) {        
+        return MethodToolCallbackProvider.builder().toolObjects(functionConfig).build();
+    }
 }
