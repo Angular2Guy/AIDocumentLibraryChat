@@ -10,7 +10,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package ch.xxx.aidoclibchat.adapter.client;
+package ch.xxx.mcpserver.client;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -25,7 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
-import ch.xxx.aidoclibchat.domain.client.OpenLibraryClient;
+import ch.xxx.mcpserver.client.external.OpenLibraryClient;
 
 @Component
 public class OpenLibraryRestClient implements OpenLibraryClient {

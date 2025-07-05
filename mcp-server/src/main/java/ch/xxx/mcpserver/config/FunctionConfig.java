@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package ch.xxx.aidoclibchat.adapter.config;
+package ch.xxx.mcpserver.config;
 
 import java.util.function.Function;
 
@@ -21,8 +21,8 @@ import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import ch.xxx.aidoclibchat.domain.client.OpenLibraryClient;
-import ch.xxx.aidoclibchat.domain.client.TmdbClient;
+import ch.xxx.mcpserver.client.external.OpenLibraryClient;
+import ch.xxx.mcpserver.client.external.TmdbClient;
 
 @Configuration
 public class FunctionConfig {
@@ -43,7 +43,7 @@ public class FunctionConfig {
 	}
 
 	@Bean(THE_MOVIE_DATABASE_CLIENT)
-	@Tool(description = "Search for movies by title.")
+	@Tool(description = "Search for movies by title.")	
 	public Function<TmdbClient.Request, TmdbClient.Response> theMovieDatabaseClient() {
 		return this.tmdbClient::apply;
 	}

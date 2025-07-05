@@ -10,7 +10,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package ch.xxx.aidoclibchat.adapter.client;
+package ch.xxx.mcpserver.client;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ import org.springframework.web.client.RestClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ch.xxx.aidoclibchat.domain.client.TmdbClient;
+import ch.xxx.mcpserver.client.external.TmdbClient;
 
 @Component
 public class TmdbRestClient implements TmdbClient {
