@@ -39,12 +39,12 @@ public class TmdbRestClient implements TmdbClient {
     //@EventListener
     public void onApplicationEvent(ApplicationReadyEvent event) {
         var request = new Request("Alien");
-        var response = this.apply(request);
+        var response = this.loadMovies(request);
         LOG.info("TMDB Response: {}", toJson(response));
     }
 
     @Override
-    public Response apply(Request request) {
+    public Response loadMovies(Request request) {
         var url = BASE_URL + "search/movie?query=" + request.query();
         var response = restClient.get()
                 .uri(url)

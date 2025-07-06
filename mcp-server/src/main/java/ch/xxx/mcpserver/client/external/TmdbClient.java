@@ -13,7 +13,6 @@
 package ch.xxx.mcpserver.client.external;
 
 import java.util.Map;
-import java.util.function.Function;
 
 import org.springframework.ai.tool.annotation.ToolParam;
 
@@ -21,7 +20,7 @@ import org.springframework.ai.tool.annotation.ToolParam;
  *
  * @author sven
  */
-public interface TmdbClient extends Function<TmdbClient.Request, TmdbClient.Response> {
+public interface TmdbClient {
     public static final Map<Integer, String> GENRE_MAP = Map.ofEntries(
         Map.entry(28, "Action"),
         Map.entry(12, "Adventure"),
@@ -43,6 +42,8 @@ public interface TmdbClient extends Function<TmdbClient.Request, TmdbClient.Resp
         Map.entry(10752, "War"),
         Map.entry(37, "Western")
     );
+
+    Response loadMovies(Request request);
 
     record Request(@ToolParam(description = "The movie title") String query) {
     }

@@ -15,36 +15,34 @@
  */
 package ch.xxx.mcpserver.config;
 
-import java.util.function.Function;
-
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import ch.xxx.mcpserver.client.external.OpenLibraryClient;
+import ch.xxx.mcpserver.client.OpenLibraryRestClient;
 import ch.xxx.mcpserver.client.external.TmdbClient;
 
 @Configuration
 public class FunctionConfig {
-	private final OpenLibraryClient openLibraryClient;
+	private final OpenLibraryRestClient openLibraryClient;
 	private final TmdbClient tmdbClient;
 	public static final String OPEN_LIBRARY_CLIENT = "openLibraryClient";
 	public static final String THE_MOVIE_DATABASE_CLIENT = "theMovieDatabaseClient";
 	
-	public FunctionConfig(OpenLibraryClient openLibraryClient, TmdbClient tmdbClient) {
+	public FunctionConfig(OpenLibraryRestClient openLibraryClient, TmdbClient tmdbClient) {
 		this.openLibraryClient = openLibraryClient;
 		this.tmdbClient = tmdbClient;
 	}
 	
 	@Bean(OPEN_LIBRARY_CLIENT)
 	@Tool(description = "Search for books by author, title or subject.")
-	public Function<OpenLibraryClient.Request, OpenLibraryClient.Response> openLibraryClient() {		
-		return this.openLibraryClient::apply;
+	public OpenLibraryRestClient.Response openLibraryClient(OpenLibraryRestClient.Request request) {		
+		return this.openLibraryClient.loadBooks(request);
 	}
 
 	@Bean(THE_MOVIE_DATABASE_CLIENT)
 	@Tool(description = "Search for movies by title.")	
-	public Function<TmdbClient.Request, TmdbClient.Response> theMovieDatabaseClient() {
-		return this.tmdbClient::apply;
+	public TmdbClient.Response theMovieDatabaseClient(TmdbClient.Request request) {
+		return this.tmdbClient.loadMovies(request);
 	}
 }

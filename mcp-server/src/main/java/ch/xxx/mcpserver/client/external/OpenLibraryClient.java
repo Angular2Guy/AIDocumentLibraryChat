@@ -13,7 +13,6 @@
 package ch.xxx.mcpserver.client.external;
 
 import java.util.List;
-import java.util.function.Function;
 
 import org.springframework.ai.tool.annotation.ToolParam;
 
@@ -24,7 +23,9 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 
-public interface OpenLibraryClient extends Function<OpenLibraryClient.Request, OpenLibraryClient.Response> {
+public interface OpenLibraryClient {
+	Response loadBooks(Request request);
+
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	record Book(@JsonProperty(value = "author_name", required = false) List<String> authorName,
 			@JsonProperty(value = "language", required = false) List<String> languages,

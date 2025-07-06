@@ -32,15 +32,16 @@ public class OpenLibraryRestClient implements OpenLibraryClient {
 	private static final Logger LOGGER = LoggerFactory.getLogger(OpenLibraryRestClient.class);
 	private final String baseUrl = "https://openlibrary.org/search.json";
 	private final RestClient restClient;
+
 	@Value("${openlibrary.result-size:5}")
 	private int resultLimit;
-
+	
 	public OpenLibraryRestClient(RestClient restClient) {
 		this.restClient = restClient;
 	}
-
+	    
 	@Override
-	public Response apply(Request request) {
+	public OpenLibraryClient.Response loadBooks(OpenLibraryClient.Request request) {
 		var authorOpt = this.createParamOpt(request.author(), "author");
 		var titleOpt = this.createParamOpt(request.title(), "title");
 		var subjectOpt = this.createParamOpt(request.subject(), "subject");
