@@ -16,31 +16,34 @@
 package ch.xxx.mcpserver.config;
 
 import org.springframework.ai.tool.annotation.Tool;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Service;
 
-import ch.xxx.mcpserver.client.OpenLibraryRestClient;
+import ch.xxx.mcpserver.client.external.OpenLibraryClient;
 import ch.xxx.mcpserver.client.external.TmdbClient;
 
-@Configuration
+@Service
 public class FunctionConfig {
-	private final OpenLibraryRestClient openLibraryClient;
+	private final OpenLibraryClient openLibraryClient;
 	private final TmdbClient tmdbClient;
 	public static final String OPEN_LIBRARY_CLIENT = "openLibraryClient";
 	public static final String THE_MOVIE_DATABASE_CLIENT = "theMovieDatabaseClient";
 	
-	public FunctionConfig(OpenLibraryRestClient openLibraryClient, TmdbClient tmdbClient) {
+	public FunctionConfig(OpenLibraryClient openLibraryClient, TmdbClient tmdbClient) {
 		this.openLibraryClient = openLibraryClient;
 		this.tmdbClient = tmdbClient;
 	}
-	
-	@Bean(OPEN_LIBRARY_CLIENT)
+	/*
+	@Tool(description="Test")
+	public String test() {
+		return "Test successful";
+	}
+*/
+
 	@Tool(description = "Search for books by author, title or subject.")
-	public OpenLibraryRestClient.Response openLibraryClient(OpenLibraryRestClient.Request request) {		
+	public OpenLibraryClient.Response openLibraryClient(OpenLibraryClient.Request request) {		
 		return this.openLibraryClient.loadBooks(request);
 	}
-
-	@Bean(THE_MOVIE_DATABASE_CLIENT)
+	
 	@Tool(description = "Search for movies by title.")	
 	public TmdbClient.Response theMovieDatabaseClient(TmdbClient.Request request) {
 		return this.tmdbClient.loadMovies(request);
