@@ -13,13 +13,31 @@
 package ch.xxx.aidoclibchat.usecase.service;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.mcp.SyncMcpToolCallbackProvider;
+import org.springframework.stereotype.Service;
+
+import ch.xxx.aidoclibchat.domain.model.dto.McpRequestDto;
+import ch.xxx.aidoclibchat.domain.model.dto.McpResponseDto;
 import io.modelcontextprotocol.client.McpSyncClient;
 
+@Service
 public class LocalMcpClient {
-    private final List<McpSyncClient> mcpSyncClients;    
+    private final List<McpSyncClient> mcpSyncClients;   
+    private final ChatClient chatClient; 
 
-    public LocalMcpClient(List<McpSyncClient> mcpSyncClients) {
-        this.mcpSyncClients = mcpSyncClients;        
+    public LocalMcpClient(List<McpSyncClient> mcpSyncClients, ChatClient.Builder chatClientBuilder) {
+        this.mcpSyncClients = mcpSyncClients;
+        this.chatClient = chatClientBuilder.build();
     }    
+
+    public McpResponseDto createResponse(McpRequestDto requestDto) {
+        var result = this.chatClient.prompt(requestDto.question()).toolCallbacks(new SyncMcpToolCallbackProvider(mcpSyncClients)).call();
+        var resultText = Optional.ofNullable(result.chatResponse()).stream().map(value -> value.getResult().getOutput().getText()).findFirst().orElse("");
+        var toolCalls = Optional.ofNullable(result.chatResponse()).stream().map(value -> value.getResult().getOutput().getToolCalls()).findFirst().orElse(List.of());
+        var responseDto = new McpResponseDto(resultText, toolCalls);
+        return responseDto;
+    }
 }
