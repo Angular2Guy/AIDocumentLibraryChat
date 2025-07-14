@@ -42,5 +42,9 @@ export const routes: Routes = [
     path: 'booklist',
     loadChildren: () => import('./book-list').then((mod) => mod.BOOKLIST),
   },
+  {
+    path: 'mcpclient',
+    loadChildren: () => import('./mcp-client').then((mod) => mod.MCPCLIENTSEARCH),
+  },
   { path: '**', redirectTo: 'doclist' },
 ];

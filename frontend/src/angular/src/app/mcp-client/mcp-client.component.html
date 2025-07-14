@@ -1,0 +1,26 @@
+<mat-toolbar color="primary" class="custom-toolbar">
+  <div class="toolbar-content">
+    <div i18n="@@mcpSearchHeading">Mcp Search</div>
+    <div class="example-fill-remaining-space"></div>
+    <div>
+      <button
+        mat-flat-button
+        color="primary"
+        (click)="showList()"
+        i18n="@@list"
+        >
+        List
+      </button>
+    </div>
+    <div>
+      <button
+        mat-flat-button
+        color="primary"
+        (click)="logout()"
+        i18n="@@logout"
+        >
+        Logout
+      </button>
+    </div>
+  </div>
+</mat-toolbar>
