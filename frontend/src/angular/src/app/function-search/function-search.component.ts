@@ -26,11 +26,10 @@ import {
 	Validators,
 } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Book, FunctionResponse, FunctionSearch, JsonBook, JsonResult } from '../model/functions';
+import { FunctionSearch, JsonBook, JsonResult } from '../model/functions';
 import { FunctionSearchService } from '../service/function-search.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subscription, interval, map, tap } from 'rxjs';
-import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
 
@@ -66,10 +65,7 @@ export class FunctionSearchComponent {
 		Validators.minLength(3),
 	]);
 	protected searching = false;
-	protected msWorking = 0;
-	protected treeControl = new NestedTreeControl<TreeNode>(
-		(node) => node.children
-	);
+	protected msWorking = 0;	
 	protected dataSource = new MatTreeNestedDataSource<TreeNode>();
 	protected responseText = '';
 	protected responseJson = [{ value1: "", value2: "" } as TreeNode];

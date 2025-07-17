@@ -66,9 +66,8 @@
   @if (!!responseJson.at(0)?.value1) {
     <p class="result-text">
       <!-- {{responseJson | json}}  -->
-      <mat-tree
-        [dataSource]="dataSource"
-        [treeControl]="treeControl"
+      <mat-tree #tree
+        [dataSource]="dataSource"      
         class="example-tree"
         >
         <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
@@ -88,13 +87,13 @@
               matTreeNodeToggle
               >
               <mat-icon class="mat-icon-rtl-mirror">
-                {{ treeControl.isExpanded(node) ? "expand_more" : "chevron_right" }}
+                {{ tree.isExpanded(node) ? "expand_more" : "chevron_right" }}
               </mat-icon>
             </button>
             <span class="book-author" i18n="@@functionSearchAuthor">Author</span><span class="book-author">: {{ node.value1 }}</span>
           </div>
           <div
-            [class.example-tree-invisible]="!treeControl.isExpanded(node)"
+            [class.example-tree-invisible]="!tree.isExpanded(node)"
             role="group"
             >
             <ng-container matTreeNodeOutlet></ng-container>
