@@ -14,6 +14,8 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
 import { Router } from '@angular/router';
 
 @Component({
@@ -21,7 +23,10 @@ import { Router } from '@angular/router';
   imports: [
     CommonModule,
 		MatToolbarModule,
-		MatButtonModule],
+		MatButtonModule,
+		MatInputModule,
+		MatFormFieldModule
+	],
   templateUrl: './mcp-client.component.html',
   styleUrl: './mcp-client.component.scss'
 })
