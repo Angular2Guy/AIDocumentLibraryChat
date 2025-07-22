@@ -12,6 +12,7 @@
  */
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import {MatInputModule} from '@angular/material/input';
@@ -25,16 +26,23 @@ import { Router } from '@angular/router';
 		MatToolbarModule,
 		MatButtonModule,
 		MatInputModule,
-		MatFormFieldModule
+		MatFormFieldModule,
+    FormsModule
 	],
   templateUrl: './mcp-client.component.html',
   styleUrl: './mcp-client.component.scss'
 })
 export class McpClientComponent {
+  protected query: string = '';
+
   constructor(private readonly router: Router) {}
   
   protected showList(): void {
     this.router.navigate(['/doclist']);
+  }
+
+  protected submitForm(): void {
+    console.log(this.query);
   }
 
   protected logout(): void {

@@ -24,14 +24,16 @@
     </div>
   </div>
 </mat-toolbar>
+<form #userForm="ngForm" (ngSubmit)="submitForm()">
 <div class="my-input-container">
   <div class="my-textarea">
     <mat-form-field class="example-full-width">
       <mat-label>Query about books or movies</mat-label>
-      <textarea matInput placeholder="Ask about books or movies."></textarea>
+      <textarea matInput placeholder="Ask about books or movies." [(ngModel)]="query"></textarea>
     </mat-form-field>
   </div>
   <div class="my-button">
-    <button matButton="filled">Basic</button>    
+    <button matButton="filled" type="submit">Basic</button>    
   </div>
 </div>
+</form>
