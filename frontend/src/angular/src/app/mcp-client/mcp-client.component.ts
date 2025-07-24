@@ -33,7 +33,8 @@ import { Router } from '@angular/router';
   styleUrl: './mcp-client.component.scss'
 })
 export class McpClientComponent {
-  protected query: string = '';
+  protected query = '';
+  protected response = '';
 
   constructor(private readonly router: Router) {}
   
