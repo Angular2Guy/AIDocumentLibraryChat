@@ -18,6 +18,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { Router } from '@angular/router';
+import { McpServiceService } from '../service/mcp-service.service';
 
 @Component({
   selector: 'app-mcp-client',
@@ -36,14 +37,20 @@ export class McpClientComponent {
   protected query = '';
   protected response = '';
 
-  constructor(private readonly router: Router) {}
-  
+  constructor(private readonly router: Router, private readonly mcpService: McpServiceService) {}
+
   protected showList(): void {
     this.router.navigate(['/doclist']);
   }
 
   protected submitForm(): void {
     console.log(this.query);
+    this.mcpService.sendRequest({ question: this.query }).subscribe({
+      next: (response) => {
+        this.query = '';
+        this.response = response.answer;
+      }
+    });
   }
 
   protected logout(): void {
