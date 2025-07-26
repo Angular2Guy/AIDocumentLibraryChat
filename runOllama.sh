@@ -17,4 +17,5 @@ docker exec -it ollama ollama run stable-beluga:13b
 #docker exec -it ollama ollama run qwen2.5:14b
 #docker exec -it ollama ollama run llama3.2-vision:11b
 #docker exec -it ollama ollama run devstral:24b
+#docker exec -it ollama ollama run qwen3:32b
 #docker exec -it ollama bash

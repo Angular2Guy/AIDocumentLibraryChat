@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.ChatClient.Builder;
 import org.springframework.ai.mcp.SyncMcpToolCallbackProvider;
 import org.springframework.stereotype.Service;
 
@@ -28,9 +29,9 @@ public class LocalMcpClient {
     private final List<McpSyncClient> mcpSyncClients;   
     private final ChatClient chatClient; 
 
-    public LocalMcpClient(List<McpSyncClient> mcpSyncClients, ChatClient.Builder chatClientBuilder) {
+    public LocalMcpClient(List<McpSyncClient> mcpSyncClients, Builder builder) {
         this.mcpSyncClients = mcpSyncClients;
-        this.chatClient = chatClientBuilder.build();
+        this.chatClient = builder.build();
     }    
 
     public McpResponseDto createResponse(McpRequestDto requestDto) {
