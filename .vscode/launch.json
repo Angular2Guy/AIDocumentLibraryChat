@@ -3,7 +3,12 @@
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
-    "configurations": [                
+    "configurations": [                        
+        {            
+            "type": "jdk",
+            "request": "launch",
+            "name": "Launch Java"
+        },
         {
             "name": "Launch Java: Continuous Mode",
             "type": "jdk",
@@ -11,7 +16,7 @@
             "launchConfiguration": "Continuous Mode",            
         },
         {
-            "name": "Launch Java",
+            "name": "Launch Application",
             "type": "jdk",
             "request": "launch",
             "mainClass": "ch.xxx.aidoclibchat.AidocumentlibrarychatApplication",

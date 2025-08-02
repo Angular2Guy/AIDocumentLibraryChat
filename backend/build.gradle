@@ -37,7 +37,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.ai:spring-ai-starter-mcp-client'
-	implementation 'org.springframework.ai:spring-ai-starter-mcp-server-webmvc'
+	//implementation 'org.springframework.ai:spring-ai-starter-mcp-server-webmvc'
 	implementation 'org.springframework.ai:spring-ai-tika-document-reader'	
 	implementation 'org.liquibase:liquibase-core'
 	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv'
