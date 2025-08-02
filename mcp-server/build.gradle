@@ -40,7 +40,7 @@ dependencies {
 }
 
 bootJar {
-   archiveFileName = 'aidocumentlibrarychat.jar'
+   archiveFileName = 'mcp-server.jar'
 }
 
 tasks.named('test') {
