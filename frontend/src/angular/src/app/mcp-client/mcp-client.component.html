@@ -28,16 +28,16 @@
 <div class="my-input-container">
   <div class="my-textarea">
     <mat-form-field class="example-full-width">
-      <mat-label>Query about books or movies</mat-label>
-      <textarea matInput placeholder="Ask about books or movies." [(ngModel)]="query"></textarea>
+      <mat-label i18n="@@mcpSearchQueryHeading">Query about books or movies</mat-label>
+      <textarea matInput i18n-placeholder="@@mcpSearchQueryPlaceholder" placeholder="Ask about books or movies." [(ngModel)]="query" name="query"></textarea>
     </mat-form-field>
   </div>
   <div class="my-button">
-    <button matButton="filled" type="submit">Basic</button>    
+    <button matButton="filled" type="submit" i18n="@@search">Search</button>
   </div>
 </div>
 </form>
 <div>
-  <h2 i18n="@@responseHeading">Response</h2>
-  {{ response}}
+  <h3 i18n="@@responseHeading">Response</h3>
+  {{ response }}
 </div>
