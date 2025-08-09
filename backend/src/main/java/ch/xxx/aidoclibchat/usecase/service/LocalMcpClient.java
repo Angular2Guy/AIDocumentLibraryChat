@@ -17,6 +17,8 @@ import java.util.Optional;
 
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.ChatClient.Builder;
+import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
+import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.mcp.SyncMcpToolCallbackProvider;
 import org.springframework.stereotype.Service;
 
@@ -29,10 +31,10 @@ public class LocalMcpClient {
     private final List<McpSyncClient> mcpSyncClients;   
     private final ChatClient chatClient; 
 
-    public LocalMcpClient(List<McpSyncClient> mcpSyncClients, Builder builder) {
-        this.mcpSyncClients = mcpSyncClients;
-        this.chatClient = builder.build();
-    }    
+    public LocalMcpClient(List<McpSyncClient> mcpSyncClients, Builder builder, ChatModel chatModel) {
+        this.mcpSyncClients = mcpSyncClients;                   
+        this.chatClient = builder.defaultAdvisors(SimpleLoggerAdvisor.builder().build()).build();
+    }
 
     public McpResponseDto createResponse(McpRequestDto requestDto) {
         var result = this.chatClient.prompt(requestDto.question()).toolCallbacks(new SyncMcpToolCallbackProvider(mcpSyncClients)).call();
