@@ -29,11 +29,11 @@
   <div class="my-textarea">
     <mat-form-field class="example-full-width">
       <mat-label i18n="@@mcpSearchQueryHeading">Query about books or movies</mat-label>
-      <textarea matInput i18n-placeholder="@@mcpSearchQueryPlaceholder" placeholder="Ask about books or movies." [(ngModel)]="query" name="query"></textarea>
+      <textarea matInput i18n-placeholder="@@mcpSearchQueryPlaceholder" placeholder="Ask about books or movies." required [(ngModel)]="query" name="query"></textarea>
     </mat-form-field>
   </div>
   <div class="my-button">
-    <button matButton="filled" type="submit" i18n="@@search">Search</button>
+    <button matButton="filled" type="submit" i18n="@@search" [disabled]="!userForm.valid">Search</button>
   </div>
 </div>
 </form>
