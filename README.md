@@ -14,6 +14,9 @@ The project uses Spring Boot with Spring AI to access OpenAI and the vector data
 ### Ollama support
 Ollama is used to use locally run AI/LLM models. Ollama can be installed or run as a Docker image in a local machine. Ollama supports a library of AI/LLM models for different use cases. Models like LLava for image description, falcon for RAG based question answering, sqlcoder for Sql generation and mixtral for function calling can be used. Ollama can use GPUs if they are available and works on CPU without them. Spring AI has Ollama support that make the use similar to using an AI service. On current CPUs there are often performance issues. The CPU providers want to add AI engines to their CPUs in the future to solve these issues. 
 
+### Mcp Client and Server
+The project uses Spring Boot with Spring AI to add a Mcp Client to request book and movie information from a Mcp Server. Spring AI provides the support to configure the client in the chatclient. The Mcp Server is a Spring Boot application that provides the tool interfaces for the Mcp Client. It uses Sse to enable the deployment on a different system. With the Mcp protocol decouples the tool from the AI that makes the tools reusable. A Mcp Client can use Mcp Servers that are provided by external sources and lowers the implementation effort significantly.
+
 ### Image library search
 The project uses Spring Boot with Spring AI to question a image database that uses Postgresql with the PGVector extension and Ollama. The for the imported and resized images are descriptions generated with the LLava model that runs locally on Ollama. These descriptions are turned in Embeddings and are stored with the description in the vector database. The image and metadata is stored in the relational database. A question to the image database is turned in Embeddings and the vector database is queried for the nearest neighbor. The best matches are returned with image and description. The result is displayed in the frontend. This enables are new kind of image search that was not possible before AI/LLMs became usable. 
 
@@ -47,6 +50,7 @@ The project uses Spring AI to generate summaries of books. To generate the summa
 6. It displays the results of the questions to the image database.
 7. It generates tests for sources in public Github repositories
 8. It generates book summaries of epub of pdf books.
+9. It uses a Mcp Client and Server to show book and movie descriptions.
 
 ## Mission Statement
 The project shows howto use Spring AI to generate answers based on a provided set of documents with a link to the source. The Angular frontend provides the user interface for the backend and shows the responses. 
@@ -58,6 +62,8 @@ The project shows howto use Spring AI to generate Sql queries based on provided 
 The project shows howto use Spring AI to select a Rest interface to call and to provide the parameters for the Rest call. The Angular frontend provides the user interface to ask the question and to display the result of the Rest call.
 
 The project shows howto use Spring AI to create a image database that can be queried with natural language questions and returns the closest matching images with their descriptions.  
+
+The project shows howto use Spring AI to implement a Mcp Client and Server to show book and movie descriptions.
 
 Spring AI makes using OpenAI / Ollama services simple and useful and this project demonstrates that. 
 
