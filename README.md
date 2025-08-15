@@ -33,6 +33,7 @@ The project uses Spring AI to generate test classes. To do that the class to tes
 The project uses Spring AI to generate summaries of books. To generate the summaries the chapter headings and the heading after the last chapter have to be provided. Then summaries of the chapters in form of bullet points are generated. A book summary is created of the chapter summaries. 
 
 ## Articles
+* [A Spring AI Mcp Client/Server Analysis](https://angular2guy.wordpress.com/2025/08/15/a-spring-ai-mcp-client-server-analysis/)
 * [Fresh data for the AI with Spring AI Function calls](https://angular2guy.wordpress.com/2025/01/01/fresh-data-for-the-ai-with-spring-ai-function-calls/)
 * [Using Spring AI with LLMs to generate Java tests](https://angular2guy.wordpress.com/2024/07/15/using-spring-ai-with-llms-to-generate-code/)
 * [Questioning an Image Database with local AI/LLM on Ollama and Spring AI](https://angular2guy.wordpress.com/2024/05/17/questioning-an-image-database-with-ai-llm-and-spring-ai/)
