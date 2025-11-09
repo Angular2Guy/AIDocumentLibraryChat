@@ -21,7 +21,7 @@ version = '0.0.1-SNAPSHOT'
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(24)
+		languageVersion = JavaLanguageVersion.of(25)
 	}
 }
 
@@ -49,7 +49,7 @@ dependencies {
 	implementation 'org.springframework.ai:spring-ai-starter-model-ollama'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
-	testImplementation 'com.tngtech.archunit:archunit-junit5:1.4.0'
+	testImplementation 'com.tngtech.archunit:archunit-junit5:1.4.1'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
@@ -59,4 +59,18 @@ bootJar {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+// Ensure backend tasks wait for frontend
+
+tasks.named('processResources') {
+    dependsOn(':frontend:buildAngular')
+}
+
+tasks.named('classes') {
+    dependsOn(':frontend:buildAngular')
+}
+
+tasks.named('bootJar') {
+    dependsOn(':frontend:buildAngular')
 }

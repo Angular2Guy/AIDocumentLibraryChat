@@ -11,58 +11,89 @@
    limitations under the License.
  */
  plugins {
-	id 'java'	
+	id 'java'
 }
  
 group = 'ch.xxx'
 version = '0.0.1-SNAPSHOT'
 
 task cleanAngular {
-	if(project.hasProperty('withAngular')) {	
-		println('Task cleanAngular')	
-		delete('src/angular/node_modules')
-	}
+    onlyIf {
+        project.hasProperty('withAngular')
+    }
+    doLast {
+        println('Task cleanAngular')
+        delete('src/angular/node_modules')
+    }
+}
+
+task cleanDist {
+    onlyIf {
+        project.hasProperty('withAngular')
+    }
+    doLast {
+        delete('src/angular/dist')
+    }
+}
+
+task createDist {
+    onlyIf {
+        project.hasProperty('withAngular')
+    }
+    doLast {
+        mkdir('src/angular/dist')
+    }
+}
+
+task npmInstall(type: Exec) {
+    onlyIf {
+        project.hasProperty('withAngular')
+    }
+    workingDir = file('src/angular')
+    if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
+        commandLine 'npm.cmd', 'install'
+    } else {
+        commandLine 'npm', 'install'
+    }
+    dependsOn cleanAngular
+}
+
+task npmBuild(type: Exec) {
+    onlyIf {
+        project.hasProperty('withAngular')
+    }
+    workingDir = file('src/angular')
+    if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
+        commandLine 'npm.cmd', 'run', 'build'
+    } else {
+        commandLine 'npm', 'run', 'build'
+    }
+    dependsOn npmInstall, cleanDist, createDist
+}
+
+task testAngular(type: Exec) {
+    onlyIf {
+        project.hasProperty('withAngular')
+    }
+    workingDir = file('src/angular')
+    if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
+        commandLine 'npm.cmd', 'run', 'test'
+    } else {
+        if(project.hasProperty("useChromium")) {
+            commandLine 'npm', 'run', 'test-chromium'
+        } else {
+            commandLine 'npm', 'run', 'test'
+        }
+    }
+    dependsOn npmInstall
+    doFirst {
+        println("Running ${commandLine.join(' ')}")
+    }
 }
 
 task buildAngular {
-	if(project.hasProperty('withAngular')) {		
-		exec {
-			println('Task buildAngular - npm install')		
-			workingDir 'src/angular'
-			if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
-				commandLine('npm.cmd', 'install')
-			} else {
-				commandLine('npm', 'install')
-			}
-		}
-		exec {
-			println('Task buildAngular - npm run build')
-			workingDir 'src/angular'
-			if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
-				commandLine('npm.cmd', 'run', 'build')
-			} else {
-				commandLine('npm', 'run', 'build')
-			}		
-		}
-	}
+    dependsOn npmBuild, testAngular
 }
 
-task testAngular {
-	if(project.hasProperty('withAngular')) {		
-		exec {
-			workingDir 'src/angular'
-			if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
-				println('Task buildAngular - npm run test')		
-				commandLine('npm.cmd', 'run', 'test')
-			} else {
-				if(project.hasProperty("useChromium")) {
-					println('Task buildAngular - npm run test-chromium') 
-					commandLine('npm', 'run', 'test-chromium')
-				} else {
-					logger.info('Task buildAngular - npm run test')
-					commandLine('npm', 'run', 'test')
-				}
-			}
-		}
-	}
-}
+// Make sure the main build task depends on buildAngular
+build.dependsOn buildAngular
