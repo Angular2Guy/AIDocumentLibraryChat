@@ -31,11 +31,11 @@ repositories {
 }
 
 dependencies {
-	implementation platform("org.springframework.ai:spring-ai-bom:1.0.0")
+	implementation platform("org.springframework.ai:spring-ai-bom:1.1.0")
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'	
 	implementation 'org.springframework.ai:spring-ai-starter-mcp-server-webmvc'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'	
-	testImplementation 'com.tngtech.archunit:archunit-junit5:1.4.0'
+	testImplementation 'com.tngtech.archunit:archunit-junit5:1.4.1'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
