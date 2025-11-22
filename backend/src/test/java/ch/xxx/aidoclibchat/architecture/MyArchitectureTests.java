@@ -20,7 +20,6 @@ import java.util.regex.Pattern;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.web.reactive.error.DefaultErrorAttributes;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -91,7 +90,7 @@ public class MyArchitectureTests {
 	@Test
 	public void ruleExceptionsType() {
 		ArchRule exceptionType = ArchRuleDefinition.classes().that().resideInAPackage("..domain.exceptions..").should()
-				.beAssignableTo(RuntimeException.class).orShould().beAssignableTo(DefaultErrorAttributes.class);
+				.beAssignableTo(RuntimeException.class);
 		exceptionType.check(this.importedClasses);
 	}
 

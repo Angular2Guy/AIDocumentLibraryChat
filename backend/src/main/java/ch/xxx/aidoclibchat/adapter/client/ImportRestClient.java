@@ -12,7 +12,6 @@
  */
 package ch.xxx.aidoclibchat.adapter.client;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -33,6 +32,7 @@ import ch.xxx.aidoclibchat.domain.model.entity.Work;
 import ch.xxx.aidoclibchat.domain.model.entity.WorkLink;
 import ch.xxx.aidoclibchat.usecase.mapping.TableMapper;
 import tools.jackson.dataformat.csv.CsvMapper;
+import tools.jackson.dataformat.csv.CsvSchema;
 
 @Component
 public class ImportRestClient implements ImportClient {
@@ -56,12 +56,8 @@ public class ImportRestClient implements ImportClient {
 
 	private <T> List<T> mapString(String result, Class<T> myClass) {
 		List<T> zipcodes = List.of();
-		try {
-			zipcodes = this.csvMapper.readerFor(myClass).with(CsvSchema.builder().setUseHeader(true).build())
-					.<T>readValues(result).readAll();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		zipcodes = this.csvMapper.readerFor(myClass).with(CsvSchema.builder().setUseHeader(true).build())
+				.<T>readValues(result).readAll();
 		return zipcodes;
 	}
 
