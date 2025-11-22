@@ -33,6 +33,7 @@ repositories {
 dependencies {
 	implementation platform("org.springframework.ai:spring-ai-bom:1.1.0")
 	
+	implementation project(':frontend')
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-hateoas'
