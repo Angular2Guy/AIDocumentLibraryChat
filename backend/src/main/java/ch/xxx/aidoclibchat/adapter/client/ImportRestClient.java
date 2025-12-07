@@ -12,12 +12,14 @@
  */
 package ch.xxx.aidoclibchat.adapter.client;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import ch.xxx.aidoclibchat.domain.client.ImportClient;
@@ -57,10 +59,14 @@ public class ImportRestClient implements ImportClient {
 	}
 
 	private <T> List<T> mapString(String result, Class<T> myClass) {
-		List<T> zipcodes = List.of();
-		zipcodes = this.csvMapper.readerFor(myClass).with(CsvSchema.builder().setUseHeader(true).build())
-				.<T>readValues(result).readAll();
-		return zipcodes;
+                List<T> zipcodes = List.of();
+            try {
+                zipcodes = this.csvMapper.readerFor(myClass).with(CsvSchema.builder().setUseHeader(true).build())
+                        .<T>readValues(result).readAll();
+            } catch (IOException ex) {
+				throw new RuntimeException("Error mapping CSV data", ex);
+            }
+            return zipcodes;
 	}
 
 	@Override
