@@ -17,6 +17,9 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
+import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 import ch.xxx.aidoclibchat.domain.client.ImportClient;
 import ch.xxx.aidoclibchat.domain.model.dto.ArtistDto;
 import ch.xxx.aidoclibchat.domain.model.dto.MuseumDto;
@@ -31,8 +34,6 @@ import ch.xxx.aidoclibchat.domain.model.entity.Subject;
 import ch.xxx.aidoclibchat.domain.model.entity.Work;
 import ch.xxx.aidoclibchat.domain.model.entity.WorkLink;
 import ch.xxx.aidoclibchat.usecase.mapping.TableMapper;
-import tools.jackson.dataformat.csv.CsvMapper;
-import tools.jackson.dataformat.csv.CsvSchema;
 
 @Component
 public class ImportRestClient implements ImportClient {
@@ -40,10 +41,11 @@ public class ImportRestClient implements ImportClient {
 	private final TableMapper tableMapper;
 	private final RestClient restClient;
 
-	public ImportRestClient(TableMapper tableMapper, RestClient restClient, CsvMapper csvMapper) {
+	public ImportRestClient(TableMapper tableMapper, RestClient restClient) {
 		this.tableMapper = tableMapper;
 		this.restClient = restClient;
-		this.csvMapper = csvMapper;		
+		this.csvMapper = new CsvMapper();
+		this.csvMapper.registerModule(new JavaTimeModule());		
 	}
 
 	@Override
