@@ -23,13 +23,12 @@ import { McpServiceService } from '../service/mcp-service.service';
 @Component({
   selector: 'app-mcp-client',
   imports: [
-    CommonModule,
-		MatToolbarModule,
-		MatButtonModule,
-		MatInputModule,
-		MatFormFieldModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatInputModule,
+    MatFormFieldModule,
     FormsModule
-	],
+],
   templateUrl: './mcp-client.component.html',
   styleUrl: './mcp-client.component.scss'
 })
