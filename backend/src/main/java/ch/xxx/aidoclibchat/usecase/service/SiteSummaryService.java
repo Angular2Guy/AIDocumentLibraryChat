@@ -12,12 +12,29 @@
  */
 package ch.xxx.aidoclibchat.usecase.service;
 
+import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.ChatClient.Builder;
 import org.springframework.stereotype.Service;
+
+import ch.xxx.aidoclibchat.domain.model.dto.SiteSummaryDto;
 
 @Service
 public class SiteSummaryService {
-    public String getJokeAboutTopic(String topic) {
-        // Placeholder implementation
-        return "Why did the " + topic + " go to the party? Because it wanted to have a blast!";
+    private final ChatClient chatClient;
+
+	private final String promptStr = """
+			Tell me a joke about the following topic and put in in the summary property.
+
+			Topic:
+
+			""";
+
+    public SiteSummaryService(Builder builder) {
+        this.chatClient = builder.build();
+    }
+
+    public SiteSummaryDto getJokeAboutTopic(String topic) {
+        var result = this.chatClient.prompt(this.promptStr + topic).call().entity(SiteSummaryDto.class);
+        return result;
     }
 }

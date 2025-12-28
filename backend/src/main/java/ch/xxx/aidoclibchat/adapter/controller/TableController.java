@@ -28,8 +28,8 @@ import ch.xxx.aidoclibchat.usecase.service.TableService;
 @RestController
 @RequestMapping("rest/table")
 public class TableController {
-	private TableMapper tableMapper;
-	private TableService tableService;
+	private final TableMapper tableMapper;
+	private final TableService tableService;
 
 	public TableController(TableMapper tableMapper, TableService tableService) {
 		this.tableMapper = tableMapper;
