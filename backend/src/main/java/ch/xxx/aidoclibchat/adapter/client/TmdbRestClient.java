@@ -23,6 +23,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.xxx.aidoclibchat.domain.client.TmdbClient;
+import tools.jackson.databind.json.JsonMapper;
 
 @Component
 public class TmdbRestClient implements TmdbClient {
@@ -57,12 +58,7 @@ public class TmdbRestClient implements TmdbClient {
     }
 
     private static String toJson(Object obj) {
-        var result = "";
-        try {
-            result = new ObjectMapper().writeValueAsString(obj);
-        } catch (JsonProcessingException e) {
-            LOG.error("Error converting object to JSON", e);            
-        }
+        var result = new JsonMapper().writeValueAsString(obj);
         return result;
     }
 

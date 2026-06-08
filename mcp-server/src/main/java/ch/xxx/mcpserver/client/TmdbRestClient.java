@@ -18,11 +18,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import ch.xxx.mcpserver.client.external.TmdbClient;
+import tools.jackson.databind.json.JsonMapper;
 
 @Component
 public class TmdbRestClient implements TmdbClient {
@@ -57,12 +54,7 @@ public class TmdbRestClient implements TmdbClient {
     }
 
     private static String toJson(Object obj) {
-        var result = "";
-        try {
-            result = new ObjectMapper().writeValueAsString(obj);
-        } catch (JsonProcessingException e) {
-            LOG.error("Error converting object to JSON", e);            
-        }
+        var result = new JsonMapper().writeValueAsString(obj);
         return result;
     }
 
