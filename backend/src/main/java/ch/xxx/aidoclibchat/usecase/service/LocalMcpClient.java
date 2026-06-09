@@ -20,6 +20,7 @@ import org.springframework.ai.chat.client.ChatClient.Builder;
 import org.springframework.ai.chat.client.advisor.ChatModelCallAdvisor;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.mcp.SyncMcpToolCallbackProvider;
+import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.stereotype.Service;
 
 import ch.xxx.aidoclibchat.domain.model.dto.McpRequestDto;
@@ -28,17 +29,15 @@ import io.modelcontextprotocol.client.McpSyncClient;
 
 @Service
 public class LocalMcpClient {
-    private final List<McpSyncClient> mcpSyncClients;   
-    private final ChatClient chatClient; 
+    private final ChatClient chatClient;
 
-    public LocalMcpClient(List<McpSyncClient> mcpSyncClients, Builder builder, ChatModel chatModel) {
-        this.mcpSyncClients = mcpSyncClients;        
-        var advisor = ChatModelCallAdvisor.builder().chatModel(chatModel).build();        
-        this.chatClient = builder.defaultAdvisors(List.of(advisor)).build();
+    public LocalMcpClient(Builder builder, ChatModel chatModel, ToolCallbackProvider tools) {
+        var advisor = ChatModelCallAdvisor.builder().chatModel(chatModel).build();
+        this.chatClient = builder.defaultTools(tools).defaultAdvisors(List.of(advisor)).build();
     }
 
     public McpResponseDto createResponse(McpRequestDto requestDto) {
-        var result = this.chatClient.prompt(requestDto.question()).toolCallbacks(new SyncMcpToolCallbackProvider(mcpSyncClients)).call();
+        var result = this.chatClient.prompt(requestDto.question()).call();
         var resultText = Optional.ofNullable(result.chatResponse()).stream().map(value -> value.getResult().getOutput().getText()).findFirst().orElse("");
         var toolCalls = Optional.ofNullable(result.chatResponse()).stream().map(value -> value.getResult().getOutput().getToolCalls()).findFirst().orElse(List.of());
         var responseDto = new McpResponseDto(resultText, toolCalls);
