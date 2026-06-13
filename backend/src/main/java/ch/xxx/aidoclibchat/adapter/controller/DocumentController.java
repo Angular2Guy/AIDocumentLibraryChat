@@ -25,10 +25,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import ch.xxx.aidoclibchat.domain.model.dto.BookDto;
 import ch.xxx.aidoclibchat.domain.model.dto.ChapterHeading;
 import ch.xxx.aidoclibchat.domain.model.dto.DocumentDto;
@@ -38,6 +34,8 @@ import ch.xxx.aidoclibchat.domain.utils.Utils;
 import ch.xxx.aidoclibchat.usecase.mapping.BookMapper;
 import ch.xxx.aidoclibchat.usecase.mapping.DocumentMapper;
 import ch.xxx.aidoclibchat.usecase.service.DocumentService;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.json.JsonMapper;
 
 @RestController
 @RequestMapping("rest/document")
@@ -45,13 +43,13 @@ public class DocumentController {
 	private final DocumentMapper documentMapper;
 	private final DocumentService documentService;
 	private final BookMapper bookMapper;
-	private final ObjectMapper objectMapper;
+	private final JsonMapper jsonMapper;
 
-	public DocumentController(DocumentMapper documentMapper, DocumentService documentService, BookMapper bookMapper, ObjectMapper objectMapper) {
+	public DocumentController(DocumentMapper documentMapper, DocumentService documentService, BookMapper bookMapper, JsonMapper jsonMapper) {
 		this.documentMapper = documentMapper;
 		this.documentService = documentService;
 		this.bookMapper = bookMapper;
-		this.objectMapper = objectMapper;
+		this.jsonMapper = jsonMapper;
 	}
 
 	@PostMapping("/upload")
@@ -64,11 +62,7 @@ public class DocumentController {
 	public BookDto handleBookUpload(@RequestParam("book") MultipartFile bookFile,
 			@RequestParam("chapters") String chaptersStr) {
 		List<ChapterHeading> chapters;
-		try {
-			chapters = this.objectMapper.readValue(chaptersStr, new TypeReference<List<ChapterHeading>>() {});
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
-		}
+			chapters = this.jsonMapper.readValue(chaptersStr, new TypeReference<List<ChapterHeading>>() {});
 		var book = this.documentService.storeBook(this.bookMapper.toEntity(bookFile), chapters);
 		this.documentService.addBookSummaries(book);
 		return BookMapper.toDto(book);

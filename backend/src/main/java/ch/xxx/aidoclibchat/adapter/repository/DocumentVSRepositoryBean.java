@@ -34,25 +34,25 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pgvector.PGvector;
 
 import ch.xxx.aidoclibchat.domain.common.MetaData;
 import ch.xxx.aidoclibchat.domain.common.MetaData.DataType;
 import ch.xxx.aidoclibchat.domain.model.entity.DocumentVsRepository;
+import tools.jackson.databind.json.JsonMapper;
 
 @Repository
 public class DocumentVSRepositoryBean implements DocumentVsRepository {
 	private final String vectorTableName;
 	private final VectorStore vectorStore;
 	private final JdbcTemplate jdbcTemplate;
-	private final ObjectMapper objectMapper;
+	private final JsonMapper jsonMapper;
 	private final FilterExpressionConverter filterExpressionConverter;
 
 	public DocumentVSRepositoryBean(JdbcTemplate jdbcTemplate, @Qualifier("embeddingModel") EmbeddingModel embeddingClient,
-			ObjectMapper objectMapper) {
+			JsonMapper jsonMapper) {
 		this.jdbcTemplate = jdbcTemplate;
-		this.objectMapper = objectMapper;
+		this.jsonMapper = jsonMapper;
 		this.vectorStore = PgVectorStore.builder(jdbcTemplate, embeddingClient).build();
 		this.filterExpressionConverter = ((PgVectorStore) this.vectorStore).filterExpressionConverter;
 		this.vectorTableName = PgVectorStore.DEFAULT_TABLE_NAME;
@@ -95,7 +95,7 @@ public class DocumentVSRepositoryBean implements DocumentVsRepository {
 
 		return this.jdbcTemplate.query(
 				String.format("SELECT * FROM %s %s LIMIT ? ", this.vectorTableName, jsonPathFilter),
-				new DocumentRowMapper(this.objectMapper), 100000);
+				new DocumentRowMapper(this.jsonMapper), 100000);
 	}
 
 	@Override
@@ -113,10 +113,10 @@ public class DocumentVSRepositoryBean implements DocumentVsRepository {
 
 		private static final String COLUMN_CONTENT = "content";
 
-		private final ObjectMapper objectMapper;
+		private final JsonMapper jsonMapper;
 
-		public DocumentRowMapper(ObjectMapper objectMapper) {
-			this.objectMapper = objectMapper;
+		public DocumentRowMapper(JsonMapper jsonMapper) {
+			this.jsonMapper = jsonMapper;
 		}
 
 		@Override
@@ -129,9 +129,7 @@ public class DocumentVSRepositoryBean implements DocumentVsRepository {
 			Map<String, Object> metadata = toMap(pgMetadata);
 			metadata.put(COLUMN_EMBEDDING, this.toDoubleArray(embedding));
 
-			Document document = new Document(id, content, metadata);
-
-			return document;
+            return new Document(id, content, metadata);
 		}
 
 		private float[] toDoubleArray(PGobject embedding) throws SQLException {
@@ -142,12 +140,8 @@ public class DocumentVSRepositoryBean implements DocumentVsRepository {
 		private Map<String, Object> toMap(PGobject pgObject) {
 
 			String source = pgObject.getValue();
-			try {
-				return (Map<String, Object>) objectMapper.readValue(source, Map.class);
-			} catch (JsonProcessingException e) {
-				throw new RuntimeException(e);
-			}
-		}
+            return (Map<String, Object>) jsonMapper.readValue(source, Map.class);
+        }
 	}
 
 }

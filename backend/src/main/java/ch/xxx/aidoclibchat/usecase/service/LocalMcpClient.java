@@ -31,9 +31,14 @@ import io.modelcontextprotocol.client.McpSyncClient;
 public class LocalMcpClient {
     private final ChatClient chatClient;
 
-    public LocalMcpClient(Builder builder, ChatModel chatModel, ToolCallbackProvider tools) {
+    public LocalMcpClient(Builder builder, ChatModel chatModel,
+                          //ToolCallbackProvider tools,
+                          List<McpSyncClient> mcpClients) {
         var advisor = ChatModelCallAdvisor.builder().chatModel(chatModel).build();
-        this.chatClient = builder.defaultTools(tools).defaultAdvisors(List.of(advisor)).build();
+        var mcpToolProvider = SyncMcpToolCallbackProvider.builder()
+                .mcpClients(mcpClients)
+                .build();
+        this.chatClient = builder.defaultTools(mcpToolProvider).defaultAdvisors(List.of(advisor)).build();
     }
 
     public McpResponseDto createResponse(McpRequestDto requestDto) {

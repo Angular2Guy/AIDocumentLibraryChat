@@ -12,12 +12,32 @@
  */
  plugins {
 	id 'java'
+    id "com.github.node-gradle.node" version "7.0.2"
 }
  
 group = 'ch.xxx'
 version = '0.0.1-SNAPSHOT'
 
-task cleanAngular {
+node {
+    version = '22.16.0'
+    npmVersion = '10.9.2' // Gewünschte NPM Version
+    download = true // Lädt Node/NPM automatisch herunter
+    nodeProjectDir = file("${project.projectDir}/src/angular")
+}
+
+tasks.register('npmInstallCustom', NpmTask) {
+    onlyIf { project.hasProperty('withAngular') }
+
+    // Das Plugin weiß durch 'nodeProjectDir' bereits, wo es laufen muss.
+    // Du musst hier nur noch die Argumente übergeben:
+    args = ['install']
+
+    // Stellt sicher, dass Node/NPM vor der Ausführung heruntergeladen werden
+    dependsOn 'nodeSetup', 'npmSetup'
+    dependsOn 'cleanAngular'
+}
+
+tasks.register('cleanAngular') {
     onlyIf {
         project.hasProperty('withAngular')
     }
@@ -27,7 +47,7 @@ task cleanAngular {
     }
 }
 
-task cleanDist {
+tasks.register('cleanDist') {
     onlyIf {
         project.hasProperty('withAngular')
     }
@@ -36,7 +56,7 @@ task cleanDist {
     }
 }
 
-task createDist {
+tasks.register('createDist') {
     onlyIf {
         project.hasProperty('withAngular')
     }
@@ -45,53 +65,30 @@ task createDist {
     }
 }
 
-task npmInstall(type: Exec) {
+tasks.register('npmBuild', NpmTask) {
     onlyIf {
         project.hasProperty('withAngular')
     }
-    workingDir = file('src/angular')
-    if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
-        commandLine 'npm.cmd', 'install'
-    } else {
-        commandLine 'npm', 'install'
-    }
-    dependsOn cleanAngular
+
+    args = ['run', 'build']
+
+    dependsOn 'npmInstall', 'cleanDist', 'createDist'
 }
 
-task npmBuild(type: Exec) {
+tasks.register('testAngular', NpmTask) {
     onlyIf {
         project.hasProperty('withAngular')
     }
-    workingDir = file('src/angular')
-    if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
-        commandLine 'npm.cmd', 'run', 'build'
+    if (project.hasProperty("useChromium")) {
+        args = ['run', 'test-chromium']
     } else {
-        commandLine 'npm', 'run', 'build'
+        args = ['run', 'test']
     }
-    dependsOn npmInstall, cleanDist, createDist
+
+    dependsOn 'npmBuild'
 }
 
-task testAngular(type: Exec) {
-    onlyIf {
-        project.hasProperty('withAngular')
-    }
-    workingDir = file('src/angular')
-    if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
-        commandLine 'npm.cmd', 'run', 'test'
-    } else {
-        if(project.hasProperty("useChromium")) {
-            commandLine 'npm', 'run', 'test-chromium'
-        } else {
-            commandLine 'npm', 'run', 'test'
-        }
-    }
-    dependsOn npmInstall
-    doFirst {
-        println("Running ${commandLine.join(' ')}")
-    }
-}
-
-task buildAngular {
+tasks.register('buildAngular') {
     dependsOn npmBuild, testAngular
 }
 

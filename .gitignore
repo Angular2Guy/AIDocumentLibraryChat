@@ -21,3 +21,4 @@ gradle-app.setting
 .classpath
 /.settings/
 /.idea/
+/log/starter-webmvc-server.log
