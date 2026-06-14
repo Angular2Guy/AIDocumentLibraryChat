@@ -11,12 +11,12 @@
    limitations under the License.
  */
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import {MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { Router } from '@angular/router';
 import { McpServiceService } from '../service/mcp-service.service';
 
@@ -27,16 +27,20 @@ import { McpServiceService } from '../service/mcp-service.service';
     MatButtonModule,
     MatInputModule,
     MatFormFieldModule,
-    FormsModule
-],
+    FormsModule,
+  ],
   templateUrl: './mcp-client.component.html',
-  styleUrl: './mcp-client.component.scss'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './mcp-client.component.scss',
 })
 export class McpClientComponent {
   protected query = '';
   protected response = '';
 
-  constructor(private readonly router: Router, private readonly mcpService: McpServiceService) {}
+  constructor(
+    private readonly router: Router,
+    private readonly mcpService: McpServiceService,
+  ) {}
 
   protected showList(): void {
     this.router.navigate(['/doclist']);
@@ -48,10 +52,9 @@ export class McpClientComponent {
       next: (response) => {
         this.query = '';
         this.response = response.answer;
-      }
+      },
     });
   }
 
-  protected logout(): void {
-  }
+  protected logout(): void {}
 }

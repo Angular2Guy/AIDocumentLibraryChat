@@ -10,7 +10,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Component, DestroyRef, Inject, inject } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  Inject,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 import {
   MAT_DIALOG_DATA,
@@ -30,18 +36,19 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 export interface DocImportData {}
 
 @Component({
-    selector: 'app-docimport',
-    imports: [
+  selector: 'app-docimport',
+  imports: [
     MatFormFieldModule,
     MatDialogModule,
     MatButtonModule,
     MatInputModule,
     MatIconModule,
     FormsModule,
-    MatProgressSpinnerModule
-],
-    templateUrl: './doc-import.component.html',
-    styleUrls: ['./doc-import.component.scss']
+    MatProgressSpinnerModule,
+  ],
+  templateUrl: './doc-import.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrls: ['./doc-import.component.scss'],
 })
 export class DocImportComponent {
   protected file: File | null = null;
@@ -51,7 +58,7 @@ export class DocImportComponent {
   constructor(
     private dialogRef: MatDialogRef<DocImportComponent>,
     @Inject(MAT_DIALOG_DATA) private data: DocImportComponent,
-    private documentService: DocumentService
+    private documentService: DocumentService,
   ) {}
 
   protected onFileInputChange($event: Event): void {
@@ -72,7 +79,7 @@ export class DocImportComponent {
           tap(() => {
             this.uploading = true;
           }),
-          takeUntilDestroyed(this.destroyRef)
+          takeUntilDestroyed(this.destroyRef),
         )
         .subscribe((result) => {
           this.uploading = false;

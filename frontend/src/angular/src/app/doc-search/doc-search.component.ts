@@ -10,7 +10,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Component, DestroyRef } from '@angular/core';
+import { Component, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -37,21 +37,22 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Subscription, interval, of } from 'rxjs';
 
 @Component({
-    selector: 'app-doc-search',
-    imports: [
-        CommonModule,
-        MatToolbarModule,
-        MatButtonModule,
-        MatTableModule,
-        MatInputModule,
-        MatFormFieldModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatProgressSpinnerModule,
-        MatRadioModule,
-    ],
-    templateUrl: './doc-search.component.html',
-    styleUrls: ['./doc-search.component.scss']
+  selector: 'app-doc-search',
+  imports: [
+    CommonModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatTableModule,
+    MatInputModule,
+    MatFormFieldModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatProgressSpinnerModule,
+    MatRadioModule,
+  ],
+  templateUrl: './doc-search.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrls: ['./doc-search.component.scss'],
 })
 export class DocSearchComponent {
   protected searchValueControl = new FormControl('', [
@@ -71,7 +72,7 @@ export class DocSearchComponent {
   constructor(
     private destroyRef: DestroyRef,
     private router: Router,
-    private documentService: DocumentService
+    private documentService: DocumentService,
   ) {}
 
   protected showList(): void {
@@ -88,10 +89,10 @@ export class DocSearchComponent {
     this.repeatSub = interval(100)
       .pipe(
         map(() => new Date()),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(
-        (newDate) => (this.msWorking = newDate.getTime() - startDate.getTime())
+        (newDate) => (this.msWorking = newDate.getTime() - startDate.getTime()),
       );
     const documentSearch = {
       searchString: this.searchValueControl.value,
@@ -113,7 +114,7 @@ export class DocSearchComponent {
             resultStrings: [],
             searchString: '',
           } as DocumentSearchResult);
-        })
+        }),
       )
       .subscribe((result) => {
         this.searchResult = result;

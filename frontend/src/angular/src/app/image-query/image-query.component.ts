@@ -10,7 +10,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Component, DestroyRef } from '@angular/core';
+import { Component, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatInputModule } from '@angular/material/input';
@@ -30,18 +30,19 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
-    selector: 'app-image-query',
-    imports: [
-        CommonModule,
-        MatProgressSpinnerModule,
-        MatInputModule,
-        MatButtonModule,
-		MatIconModule,
-        ReactiveFormsModule,
-        MatToolbarModule,
-    ],
-    templateUrl: './image-query.component.html',
-    styleUrl: './image-query.component.scss'
+  selector: 'app-image-query',
+  imports: [
+    CommonModule,
+    MatProgressSpinnerModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    ReactiveFormsModule,
+    MatToolbarModule,
+  ],
+  templateUrl: './image-query.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './image-query.component.scss',
 })
 export class ImageQueryComponent {
   //'What do you see in the image? Describe the background. Describe the colors.'
@@ -49,12 +50,12 @@ export class ImageQueryComponent {
     file: new FormControl<File | null>(null, Validators.required),
     prompt: new FormControl<string>(
       'What do you see in the image? Describe the background. Describe the colors.',
-      Validators.compose([Validators.required, Validators.minLength(3)])
+      Validators.compose([Validators.required, Validators.minLength(3)]),
     ),
   });
   protected queryControl = new FormControl<string>(
     '',
-    Validators.compose([Validators.required, Validators.minLength(3)])
+    Validators.compose([Validators.required, Validators.minLength(3)]),
   );
   protected uploading = false;
   protected result: ImageFile | null = null;
@@ -66,16 +67,16 @@ export class ImageQueryComponent {
   constructor(
     private imageService: ImageService,
     private destroyRef: DestroyRef,
-    private router: Router
+    private router: Router,
   ) {}
 
-  protected onFileInputChange($event: Event): void {    
-	this.result = null;
+  protected onFileInputChange($event: Event): void {
+    this.result = null;
     const files = !$event.target
       ? null
       : ($event.target as HTMLInputElement).files;
     this.imageForm.controls.file.setValue(
-      !!files && files.length > 0 ? files[0] : null
+      !!files && files.length > 0 ? files[0] : null,
     );
   }
 
@@ -106,16 +107,16 @@ export class ImageQueryComponent {
       .subscribe(
         (myResults) =>
           (this.results = myResults.map(
-            (myResult) => (myResult = this.createImageUrl(myResult))
-          ))
+            (myResult) => (myResult = this.createImageUrl(myResult)),
+          )),
       );
   }
 
   protected reset(): void {
-	this.result = null;
-	this.imageForm.controls['file'].reset();
+    this.result = null;
+    this.imageForm.controls['file'].reset();
   }
-  
+
   protected upload(): void {
     //console.log(this.file);
     if (!!this.imageForm.controls.file.value) {
@@ -127,22 +128,22 @@ export class ImageQueryComponent {
       this.repeatSub = interval(100)
         .pipe(
           map(() => new Date()),
-          takeUntilDestroyed(this.destroyRef)
+          takeUntilDestroyed(this.destroyRef),
         )
         .subscribe(
           (newDate) =>
-            (this.msWorking = newDate.getTime() - startDate.getTime())
+            (this.msWorking = newDate.getTime() - startDate.getTime()),
         );
       const formData = new FormData();
       const myFile = this.imageForm.controls.file.value;
       formData.append('file', myFile as Blob, myFile?.name as string);
       formData.append(
         'query',
-        this.imageForm.controls.prompt.value as unknown as string
+        this.imageForm.controls.prompt.value as unknown as string,
       );
       formData.append(
         'type',
-        (this.imageForm.controls.file.value as unknown as File)?.type
+        (this.imageForm.controls.file.value as unknown as File)?.type,
       );
       //console.log(formData);
       //console.log(this.imageForm.controls.file.value);
@@ -153,7 +154,7 @@ export class ImageQueryComponent {
           tap(() => {
             this.uploading = true;
           }),
-          takeUntilDestroyed(this.destroyRef)
+          takeUntilDestroyed(this.destroyRef),
         )
         .subscribe((result) => {
           this.uploading = false;

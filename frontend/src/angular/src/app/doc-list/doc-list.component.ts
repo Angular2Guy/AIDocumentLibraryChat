@@ -10,16 +10,19 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { DocumentFile } from '../model/document-file';
-import {
-  MatDialog,
-  MatDialogModule,
-} from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DocImportComponent } from '../doc-import/doc-import.component';
 import { DocImportData } from '../doc-import/doc-import.component';
 import { DocumentService } from '../service/document.service';
@@ -27,15 +30,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 
 @Component({
-    selector: 'app-doclist',
-    imports: [
-    MatToolbarModule,
-    MatButtonModule,
-    MatTableModule,
-    MatDialogModule
-],
-    templateUrl: './doc-list.component.html',
-    styleUrls: ['./doc-list.component.scss']
+  selector: 'app-doclist',
+  imports: [MatToolbarModule, MatButtonModule, MatTableModule, MatDialogModule],
+  templateUrl: './doc-list.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrls: ['./doc-list.component.scss'],
 })
 export class DocListComponent implements OnInit {
   protected displayedColumns: string[] = [
@@ -50,7 +49,7 @@ export class DocListComponent implements OnInit {
   constructor(
     private dialog: MatDialog,
     private documentService: DocumentService,
-    private router: Router
+    private router: Router,
   ) {}
 
   public ngOnInit(): void {
@@ -65,9 +64,9 @@ export class DocListComponent implements OnInit {
   }
 
   protected bookSummary(): void {
-	this.router.navigate(['/booklist']);
+    this.router.navigate(['/booklist']);
   }
-  
+
   protected search(): void {
     this.router.navigate(['/docsearch']);
   }

@@ -10,7 +10,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-import { Component, DestroyRef } from '@angular/core';
+import { Component, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableService } from '../service/table.service';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -32,21 +32,22 @@ import { TableSearch } from '../model/table-search';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
-    selector: 'app-table-search',
-    imports: [
-        CommonModule,
-        MatToolbarModule,
-        MatButtonModule,
-        MatTableModule,
-        MatInputModule,
-        MatTooltipModule,
-        MatFormFieldModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatProgressSpinnerModule,
-    ],
-    templateUrl: './table-search.component.html',
-    styleUrl: './table-search.component.scss'
+  selector: 'app-table-search',
+  imports: [
+    CommonModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatTableModule,
+    MatInputModule,
+    MatTooltipModule,
+    MatFormFieldModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatProgressSpinnerModule,
+  ],
+  templateUrl: './table-search.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './table-search.component.scss',
 })
 export class TableSearchComponent {
   protected searchValueControl = new FormControl('', [
@@ -66,7 +67,7 @@ export class TableSearchComponent {
   constructor(
     private destroyRef: DestroyRef,
     private router: Router,
-    private tableService: TableService
+    private tableService: TableService,
   ) {}
 
   protected search(): void {
@@ -79,10 +80,10 @@ export class TableSearchComponent {
     this.repeatSub = interval(100)
       .pipe(
         map(() => new Date()),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(
-        (newDate) => (this.msWorking = newDate.getTime() - startDate.getTime())
+        (newDate) => (this.msWorking = newDate.getTime() - startDate.getTime()),
       );
     this.searchResult = {
       question: this.searchValueControl.value,
@@ -104,7 +105,7 @@ export class TableSearchComponent {
             resultAmount: 0,
             resultList: [],
           } as TableSearch);
-        })
+        }),
       )
       .subscribe((result) => {
         this.searchResult = result;
