@@ -57,7 +57,6 @@ public class ImageService {
 	private final DocumentVsRepository documentVsRepository;
 	@Value("${image.result-size:20}")
 	private Long resultSize;
-	//private final String systemPrompt = "You are a helpful assistent searching image descriptions.";
 
 	private record ResultData(String answer, ImageQueryDto imageQueryDto) {
 	}
