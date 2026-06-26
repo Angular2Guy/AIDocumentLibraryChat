@@ -34,7 +34,7 @@ public class SiteSummaryService {
     }
 
     public SiteSummaryDto getJokeAboutTopic(String topic) {
-        var result = this.chatClient.prompt(this.promptStr + topic).call().entity(SiteSummaryDto.class);
+        var result = this.chatClient.prompt(this.promptStr + topic).call().entity(SiteSummaryDto.class, spec -> spec.validateSchema());
         return result;
     }
 }

@@ -87,7 +87,7 @@ public class FunctionService {
 	private FunctionResult functionCallJson(String question) {
 		var result = this.chatClient.prompt().user(this.promptStr + question).tools(FunctionConfig.OPEN_LIBRARY_CLIENT)
 				.call().entity(new ParameterizedTypeReference<List<JsonResult>>() {
-				});
+				}, spec -> spec.validateSchema());
 		return new FunctionResult(null, result);
 	}
 }
