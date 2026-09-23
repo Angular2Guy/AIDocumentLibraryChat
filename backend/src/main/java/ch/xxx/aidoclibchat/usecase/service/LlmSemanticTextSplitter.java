@@ -20,6 +20,7 @@ import org.springframework.ai.document.DocumentTransformer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class LlmSemanticTextSplitter implements DocumentTransformer {
@@ -56,7 +57,9 @@ public class LlmSemanticTextSplitter implements DocumentTransformer {
         Prompt prompt = new Prompt(List.of(systemMessage, userMessage));
 
         // 2. Call the LLM
-        String taggedText = chatModel.call(prompt).getResult().getOutput().getText();
+        String taggedText = Optional.ofNullable(chatModel.call(prompt).getResult()).stream()
+                .map(value -> Optional.ofNullable(value.getOutput().getText()).orElse(""))
+                .findFirst().orElse("");
 
         // 3. Clean up potential markdown formatting the LLM might have wrapped around the response
         if (taggedText.startsWith("```") && taggedText.endsWith("```")) {

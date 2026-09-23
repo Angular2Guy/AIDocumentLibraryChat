@@ -99,6 +99,7 @@ public class DocumentService {
 	private Integer documentTokenLimit;
 	@Value("${spring.profiles.active:}")
 	private String activeProfile;
+	private Integer documentWordLimit;
 
 	public DocumentService(DocumentRepository documentRepository, DocumentVsRepository documentVsRepository,
 			ChatClient.Builder builder, BookRepository bookRepository, ChapterRepository chapterRepository) {
@@ -112,6 +113,8 @@ public class DocumentService {
 	@PostConstruct
 	public void init() {
 		LOGGER.info("Profile: {}", this.activeProfile);
+		this.documentWordLimit = Long.valueOf(Math.round(this.documentTokenLimit * 0.7)).intValue();
+		LOGGER.info("Documents word limit: {}", this.documentWordLimit);
 	}
 
 	public Book storeBook(Book book, List<ChapterHeading> chapterHeadings) {
