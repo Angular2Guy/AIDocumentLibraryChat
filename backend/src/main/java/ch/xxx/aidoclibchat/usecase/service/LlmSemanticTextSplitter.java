@@ -17,12 +17,14 @@ import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.document.DocumentTransformer;
+import org.springframework.stereotype.Component;
+
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Component
 public class LlmSemanticTextSplitter implements DocumentTransformer {
 
     private final ChatModel chatModel;

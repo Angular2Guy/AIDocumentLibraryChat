@@ -15,13 +15,7 @@ package ch.xxx.aidoclibchat.usecase.service;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.StringTokenizer;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -32,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
+import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
 import org.springframework.ai.reader.tika.TikaDocumentReader;
 import org.springframework.beans.factory.annotation.Value;
@@ -63,6 +58,7 @@ public class DocumentService {
 	private final BookRepository bookRepository;
 	private final ChapterRepository chapterRepository;
 	private final ChatClient chatClient;
+	private final LlmSemanticTextSplitter llmSemanticTextSplitter;
 	private final String systemPrompt = """
 			You're assisting with questions about documents in a catalog.\n
 			Use the information from the DOCUMENTS section to provide accurate answers.\n
@@ -102,12 +98,14 @@ public class DocumentService {
 	private Integer documentWordLimit;
 
 	public DocumentService(DocumentRepository documentRepository, DocumentVsRepository documentVsRepository,
-			ChatClient.Builder builder, BookRepository bookRepository, ChapterRepository chapterRepository) {
+						   LlmSemanticTextSplitter llmSemanticTextSplitter, ChatClient.Builder builder,
+						   BookRepository bookRepository, ChapterRepository chapterRepository) {
 		this.documentRepository = documentRepository;
 		this.documentVsRepository = documentVsRepository;
 		this.chatClient = builder.build();
 		this.bookRepository = bookRepository;
 		this.chapterRepository = chapterRepository;
+		this.llmSemanticTextSplitter = llmSemanticTextSplitter;
 	}
 
 	@PostConstruct
@@ -119,7 +117,7 @@ public class DocumentService {
 
 	public Book storeBook(Book book, List<ChapterHeading> chapterHeadings) {
 		var tikaText = new TikaDocumentReader(new ByteArrayResource(book.getBookFile())).get().stream()
-				.map(document -> document.getFormattedContent()).collect(Collectors.joining("")).lines().toList();
+				.map(org.springframework.ai.document.Document::getFormattedContent).collect(Collectors.joining("")).lines().toList();
 		book.setTitle(tikaText.stream().filter(myLine -> myLine.contains("Title:"))
 				.map(myLine -> myLine.replace("Title:", "").trim()).findFirst().orElse("Unknown"));
 		book.setAuthor(tikaText.stream().filter(myLine -> myLine.contains("Author:"))
@@ -190,8 +188,10 @@ public class DocumentService {
 		var tikaDocuments = new TikaDocumentReader(new ByteArrayResource(document.getDocumentContent())).get();
 		record TikaDocumentAndContent(org.springframework.ai.document.Document document, String content) {
 		}
-		var aiDocuments = tikaDocuments.stream()
-				.flatMap(myDocument1 -> this.splitStringToTokenLimit(myDocument1.getText(), embeddingTokenLimit)
+		var aiDocumentsChunks = tikaDocuments.stream()
+				.flatMap(myDocument1 -> this.splitStringToTokenLimit(Optional.ofNullable(myDocument1).stream()
+								.map(org.springframework.ai.document.Document::getText).filter(Objects::nonNull).findFirst().orElse(""),
+								this.documentWordLimit)
 						.stream().map(myStr -> new TikaDocumentAndContent(myDocument1, myStr)))
 				.map(myTikaRecord -> new org.springframework.ai.document.Document(myTikaRecord.content(),
 						myTikaRecord.document().getMetadata()))
@@ -199,6 +199,8 @@ public class DocumentService {
 				.peek(myDocument1 -> myDocument1.getMetadata().put(MetaData.DATATYPE,
 						MetaData.DataType.DOCUMENT.toString()))
 				.toList();
+
+		var aiDocuments = this.llmSemanticTextSplitter.transform(aiDocumentsChunks);
 
 		LOGGER.info("Name: {}, size: {}, chunks: {}", document.getDocumentName(), document.getDocumentContent().length,
 				aiDocuments.size());
@@ -254,9 +256,9 @@ public class DocumentService {
 	private Message getSystemMessage(List<org.springframework.ai.document.Document> similarDocuments, int tokenLimit,
 			String prompt) {
 		String documentStr = this.cutStringToTokenLimit(
-				similarDocuments.stream().map(entry -> entry.getText())				
+				similarDocuments.stream().map(org.springframework.ai.document.Document::getText)
 				.filter(Predicate.not(Objects::isNull))
-						.filter(Predicate.not(String::isBlank)).collect(Collectors.joining("\n")),
+						.filter(Predicate.not(String::isBlank)).collect(Collectors.joining(System.lineSeparator())),
 				tokenLimit);
 		SystemPromptTemplate systemPromptTemplate = this.activeProfile.contains("ollama")
 				? new SystemPromptTemplate(this.ollamaPrompt)
@@ -266,20 +268,23 @@ public class DocumentService {
 	}
 
 	private List<String> splitStringToTokenLimit(String documentStr, int tokenLimit) {
-		List<String> splitStrings = new ArrayList<>();
-		var tokens = new StringTokenizer(documentStr).countTokens();
-		var chunks = Math.ceilDiv(tokens, tokenLimit);
-		if (chunks == 0) {
-			return splitStrings;
+		List<String> chunks = new ArrayList<>();
+		var paragraphs = Arrays.stream(documentStr.split(System.lineSeparator()))
+				.filter(s -> !s.trim().isEmpty()).toList();
+		var chunkWords = 0;
+		var chunk = "";
+		for(String paragraph : paragraphs) {
+			chunkWords += new StringTokenizer(chunk, " -.;,").countTokens();
+			var paragraphWords = new StringTokenizer(paragraph, " -.;,").countTokens();
+			if(chunkWords + paragraphWords + 1 > documentWordLimit) {
+				chunks.add(chunk);
+				chunk = "";
+				chunkWords = 0;
+			}
+			chunk += paragraph + System.lineSeparator();
+			chunkWords += paragraphWords;
 		}
-		var chunkSize = Math.ceilDiv(documentStr.length(), chunks);
-		var myDocumentStr = new String(documentStr);
-		while (!myDocumentStr.isBlank()) {
-			splitStrings
-					.add(myDocumentStr.length() > chunkSize ? myDocumentStr.substring(0, chunkSize) : myDocumentStr);
-			myDocumentStr = myDocumentStr.length() > chunkSize ? myDocumentStr.substring(chunkSize) : "";
-		}
-		return splitStrings;
+		return chunks;
 	}
 
 	private String cutStringToTokenLimit(String documentStr, int tokenLimit) {
