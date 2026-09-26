@@ -19,15 +19,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-//@Configuration
+@Configuration
 public class EmbeddingConfig {
 
     @Bean
     public EmbeddingModel embeddingModel() throws Exception {
         // 1. Raw ONNX Modell laden
         TransformersEmbeddingModel onnxModel = new TransformersEmbeddingModel();
-        onnxModel.setTokenizerResource("classpath:/models/tokenizer.json");
-        onnxModel.setModelResource("classpath:/models/model.onnx");
         onnxModel.afterPropertiesSet();
 
         // 2. Mit unserem 2000er-Slicer dekorieren

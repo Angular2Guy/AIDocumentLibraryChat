@@ -12,6 +12,7 @@
  */
 package ch.xxx.aidoclibchat.adapter.config;
 
+import org.jspecify.annotations.NullMarked;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.embedding.Embedding;
 import org.springframework.ai.embedding.EmbeddingModel;
@@ -31,6 +32,7 @@ public class Qwen3TruncatingEmbeddingModel implements EmbeddingModel {
     }
 
     @Override
+    @NullMarked
     public EmbeddingResponse call(EmbeddingRequest request) {
         EmbeddingResponse response = this.delegate.call(request);
 
@@ -47,11 +49,13 @@ public class Qwen3TruncatingEmbeddingModel implements EmbeddingModel {
     }
 
     @Override
+    @NullMarked
     public float[] embed(Document document) {
         return truncateAndNormalize(this.delegate.embed(document));
     }
 
     @Override
+    @NullMarked
     public float[] embed(String text) {
         return truncateAndNormalize(this.delegate.embed(text));
     }
