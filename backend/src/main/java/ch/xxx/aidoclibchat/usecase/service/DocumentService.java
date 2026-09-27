@@ -27,7 +27,6 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.api.Advisor;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
-import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
 import org.springframework.ai.rag.advisor.RetrievalAugmentationAdvisor;
 import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
@@ -196,9 +195,8 @@ public class DocumentService {
 		record TikaDocumentAndContent(org.springframework.ai.document.Document document, String content) {
 		}
 		var aiDocumentsChunks = tikaDocuments.stream()
-				.flatMap(myDocument1 -> this.splitStringToTokenLimit(Optional.ofNullable(myDocument1).stream()
-								.map(org.springframework.ai.document.Document::getText).filter(Objects::nonNull).findFirst().orElse(""),
-								this.documentWordLimit)
+				.flatMap(myDocument1 -> this.splitStringToWordLimit(Optional.ofNullable(myDocument1).stream()
+								.map(org.springframework.ai.document.Document::getText).filter(Objects::nonNull).findFirst().orElse(""))
 						.stream().map(myStr -> new TikaDocumentAndContent(myDocument1, myStr)))
 				.map(myTikaRecord -> new org.springframework.ai.document.Document(myTikaRecord.content(),
 						myTikaRecord.document().getMetadata()))
@@ -233,10 +231,10 @@ public class DocumentService {
 				.toList();
 		Message systemMessage = switch (searchDto.getSearchType()) {
 		case SearchDto.SearchType.DOCUMENT ->
-			this.getSystemMessage(documentChunks, this.documentTokenLimit, searchDto.getSearchString());
+			this.getSystemMessage(documentChunks, this.documentWordLimit, searchDto.getSearchString());
 		case SearchDto.SearchType.PARAGRAPH ->
-			this.getSystemMessage(mostSimilar.stream().toList(), this.documentTokenLimit, searchDto.getSearchString());
-		default -> this.getSystemMessage(documentChunks, this.documentTokenLimit, searchDto.getSearchString());
+			this.getSystemMessage(mostSimilar.stream().toList(), this.documentWordLimit, searchDto.getSearchString());
+		default -> this.getSystemMessage(documentChunks, this.documentWordLimit, searchDto.getSearchString());
 		};
 		UserMessage userMessage = this.activeProfile.contains("ollama") ? new UserMessage(systemMessage.getText())
 				: new UserMessage(searchDto.getSearchString());
@@ -262,19 +260,19 @@ public class DocumentService {
 		return new AiDocumentResult(searchDto.getSearchString(), response.getResults(), documents);
 	}
 
-	private Advisor createRagAdvisor(DataType dataType) {
+	private Advisor createRagAdvisor(DataType dataType, int topK) {
 		var advisor = RetrievalAugmentationAdvisor.builder().documentRetriever(VectorStoreDocumentRetriever.builder()
-				.vectorStore(this.vectorStore).filterExpression(new Filter.Expression(Filter.ExpressionType.EQ, new Filter.Key(MetaData.DATATYPE), new Filter.Value(dataType.toString()))).build()).build();
+				.vectorStore(this.vectorStore).topK(topK).filterExpression(new Filter.Expression(Filter.ExpressionType.EQ, new Filter.Key(MetaData.DATATYPE), new Filter.Value(dataType.toString()))).build()).build();
 		return advisor;
 	}
 
-	private Message getSystemMessage(List<org.springframework.ai.document.Document> similarDocuments, int tokenLimit,
+	private Message getSystemMessage(List<org.springframework.ai.document.Document> similarDocuments, int wordLimit,
 			String prompt) {
-		String documentStr = this.cutStringToTokenLimit(
+		String documentStr = this.cutStringToWordLimit(
 				similarDocuments.stream().map(org.springframework.ai.document.Document::getText)
 				.filter(Predicate.not(Objects::isNull))
 						.filter(Predicate.not(String::isBlank)).collect(Collectors.joining(System.lineSeparator())),
-				tokenLimit);
+				 wordLimit);
 		SystemPromptTemplate systemPromptTemplate = this.activeProfile.contains("ollama")
 				? new SystemPromptTemplate(this.ollamaPrompt)
 				: new SystemPromptTemplate(this.systemPrompt);
@@ -282,7 +280,7 @@ public class DocumentService {
 		return systemMessage;
 	}
 
-	private List<String> splitStringToTokenLimit(String documentStr, int tokenLimit) {
+	private List<String> splitStringToWordLimit(String documentStr) {
 		List<String> chunks = new ArrayList<>();
 		var paragraphs = Arrays.stream(documentStr.split(System.lineSeparator()))
 				.filter(s -> !s.trim().isEmpty()).toList();
@@ -302,9 +300,9 @@ public class DocumentService {
 		return chunks;
 	}
 
-	private String cutStringToTokenLimit(String documentStr, int tokenLimit) {
+	private String cutStringToWordLimit(String documentStr, int wordLimit) {
 		String cutString = new String(documentStr);
-		while (tokenLimit < new StringTokenizer(cutString, " -.;,").countTokens()) {
+		while (wordLimit < new StringTokenizer(cutString, " -.;,").countTokens()) {
 			cutString = cutString.length() > 100 ? cutString.substring(0, cutString.length() - 100) : "";
 		}
 		return cutString;
