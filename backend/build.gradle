@@ -47,6 +47,7 @@ dependencies {
     implementation 'org.springframework.ai:spring-ai-starter-vector-store-pgvector'
     implementation 'org.springframework.ai:spring-ai-tika-document-reader'
     implementation 'org.springframework.ai:spring-ai-vector-store-advisor'
+    implementation 'org.springframework.ai:spring-ai-rag'
 
 	implementation 'net.javacrumbs.shedlock:shedlock-spring:6.0.1'
 	implementation 'net.javacrumbs.shedlock:shedlock-provider-jdbc-template:6.0.1'	

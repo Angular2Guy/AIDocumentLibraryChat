@@ -24,11 +24,16 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.api.Advisor;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
+import org.springframework.ai.rag.advisor.RetrievalAugmentationAdvisor;
+import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
 import org.springframework.ai.reader.tika.TikaDocumentReader;
+import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.ai.vectorstore.filter.Filter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.scheduling.annotation.Async;
@@ -59,6 +64,7 @@ public class DocumentService {
 	private final ChapterRepository chapterRepository;
 	private final ChatClient chatClient;
 	private final LlmSemanticTextSplitter llmSemanticTextSplitter;
+	private final VectorStore vectorStore;
 	private final String systemPrompt = """
 			You're assisting with questions about documents in a catalog.\n
 			Use the information from the DOCUMENTS section to provide accurate answers.\n
@@ -99,13 +105,14 @@ public class DocumentService {
 
 	public DocumentService(DocumentRepository documentRepository, DocumentVsRepository documentVsRepository,
 						   LlmSemanticTextSplitter llmSemanticTextSplitter, ChatClient.Builder builder,
-						   BookRepository bookRepository, ChapterRepository chapterRepository) {
+						   BookRepository bookRepository, ChapterRepository chapterRepository,VectorStore vectorStore) {
 		this.documentRepository = documentRepository;
 		this.documentVsRepository = documentVsRepository;
 		this.chatClient = builder.build();
 		this.bookRepository = bookRepository;
 		this.chapterRepository = chapterRepository;
 		this.llmSemanticTextSplitter = llmSemanticTextSplitter;
+		this.vectorStore = vectorStore;
 	}
 
 	@PostConstruct
@@ -235,14 +242,16 @@ public class DocumentService {
 				: new UserMessage(searchDto.getSearchString());
 		LocalDateTime start = LocalDateTime.now();
 		var response = chatClient.prompt().system(s -> s.text(systemMessage.getText()))
-				.user(u -> u.text(userMessage.getText())).call().chatResponse();
+				.user(u -> u.text(userMessage.getText()))
+				//.advisors(this.createRagAdvisor(DataType.DOCUMENT))
+				.call().chatResponse();
 		LOGGER.info("AI response time: {}ms",
 				ZonedDateTime.of(LocalDateTime.now(), ZoneId.systemDefault()).toInstant().toEpochMilli()
 						- ZonedDateTime.of(start, ZoneId.systemDefault()).toInstant().toEpochMilli());
 		var documents = mostSimilar.stream().map(myGen -> myGen.getMetadata().get(MetaData.ID))
 				.filter(myId -> Optional.ofNullable(myId).stream().allMatch(myId1 -> (myId1 instanceof String)))
 				.map(myId -> Long.parseLong(((String) myId))).map(this.documentRepository::findById)
-				.filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
+				.flatMap(Optional::stream).collect(Collectors.toList());
 		var docIds = mostSimilarDocs.stream()
 				.filter(myDoc -> !mostSimilar.stream().anyMatch(
 						myDoc1 -> myDoc1.getMetadata().get(MetaData.ID).equals(myDoc.getMetadata().get(MetaData.ID))))
@@ -251,6 +260,12 @@ public class DocumentService {
 		documents.addAll(this.documentRepository.findAllById(docIds));
 
 		return new AiDocumentResult(searchDto.getSearchString(), response.getResults(), documents);
+	}
+
+	private Advisor createRagAdvisor(DataType dataType) {
+		var advisor = RetrievalAugmentationAdvisor.builder().documentRetriever(VectorStoreDocumentRetriever.builder()
+				.vectorStore(this.vectorStore).filterExpression(new Filter.Expression(Filter.ExpressionType.EQ, new Filter.Key(MetaData.DATATYPE), new Filter.Value(dataType.toString()))).build()).build();
+		return advisor;
 	}
 
 	private Message getSystemMessage(List<org.springframework.ai.document.Document> similarDocuments, int tokenLimit,
