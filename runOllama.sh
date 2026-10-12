@@ -7,4 +7,5 @@ docker stop ollama
 #docker exec -it ollama ollama run llama3.2-vision:11b
 #docker exec -it ollama ollama run devstral:24b
 #docker exec -it ollama ollama run qwen3.8:27b
+#docker exec -it ollama ollama run hf.co/openjev/openjev-GGUF:Q6_K
 #docker exec -it ollama bash
