@@ -12,48 +12,76 @@
  */
 package ch.xxx.aidoclibchat.adapter.controller;
 
+import ch.xxx.aidoclibchat.domain.model.dto.ClassificationRow;
+import ch.xxx.aidoclibchat.domain.model.dto.TextClassificationResult;
+import ch.xxx.aidoclibchat.usecase.service.TextClassificationService;
+import org.jspecify.annotations.NonNull;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import tools.jackson.databind.MappingIterator;
+import tools.jackson.dataformat.csv.CsvMapper;
+import tools.jackson.dataformat.csv.CsvSchema;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 @RestController
 @RequestMapping("rest/text-classification")
 public class TextClassificationController {
+    private final TextClassificationService textClassificationService;
+    private final CsvMapper mapper = new CsvMapper();
 
-
-    @PostMapping("/classify")
-    public long classify(@RequestParam("file") MultipartFile archive) {
-        var csv = extractCsvString(archive);
-
-        return 0;
+    public TextClassificationController(TextClassificationService textClassificationService) {
+        this.textClassificationService = textClassificationService;
     }
 
-    private static String extractCsvString(MultipartFile archive) {
-        String csv = "";
-        try {
-            var zis = new ZipInputStream(archive.getInputStream());
-            byte[] buffer = new byte[4096];
-            StringBuilder sb = new StringBuilder();
-            for(ZipEntry ze = zis.getNextEntry();ze != null;ze = zis.getNextEntry()) {
-                if(ze.isDirectory()) {
-                    continue;
-                } else if(ze.getName().endsWith(".zip")) {
-                    int len;
-                    while((len = zis.read(buffer)) > 0) {
-                        sb = sb.append(new String(buffer, 0, len));
-                    }
+    @PostMapping("/classify")
+    public TextClassificationResult classify(@RequestParam("file") MultipartFile archive) {
+        var rows = createClassificationRows(archive);
+        return new TextClassificationResult(this.textClassificationService.classify(rows));
+    }
 
-                }
+    private @NonNull ArrayList<ClassificationRow> createClassificationRows(MultipartFile archive) {
+        var rows = new ArrayList<ClassificationRow>();
+        try(var inputStream = extractInputStream(archive)) {
+            CsvSchema schema = CsvSchema.emptySchema().withHeader();
+            try (MappingIterator<ClassificationRow> it = mapper
+                    .readerFor(ClassificationRow.class).with(schema).readValues(inputStream)) {
+                rows.addAll(it.readAll());
             }
-            csv = sb.toString();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return csv;
+        return rows;
+    }
+
+    private static InputStream extractInputStream(MultipartFile archive) throws IOException {
+        var inputStream = new ByteArrayInputStream(new byte[0]);
+        try(var outputStream = new ByteArrayOutputStream()) {
+            try (var zis = new ZipInputStream(archive.getInputStream())) {
+                byte[] buffer = new byte[4096];
+                StringBuilder sb = new StringBuilder();
+                for (ZipEntry ze = zis.getNextEntry(); ze != null; ze = zis.getNextEntry()) {
+                    if (ze.isDirectory()) {
+                        continue;
+                    } else if (ze.getName().endsWith(".zip")) {
+                        int len;
+                        while ((len = zis.read(buffer)) > 0) {
+                            outputStream.write(buffer, 0, len);
+                        }
+                    }
+                }
+                inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+            }
+        }
+        return inputStream;
     }
 }
