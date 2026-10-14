@@ -13,7 +13,7 @@
 package ch.xxx.aidoclibchat.adapter.controller;
 
 import ch.xxx.aidoclibchat.domain.model.dto.ClassificationRow;
-import ch.xxx.aidoclibchat.domain.model.dto.TextClassificationResult;
+import ch.xxx.aidoclibchat.domain.model.dto.ClassificationSummary;
 import ch.xxx.aidoclibchat.usecase.service.TextClassificationService;
 import org.jspecify.annotations.NonNull;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,9 +44,9 @@ public class TextClassificationController {
     }
 
     @PostMapping("/classify")
-    public TextClassificationResult classify(@RequestParam("file") MultipartFile archive) {
+    public ClassificationSummary classify(@RequestParam("file") MultipartFile archive) {
         var rows = createClassificationRows(archive);
-        return new TextClassificationResult(this.textClassificationService.classify(rows));
+        return this.textClassificationService.classify(rows);
     }
 
     private @NonNull ArrayList<ClassificationRow> createClassificationRows(MultipartFile archive) {
@@ -68,7 +68,6 @@ public class TextClassificationController {
         try(var outputStream = new ByteArrayOutputStream()) {
             try (var zis = new ZipInputStream(archive.getInputStream())) {
                 byte[] buffer = new byte[4096];
-                StringBuilder sb = new StringBuilder();
                 for (ZipEntry ze = zis.getNextEntry(); ze != null; ze = zis.getNextEntry()) {
                     if (ze.isDirectory()) {
                         continue;

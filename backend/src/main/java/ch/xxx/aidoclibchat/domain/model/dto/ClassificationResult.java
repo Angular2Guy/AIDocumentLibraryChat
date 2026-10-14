@@ -12,5 +12,5 @@
  */
 package ch.xxx.aidoclibchat.domain.model.dto;
 
-public record ClassificationResult(String label, Integer provided, Integer found) {
+public record ClassificationResult(String label, Integer provided, Integer found, Double score, String text) {
 }
