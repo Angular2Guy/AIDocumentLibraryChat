@@ -21,18 +21,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Gatherer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class TextClassificationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(TextClassificationService.class);
     private final ChatClient chatClient;
 
-    private final String promptStr = """
+    private static final String PROMPT_STR = """
             You are a strict text classification API. Your task is to analyze the user text and classify it into exactly one of these categories:
                            - Politics (Content related to government, elections, policy, laws)
                            - Sport (Content related to athletics, sports teams, tournaments, or athletes)
@@ -51,35 +51,18 @@ public class TextClassificationService {
 
     public ClassificationSummary classify(List<ClassificationRow> rows) {
         var results = rows.stream().map(this::createResult).toList();
-        //var summary = results.stream().gather()
-        return new ClassificationSummary(List.of(), results);
+        var classifiedMap = results.stream().collect(Collectors.groupingBy(ClassificationResult::provided, Collectors.mapping(value -> value, Collectors.toList())));
+        var summaries = classifiedMap.values().stream().filter(List::isEmpty)
+                .flatMap(classificationResultList -> Stream.of(createResult(classificationResultList))).toList();
+        return new ClassificationSummary(summaries, results);
     }
-/*
-    public static <T> Gatherer<T, List<T>, List<T>> batchBy() {
-        return Gatherer.ofSequential(
-                // 1. Initializer: Create the local buffer
-                ArrayList::new,
 
-                // 2. Integrator: Consume upcoming elements
-                (List<T> state, T element, Gatherer.Downstream<List<T>> downstream) -> {
-                    state.add(element);
-                    if (state.size() == batchSize) {
-                        List<T> fullBatch = List.copyOf(state);
-                        state.clear(); // reset local buffer
-                        return downstream.push(fullBatch); // push downstream & check if we should continue
-                    }
-                    return true; // continue stream processing
-                },
-
-                // 3. Finisher: Handle remaining dangling items when the source closes
-                (List<T> state, Gatherer.Downstream<List<T>> downstream) -> {
-                    if (!state.isEmpty()) {
-                        downstream.push(List.copyOf(state));
-                    }
-                }
-        );
+    private static @NonNull ClassificationResult createResult(List<ClassificationResult> classifiedList) {
+        return new ClassificationResult(classifiedList.getFirst().label(), classifiedList.size(),
+                Long.valueOf(classifiedList.stream().filter(value -> value.provided().equals(value.found())).count()).intValue(),
+                classifiedList.stream().map(ClassificationResult::score).reduce(0.0D, Double::sum) / classifiedList.size(), "");
     }
-*/
+
     private @NonNull ClassificationResult createResult(ClassificationRow row) {
         record ModelClassificationResult(String category, Double confidenceScore) {
             private static final Map<String, Integer> SCHEMAS = Map.of(
@@ -94,7 +77,7 @@ public class TextClassificationService {
                 return SCHEMAS.getOrDefault(category, -1);
             }
         }
-        var resultOpt = Optional.ofNullable(this.chatClient.prompt().system(promptStr).user(row.text())
+        var resultOpt = Optional.ofNullable(this.chatClient.prompt().system(PROMPT_STR).user(row.text())
                 .call().entity(ModelClassificationResult.class, ChatClient.EntityParamSpec::validateSchema));
         return new ClassificationResult(resultOpt.stream().map(ModelClassificationResult::category).findFirst().orElse("NoMatch"),
                 Integer.parseInt(row.label()),
