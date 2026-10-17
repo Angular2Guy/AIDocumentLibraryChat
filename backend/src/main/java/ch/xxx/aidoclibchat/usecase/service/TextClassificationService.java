@@ -45,8 +45,8 @@ public class TextClassificationService {
                            Additionally, provide a 'confidenceScore' field as a floating-point number between 0.0 and 1.0, representing how confident you are in your assignment.
             """;
 
-    public TextClassificationService(ChatClient chatClient) {
-        this.chatClient = chatClient;
+    public TextClassificationService(ChatClient.Builder builder) {
+        this.chatClient = builder.build();
     }
 
     public ClassificationSummary classify(List<ClassificationRow> rows) {

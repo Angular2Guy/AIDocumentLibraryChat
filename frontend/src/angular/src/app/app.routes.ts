@@ -46,5 +46,9 @@ export const routes: Routes = [
     path: 'mcpclient',
     loadChildren: () => import('./mcp-client').then((mod) => mod.MCPCLIENTSEARCH),
   },
+  {
+    path: 'textclassification',
+    loadChildren: () => import('./text-classification').then((mod) => mod.TEXTCLASSIFICATION),
+  },
   { path: '**', redirectTo: 'doclist' },
 ];
