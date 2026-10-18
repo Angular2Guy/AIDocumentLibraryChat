@@ -1,1 +1,26 @@
-<p>text-classification works!</p>
+<mat-toolbar color="primary" class="custom-toolbar">
+  <div class="toolbar-content">
+    <div i18n="@@textClassificationHeading">Text Classification</div>
+    <div class="example-fill-remaining-space"></div>
+    <div>
+      <button
+        mat-flat-button
+        color="primary"
+        (click)="docList()"
+        i18n="@@documentList"
+      >
+        Booklist
+      </button>
+    </div>
+    <div>
+      <button
+        mat-flat-button
+        color="primary"
+        (click)="logout()"
+        i18n="@@logout"
+      >
+        Logout
+      </button>
+    </div>
+  </div>
+</mat-toolbar>
