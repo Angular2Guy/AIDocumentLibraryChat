@@ -15,16 +15,12 @@ import {Router} from "@angular/router";
 import {MatIconModule} from "@angular/material/icon";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatButtonModule} from "@angular/material/button";
-import {FormArray, FormGroup, ReactiveFormsModule} from "@angular/forms";
+import {ReactiveFormsModule} from "@angular/forms";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
-import {ChapterHeading} from "../model/book";
+import {ClassificationService, ClassificationSummary} from "../service/classification.service";
 import {tap} from "rxjs";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
-
-interface ClassificationSummary {
-
-}
 
 @Component({
   selector: 'app-text-classification',
@@ -41,6 +37,7 @@ interface ClassificationSummary {
 export class TextClassificationComponent {
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
+  private classificationService = inject(ClassificationService);
   private readonly noFileName = "No file uploaded";
   protected filename = signal(this.noFileName);
   protected importFile = signal<Blob | null>(null);
@@ -65,9 +62,7 @@ export class TextClassificationComponent {
   if(!!this.importFile()) {
     const formData = new FormData();
     formData.append('file', (this.importFile() as Blob));
-/*
-    this.documentService
-      .postBookForm(formData)
+    this.classificationService.postFile(formData)
       .pipe(
         tap(() => {
           this.uploading.set(true);
@@ -78,7 +73,6 @@ export class TextClassificationComponent {
         this.uploading.set(false);
         this.result.set(result);
       });
- */
   }
 }
 }
