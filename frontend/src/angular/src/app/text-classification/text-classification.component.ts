@@ -21,10 +21,12 @@ import {MatInputModule} from "@angular/material/input";
 import {ClassificationService, ClassificationSummary} from "../service/classification.service";
 import {tap} from "rxjs";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
+import {JsonPipe} from "@angular/common";
 
 @Component({
   selector: 'app-text-classification',
   imports: [
+    JsonPipe,
     MatIconModule,
     MatToolbarModule,
     MatButtonModule,
