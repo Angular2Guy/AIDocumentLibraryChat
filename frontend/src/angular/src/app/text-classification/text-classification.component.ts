@@ -10,14 +10,21 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-import {Component, inject} from '@angular/core';
+import {Component, DestroyRef, inject, signal} from '@angular/core';
 import {Router} from "@angular/router";
 import {MatIconModule} from "@angular/material/icon";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatButtonModule} from "@angular/material/button";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormArray, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
+import {ChapterHeading} from "../model/book";
+import {tap} from "rxjs";
+import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
+
+interface ClassificationSummary {
+
+}
 
 @Component({
   selector: 'app-text-classification',
@@ -33,6 +40,12 @@ import {MatInputModule} from "@angular/material/input";
 })
 export class TextClassificationComponent {
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
+  private readonly noFileName = "No file uploaded";
+  protected filename = signal(this.noFileName);
+  protected importFile = signal<Blob | null>(null);
+  protected uploading = signal<boolean>(false);
+  protected result = signal<ClassificationSummary | null>(null);
 
   protected docList(): void {
     this.router.navigate(['doclist']);
@@ -41,4 +54,31 @@ export class TextClassificationComponent {
   protected logout(): void {
     console.log('logout');
   }
+
+  protected onFileSelected($event: Event): void {
+  const files = !$event.target
+    ? null
+    : ($event.target as HTMLInputElement).files;
+  this.filename.set(!!files && files.length > 0 ? files[0].name : this.noFileName)
+    this.importFile.set(!!files && files.length > 0 ? files[0] : null);
+
+  if(!!this.importFile()) {
+    const formData = new FormData();
+    formData.append('file', (this.importFile() as Blob));
+/*
+    this.documentService
+      .postBookForm(formData)
+      .pipe(
+        tap(() => {
+          this.uploading.set(true);
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((result) => {
+        this.uploading.set(false);
+        this.result.set(result);
+      });
+ */
+  }
+}
 }
