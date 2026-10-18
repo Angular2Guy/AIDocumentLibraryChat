@@ -21,6 +21,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -76,9 +78,14 @@ public class TextClassificationService {
             public Integer getClassIndex() {
                 return SCHEMAS.getOrDefault(category, -1);
             }
+            public String getCategory(Integer id) {
+                return SCHEMAS.entrySet().stream().filter(entry -> id.equals(entry.getValue())).map(Map.Entry::getKey).findFirst().orElse("NoMatch");
+            }
         }
+        var start = LocalDateTime.now();
         var resultOpt = Optional.ofNullable(this.chatClient.prompt().system(PROMPT_STR).user(row.text())
                 .call().entity(ModelClassificationResult.class, ChatClient.EntityParamSpec::validateSchema));
+        LOGGER.info(String.format("Run for %,d ms",Duration.between(start, LocalDateTime.now()).toMillis())+" - "+ resultOpt.map(value -> "Row category: "+value.getCategory(Integer.parseInt(row.label()))+" - "+value.toString()).orElse("Optional.empty()"));
         return new ClassificationResult(resultOpt.stream().map(ModelClassificationResult::category).findFirst().orElse("NoMatch"),
                 Integer.parseInt(row.label()),
                 resultOpt.stream().map(ModelClassificationResult::getClassIndex).findFirst().orElse(-1),

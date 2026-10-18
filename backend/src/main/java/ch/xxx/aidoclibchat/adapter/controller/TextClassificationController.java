@@ -71,7 +71,7 @@ public class TextClassificationController {
                 for (ZipEntry ze = zis.getNextEntry(); ze != null; ze = zis.getNextEntry()) {
                     if (ze.isDirectory()) {
                         continue;
-                    } else if (ze.getName().endsWith(".zip")) {
+                    } else if (ze.getName().endsWith(".csv")) {
                         int len;
                         while ((len = zis.read(buffer)) > 0) {
                             outputStream.write(buffer, 0, len);

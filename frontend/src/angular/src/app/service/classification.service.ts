@@ -23,6 +23,6 @@ export class ClassificationService {
   private httpClient = inject(HttpClient);
 
   public postFile(formData: FormData): Observable<ClassificationSummary> {
-    return this.httpClient.post<ClassificationSummary>('api/classifications', formData);
+    return this.httpClient.post<ClassificationSummary>('rest/text-classification/classify', formData);
   }
 }
