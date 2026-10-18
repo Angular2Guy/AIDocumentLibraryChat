@@ -63,6 +63,10 @@ export class DocListComponent implements OnInit {
       .subscribe((result) => (this.documents = result));
   }
 
+  protected classification(): void {
+    this.router.navigate(['/textclassification']);
+  }
+
   protected bookSummary(): void {
     this.router.navigate(['/booklist']);
   }
