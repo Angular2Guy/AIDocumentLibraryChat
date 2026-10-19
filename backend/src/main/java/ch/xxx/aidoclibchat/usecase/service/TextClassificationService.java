@@ -47,6 +47,31 @@ public class TextClassificationService {
                            Additionally, provide a 'confidenceScore' field as a floating-point number between 0.0 and 1.0, representing how confident you are in your assignment.
             """;
 
+    private static final String PROMPT_JSON = """
+    {
+  "model": "openjev",
+  "state": "%s",
+  "questions": {
+    "category":   {"type": "choice", "instructions": "You are a strict text classification API. Your task is to analyze the user text and classify it into exactly one of these categories.",
+                "criteria": {
+                "Politics": "Content related to government, elections, policy, laws", 
+                "Sport": "Content related to athletics, sports teams, tournaments, or athletes", 
+                "Technology": "Content related to software, hardware, AI, internet, or gadgets",
+                "Entertainment": "Content related to movies, music, celebrities, TV, art",
+                "Business": "Content related to companies, markets, finance, trade, or corporate news"
+                }},    
+    "confidenceScore": {"type": "score",  "instructions": "Provide a score as a floating-point number between 0.0 and 1.0, representing how confident you are in your assignment of the category.",
+                "criteria": [ 
+                    "Politics: Content related to government, elections, policy, laws", 
+                "Sport: Content related to athletics, sports teams, tournaments, or athletes", 
+                "Technology: Content related to software, hardware, AI, internet, or gadgets",
+                "Entertainment: Content related to movies, music, celebrities, TV, art",
+                "Business: Content related to companies, markets, finance, trade, or corporate news"
+                ]}
+  }
+}
+""";
+
     public TextClassificationService(ChatClient.Builder builder) {
         this.chatClient = builder.build();
     }
@@ -56,6 +81,7 @@ public class TextClassificationService {
         var classifiedMap = results.stream().collect(Collectors.groupingBy(ClassificationResult::provided, Collectors.mapping(value -> value, Collectors.toList())));
         var summaries = classifiedMap.values().stream().filter(List::isEmpty)
                 .flatMap(classificationResultList -> Stream.of(createResult(classificationResultList))).toList();
+        LOGGER.info(new ClassificationSummary(summaries, List.of()).toString());
         return new ClassificationSummary(summaries, results);
     }
 
@@ -83,7 +109,7 @@ public class TextClassificationService {
             }
         }
         var start = LocalDateTime.now();
-        var resultOpt = Optional.ofNullable(this.chatClient.prompt().system(PROMPT_STR).user(row.text())
+        var resultOpt = Optional.ofNullable(this.chatClient.prompt().system(PROMPT_JSON).user(row.text())
                 .call().entity(ModelClassificationResult.class, ChatClient.EntityParamSpec::validateSchema));
         LOGGER.info(String.format("Run for %,d ms",Duration.between(start, LocalDateTime.now()).toMillis())+" - "+ resultOpt.map(value -> "Row category: "+value.getCategory(Integer.parseInt(row.label()))+" - "+value.toString()).orElse("Optional.empty()"));
         return new ClassificationResult(resultOpt.stream().map(ModelClassificationResult::category).findFirst().orElse("NoMatch"),
