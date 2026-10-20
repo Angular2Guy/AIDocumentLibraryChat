@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -79,10 +80,10 @@ public class TextClassificationService {
     public ClassificationSummary classify(List<ClassificationRow> rows) {
         var results = rows.stream().map(this::createResult).toList();
         var classifiedMap = results.stream().collect(Collectors.groupingBy(ClassificationResult::provided, Collectors.mapping(value -> value, Collectors.toList())));
-        var summaries = classifiedMap.values().stream().filter(List::isEmpty)
+        var summaries = classifiedMap.values().stream().filter(Predicate.not(List::isEmpty))
                 .flatMap(classificationResultList -> Stream.of(createResult(classificationResultList))).toList();
         LOGGER.info(new ClassificationSummary(summaries, List.of()).toString());
-        return new ClassificationSummary(summaries, results);
+        return new ClassificationSummary(summaries, results.stream().filter(value -> !value.provided().equals(value.found())).toList());
     }
 
     private static @NonNull ClassificationResult createResult(List<ClassificationResult> classifiedList) {
