@@ -18,6 +18,11 @@ import ch.xxx.aidoclibchat.domain.model.dto.ClassificationSummary;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springaicommunity.typesafe.TypeSafeClient;
+import org.springaicommunity.typesafe.question.Choice;
+import org.springaicommunity.typesafe.question.Noul;
+import org.springaicommunity.typesafe.question.Score;
+import org.springaicommunity.typesafe.response.SystemOneResponse;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +39,7 @@ import java.util.stream.Stream;
 public class TextClassificationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(TextClassificationService.class);
     private final ChatClient chatClient;
+    private final TypeSafeClient typeSafeClient;
 
     private static final String PROMPT_STR = """
             You are a strict text classification API. Your task is to analyze the user text and classify it into exactly one of these categories:
@@ -50,7 +56,7 @@ public class TextClassificationService {
 
     private static final String PROMPT_JSON = """
     {
-  "model": "openjev",
+  "model": "clef-flash:latest",
   "state": "%s",
   "questions": {
     "category":   {"type": "choice", "instructions": "You are a strict text classification API. Your task is to analyze the user text and classify it into exactly one of these categories.",
@@ -73,8 +79,9 @@ public class TextClassificationService {
 }
 """;
 
-    public TextClassificationService(ChatClient.Builder builder) {
+    public TextClassificationService(ChatClient.Builder builder, TypeSafeClient typeSafeClient) {
         this.chatClient = builder.build();
+        this.typeSafeClient = typeSafeClient;
     }
 
     public ClassificationSummary classify(List<ClassificationRow> rows) {
@@ -93,6 +100,44 @@ public class TextClassificationService {
     }
 
     private @NonNull ClassificationResult createResult(ClassificationRow row) {
+        var start = LocalDateTime.now();
+        final Map<String, Integer> SCHEMAS = Map.of(
+                "Politics", 0,
+                "Sport", 1,
+                "Technology", 2,
+                "Entertainment", 3,
+                "Business", 4
+        );
+        Map<String, String> state = Map.of("text", row.text());
+        var questions = Map.of(
+                "category", Choice.builder()
+                        .instructions("You are a strict text classification API. Your task is to analyze the user text and classify it into exactly one of these categories.")
+                        .option("Politics", "Content related to government, elections, policy, laws")
+                        .option("Sport", "Content related to athletics, sports teams, tournaments, or athletes")
+                        .option("Technology", "Content related to software, hardware, AI, internet, or gadgets")
+                        .option("Entertainment", "Content related to movies, music, celebrities, TV, art")
+                        .option("Business", "Content related to companies, markets, finance, trade, or corporate news")
+                        .build(),
+                "confidenceScore", Noul.of("Is the model highly confident in this category assignment?")
+        );
+        SystemOneResponse response = typeSafeClient.systemOne(state, questions);
+        String predictedCategory = response.choiceValue("category");
+        Double confidenceScore = response.noulValue("confidenceScore");
+        Integer predictedIndex = SCHEMAS.getOrDefault(predictedCategory, -1);
+        Integer expectedIndex = Integer.parseInt(row.label());
+        LOGGER.info(String.format("Run for %,d ms", Duration.between(start, LocalDateTime.now()).toMillis())
+                + " - Row category: " + SCHEMAS.entrySet().stream().filter(entry ->  Integer.valueOf(Integer.parseInt(row.label())).equals(entry.getValue())).map(Map.Entry::getKey).findFirst().orElse("NoMatch") +" - Predicted Category: "+  predictedCategory + " - Score: " + confidenceScore);
+        return new ClassificationResult(
+                predictedCategory,
+                expectedIndex,
+                predictedIndex,
+                confidenceScore,
+                expectedIndex.equals(predictedIndex) ? "" : row.text()
+        );
+    }
+
+
+    private @NonNull ClassificationResult createResult_old(ClassificationRow row) {
         record ModelClassificationResult(String category, Double confidenceScore) {
             private static final Map<String, Integer> SCHEMAS = Map.of(
                     "Politics", 0,

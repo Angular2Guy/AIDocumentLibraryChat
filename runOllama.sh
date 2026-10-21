@@ -1,5 +1,5 @@
 #docker run -d --gpus=all -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
-docker run -d -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
+docker run -d -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama:latest
 docker start ollama
 docker stop ollama
 #docker exec -it ollama ollama run llava:34b-v1.6-q6_K
