@@ -135,33 +135,4 @@ public class TextClassificationService {
                 expectedIndex.equals(predictedIndex) ? "" : row.text()
         );
     }
-
-
-    private @NonNull ClassificationResult createResult_old(ClassificationRow row) {
-        record ModelClassificationResult(String category, Double confidenceScore) {
-            private static final Map<String, Integer> SCHEMAS = Map.of(
-                    "Politics", 0,
-                    "Sport", 1,
-                    "Technology", 2,
-                    "Entertainment", 3,
-                    "Business", 4
-            );
-            // Dynamic mapping method to fetch your required 0-4 integer
-            public Integer getClassIndex() {
-                return SCHEMAS.getOrDefault(category, -1);
-            }
-            public String getCategory(Integer id) {
-                return SCHEMAS.entrySet().stream().filter(entry -> id.equals(entry.getValue())).map(Map.Entry::getKey).findFirst().orElse("NoMatch");
-            }
-        }
-        var start = LocalDateTime.now();
-        var resultOpt = Optional.ofNullable(this.chatClient.prompt().system(PROMPT_JSON).user(row.text())
-                .call().entity(ModelClassificationResult.class, ChatClient.EntityParamSpec::validateSchema));
-        LOGGER.info(String.format("Run for %,d ms",Duration.between(start, LocalDateTime.now()).toMillis())+" - "+ resultOpt.map(value -> "Row category: "+value.getCategory(Integer.parseInt(row.label()))+" - "+value.toString()).orElse("Optional.empty()"));
-        return new ClassificationResult(resultOpt.stream().map(ModelClassificationResult::category).findFirst().orElse("NoMatch"),
-                Integer.parseInt(row.label()),
-                resultOpt.stream().map(ModelClassificationResult::getClassIndex).findFirst().orElse(-1),
-                resultOpt.stream().map(ModelClassificationResult::confidenceScore).findFirst().orElse(0.0D),
-                Integer.valueOf(Integer.parseInt(row.label())).equals(resultOpt.stream().map(ModelClassificationResult::getClassIndex).findFirst().orElse(-1)) ? "" : row.text());
-    }
 }

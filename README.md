@@ -32,6 +32,9 @@ The project uses Spring AI to generate test classes. To do that the class to tes
 ### Generating book summaries
 The project uses Spring AI to generate summaries of books. To generate the summaries the chapter headings and the heading after the last chapter have to be provided. Then summaries of the chapters in form of bullet points are generated. A book summary is created of the chapter summaries. 
 
+### Text Classification
+The project uses Spring AI to do text classification. To generate classification a Jev style AI model is used. These models are faster and more relyable to do classification and return a confidence score. To do that Ollama is used to provide a Clef-Flash model. To test it the dataset in the classifierData directory can be used.
+
 ## Articles
 * [A Spring AI Mcp Client/Server Analysis](https://angular2guy.wordpress.com/2025/08/15/a-spring-ai-mcp-client-server-analysis/)
 * [Fresh data for the AI with Spring AI Function calls](https://angular2guy.wordpress.com/2025/01/01/fresh-data-for-the-ai-with-spring-ai-function-calls/)
@@ -52,6 +55,7 @@ The project uses Spring AI to generate summaries of books. To generate the summa
 7. It generates tests for sources in public Github repositories
 8. It generates book summaries of epub of pdf books.
 9. It uses a Mcp Client and Server to show book and movie descriptions.
+10. It uses Jev Models(Clef-Flash) to do text classification
 
 ## Mission Statement
 The project shows howto use Spring AI to generate answers based on a provided set of documents with a link to the source. The Angular frontend provides the user interface for the backend and shows the responses. 
@@ -65,6 +69,8 @@ The project shows howto use Spring AI to select a Rest interface to call and to 
 The project shows howto use Spring AI to create a image database that can be queried with natural language questions and returns the closest matching images with their descriptions.  
 
 The project shows howto use Spring AI to implement a Mcp Client and Server to show book and movie descriptions.
+
+The project shows howto use Spring AI to do text classification with a Jev AI model(Clef-Flash) deployed with Ollama.
 
 Spring AI makes using OpenAI / Ollama services simple and useful and this project demonstrates that. 
 
