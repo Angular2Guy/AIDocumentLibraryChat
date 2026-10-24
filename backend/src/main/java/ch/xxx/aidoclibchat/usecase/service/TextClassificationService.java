@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springaicommunity.typesafe.TypeSafeClient;
 import org.springaicommunity.typesafe.question.Choice;
 import org.springaicommunity.typesafe.question.Noul;
+import org.springaicommunity.typesafe.question.Question;
 import org.springaicommunity.typesafe.response.SystemOneResponse;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +36,17 @@ import java.util.stream.Stream;
 @Service
 public class TextClassificationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(TextClassificationService.class);
+    private static final Map<String, ? extends Question> QUESTIONS = Map.of(
+            "category", Choice.builder()
+            .instructions("You are a strict text classification API. Your task is to analyze the user text and classify it into exactly one of these categories.")
+                        .option("Politics", "Content related to government, elections, policy, laws")
+                        .option("Sport", "Content related to athletics, sports teams, tournaments, or athletes")
+                        .option("Technology", "Content related to software, hardware, AI, internet, or gadgets")
+                        .option("Entertainment", "Content related to movies, music, celebrities, TV, art")
+                        .option("Business", "Content related to companies, markets, finance, trade, or corporate news")
+                        .build(),
+                "confidenceScore", Noul.of("Is the model highly confident in this category assignment?")
+                        );
     private final TypeSafeClient typeSafeClient;
 
     public TextClassificationService(TypeSafeClient typeSafeClient) {
@@ -66,18 +78,7 @@ public class TextClassificationService {
                 "Business", 4
         );
         Map<String, String> state = Map.of("text", row.text());
-        var questions = Map.of(
-                "category", Choice.builder()
-                        .instructions("You are a strict text classification API. Your task is to analyze the user text and classify it into exactly one of these categories.")
-                        .option("Politics", "Content related to government, elections, policy, laws")
-                        .option("Sport", "Content related to athletics, sports teams, tournaments, or athletes")
-                        .option("Technology", "Content related to software, hardware, AI, internet, or gadgets")
-                        .option("Entertainment", "Content related to movies, music, celebrities, TV, art")
-                        .option("Business", "Content related to companies, markets, finance, trade, or corporate news")
-                        .build(),
-                "confidenceScore", Noul.of("Is the model highly confident in this category assignment?")
-        );
-        SystemOneResponse response = typeSafeClient.systemOne(state, questions);
+        SystemOneResponse response = typeSafeClient.systemOne(state, QUESTIONS);
         String predictedCategory = response.choiceValue("category");
         Double confidenceScore = response.noulValue("confidenceScore");
         Integer predictedIndex = SCHEMAS.getOrDefault(predictedCategory, -1);
