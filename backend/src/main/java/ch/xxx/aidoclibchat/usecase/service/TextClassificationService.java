@@ -21,16 +21,13 @@ import org.slf4j.LoggerFactory;
 import org.springaicommunity.typesafe.TypeSafeClient;
 import org.springaicommunity.typesafe.question.Choice;
 import org.springaicommunity.typesafe.question.Noul;
-import org.springaicommunity.typesafe.question.Score;
 import org.springaicommunity.typesafe.response.SystemOneResponse;
-import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -38,49 +35,9 @@ import java.util.stream.Stream;
 @Service
 public class TextClassificationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(TextClassificationService.class);
-    private final ChatClient chatClient;
     private final TypeSafeClient typeSafeClient;
 
-    private static final String PROMPT_STR = """
-            You are a strict text classification API. Your task is to analyze the user text and classify it into exactly one of these categories:
-                           - Politics (Content related to government, elections, policy, laws)
-                           - Sport (Content related to athletics, sports teams, tournaments, or athletes)
-                           - Technology (Content related to software, hardware, AI, internet, or gadgets)
-                           - Entertainment (Content related to movies, music, celebrities, TV, art)
-                           - Business (Content related to companies, markets, finance, trade, or corporate news)
-            
-                           You must only choose from these 5 specific strings for the 'category' field.
-            
-                           Additionally, provide a 'confidenceScore' field as a floating-point number between 0.0 and 1.0, representing how confident you are in your assignment.
-            """;
-
-    private static final String PROMPT_JSON = """
-    {
-  "model": "clef-flash:latest",
-  "state": "%s",
-  "questions": {
-    "category":   {"type": "choice", "instructions": "You are a strict text classification API. Your task is to analyze the user text and classify it into exactly one of these categories.",
-                "criteria": {
-                "Politics": "Content related to government, elections, policy, laws", 
-                "Sport": "Content related to athletics, sports teams, tournaments, or athletes", 
-                "Technology": "Content related to software, hardware, AI, internet, or gadgets",
-                "Entertainment": "Content related to movies, music, celebrities, TV, art",
-                "Business": "Content related to companies, markets, finance, trade, or corporate news"
-                }},    
-    "confidenceScore": {"type": "score",  "instructions": "Provide a score as a floating-point number between 0.0 and 1.0, representing how confident you are in your assignment of the category.",
-                "criteria": [ 
-                    "Politics: Content related to government, elections, policy, laws", 
-                "Sport: Content related to athletics, sports teams, tournaments, or athletes", 
-                "Technology: Content related to software, hardware, AI, internet, or gadgets",
-                "Entertainment: Content related to movies, music, celebrities, TV, art",
-                "Business: Content related to companies, markets, finance, trade, or corporate news"
-                ]}
-  }
-}
-""";
-
-    public TextClassificationService(ChatClient.Builder builder, TypeSafeClient typeSafeClient) {
-        this.chatClient = builder.build();
+    public TextClassificationService(TypeSafeClient typeSafeClient) {
         this.typeSafeClient = typeSafeClient;
     }
 
