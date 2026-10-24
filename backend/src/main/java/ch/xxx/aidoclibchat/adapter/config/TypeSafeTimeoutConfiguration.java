@@ -27,6 +27,8 @@ public class TypeSafeTimeoutConfiguration {
     private String apiKey;
     @Value("${spring.ai.typesafe.model:clef-flash:latest}")
     private String defaultModel;
+    @Value("${spring.ai.typesafe.timeout:120}")
+    private Long defaultTimeout;
 
     @Bean
     public TypeSafeClient typeSafeClient() {
@@ -34,8 +36,7 @@ public class TypeSafeTimeoutConfiguration {
                 .baseUrl(this.baseUrl)
                 .apiKey(this.apiKey)
                 .defaultModel(this.defaultModel)
-                // Setzt das Timeout direkt über die Builder-Methode des Starters
-                .timeout(Duration.ofSeconds(120))
+                .timeout(Duration.ofSeconds(defaultTimeout))
                 .build();
     }
 }
