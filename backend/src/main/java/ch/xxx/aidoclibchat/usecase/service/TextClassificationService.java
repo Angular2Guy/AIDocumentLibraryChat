@@ -38,15 +38,22 @@ public class TextClassificationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(TextClassificationService.class);
     private static final Map<String, ? extends Question> QUESTIONS = Map.of(
             "category", Choice.builder()
-            .instructions("You are a strict text classification API. Your task is to analyze the user text and classify it into exactly one of these categories.")
-                        .option("Politics", "Content related to government, elections, policy, laws")
-                        .option("Sport", "Content related to athletics, sports teams, tournaments, or athletes")
-                        .option("Technology", "Content related to software, hardware, AI, internet, or gadgets")
-                        .option("Entertainment", "Content related to movies, music, celebrities, TV, art")
-                        .option("Business", "Content related to companies, markets, finance, trade, or corporate news")
-                        .build(),
-                "confidenceScore", Noul.of("Is the model highly confident in this category assignment?")
-                        );
+                    .instructions("You are a strict text classification API. Your task is to analyze the user text and classify it into exactly one of these categories.")
+                    .option("Politics", "Content related to government, elections, policy, laws")
+                    .option("Sport", "Content related to athletics, sports teams, tournaments, or athletes")
+                    .option("Technology", "Content related to software, hardware, AI, internet, or gadgets")
+                    .option("Entertainment", "Content related to movies, music, celebrities, TV, art")
+                    .option("Business", "Content related to companies, markets, finance, trade, or corporate news")
+                    .build(),
+            "confidenceScore", Noul.of("Is the model highly confident in this category assignment?")
+    );
+    private static final Map<String, Integer> SCHEMAS = Map.of(
+            "Politics", 0,
+            "Sport", 1,
+            "Technology", 2,
+            "Entertainment", 3,
+            "Business", 4
+    );
     private final TypeSafeClient typeSafeClient;
 
     public TextClassificationService(TypeSafeClient typeSafeClient) {
@@ -70,13 +77,6 @@ public class TextClassificationService {
 
     private @NonNull ClassificationResult createResult(ClassificationRow row) {
         var start = LocalDateTime.now();
-        final Map<String, Integer> SCHEMAS = Map.of(
-                "Politics", 0,
-                "Sport", 1,
-                "Technology", 2,
-                "Entertainment", 3,
-                "Business", 4
-        );
         Map<String, String> state = Map.of("text", row.text());
         SystemOneResponse response = typeSafeClient.systemOne(state, QUESTIONS);
         String predictedCategory = response.choiceValue("category");
@@ -84,7 +84,8 @@ public class TextClassificationService {
         Integer predictedIndex = SCHEMAS.getOrDefault(predictedCategory, -1);
         Integer expectedIndex = Integer.parseInt(row.label());
         LOGGER.info(String.format("Run for %,d ms", Duration.between(start, LocalDateTime.now()).toMillis())
-                + " - Row category: " + SCHEMAS.entrySet().stream().filter(entry ->  Integer.valueOf(Integer.parseInt(row.label())).equals(entry.getValue())).map(Map.Entry::getKey).findFirst().orElse("NoMatch") +" - Predicted Category: "+  predictedCategory + " - Score: " + confidenceScore);
+                + " - Row category: " + SCHEMAS.entrySet().stream().filter(entry -> Integer.valueOf(Integer.parseInt(row.label())).equals(entry.getValue()))
+                .map(Map.Entry::getKey).findFirst().orElse("NoMatch") + " - Predicted Category: " + predictedCategory + " - Score: " + confidenceScore);
         return new ClassificationResult(
                 predictedCategory,
                 expectedIndex,
