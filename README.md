@@ -36,6 +36,7 @@ The project uses Spring AI to generate summaries of books. To generate the summa
 The project uses Spring AI to do text classification. To generate classification a Jev style AI model is used. These models are faster and more relyable to do classification and return a confidence score. To do that Ollama is used to provide a Clef-Flash model. To test it the dataset in the classifierData directory can be used.
 
 ## Articles
+* [Classification is solved by AI](https://angular2guy.wordpress.com/2026/10/24/classification-is-solved-by-ai/)
 * [A Spring AI Mcp Client/Server Analysis](https://angular2guy.wordpress.com/2025/08/15/a-spring-ai-mcp-client-server-analysis/)
 * [Fresh data for the AI with Spring AI Function calls](https://angular2guy.wordpress.com/2025/01/01/fresh-data-for-the-ai-with-spring-ai-function-calls/)
 * [Using Spring AI with LLMs to generate Java tests](https://angular2guy.wordpress.com/2024/07/15/using-spring-ai-with-llms-to-generate-code/)
