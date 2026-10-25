@@ -23,6 +23,7 @@ import {tap} from "rxjs";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {JsonPipe} from "@angular/common";
 import {ClassificationSummary} from "../model/classification-summary";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 @Component({
   selector: 'app-text-classification',
@@ -33,6 +34,7 @@ import {ClassificationSummary} from "../model/classification-summary";
     MatButtonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
+    MatProgressSpinnerModule,
     MatInputModule],
   templateUrl: './text-classification.component.html',
   styleUrl: './text-classification.component.scss',
@@ -44,7 +46,7 @@ export class TextClassificationComponent {
   private readonly noFileName = "No file uploaded";
   protected filename = signal(this.noFileName);
   protected importFile = signal<Blob | null>(null);
-  protected uploading = signal<boolean>(false);
+  protected working = signal<boolean>(false);
   protected result = signal<ClassificationSummary | null>(null);
 
   protected docList(): void {
@@ -68,12 +70,12 @@ export class TextClassificationComponent {
     this.classificationService.postFile(formData)
       .pipe(
         tap(() => {
-          this.uploading.set(true);
+          this.working.set(true);
         }),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((result) => {
-        this.uploading.set(false);
+        this.working.set(false);
         this.result.set(result);
       });
   }

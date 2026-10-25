@@ -37,6 +37,13 @@
     </button>
   </div>
   <div>
+    @if(working()){
+      <div class="upload-spinner"><mat-spinner></mat-spinner></div>
+    } @else if(result()){
+
+    }
+  </div>
+  <div>
     {{ result() | json }}
   </div>
 </div>
