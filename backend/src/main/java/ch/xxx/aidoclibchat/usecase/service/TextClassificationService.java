@@ -38,14 +38,22 @@ public class TextClassificationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(TextClassificationService.class);
     private static final Map<String, ? extends Question> QUESTIONS = Map.of(
             "category", Choice.builder()
-                    .instructions("You are a strict text classification API. Your task is to analyze the user text and classify it into exactly one of these categories.")
-                    .option("Politics", "Content related to government, elections, policy, laws")
-                    .option("Sport", "Content related to athletics, sports teams, tournaments, or athletes")
-                    .option("Technology", "Content related to software, hardware, AI, internet, or gadgets")
-                    .option("Entertainment", "Content related to movies, music, celebrities, TV, art")
-                    .option("Business", "Content related to companies, markets, finance, trade, or corporate news")
+                    .instructions("""
+                    You are an elite text classification API. Analyze the user text step-by-step:
+                    1. Identify core themes, entities, and intent.
+                    2. Match them against the strict definitions below.
+                    3. Evaluate the clarity of the text to determine your confidence.
+                    
+                    Select exactly one category:
+                    """)
+                    .option("Politics", "Government, elections, public policy, laws, or political figures.")
+                    .option("Sport", "Athletics, sports teams, tournaments, leagues, or individual athletes.")
+                    .option("Technology", "Software, hardware, AI, internet platforms, engineering, or consumer gadgets.")
+                    .option("Entertainment", "Movies, music, celebrity culture, television, theater, or fine arts.")
+                    .option("Business", "Companies, stock markets, macroeconomics, finance, trade, or corporate leadership.")
                     .build(),
-            "confidenceScore", Noul.of("Is the model highly confident in this category assignment?")
+
+            "confidenceScore", Noul.of("Did the user text contain explicit, unambiguous indicators that match your chosen category definition? Answer with a confidence score between 0 and 1.")
     );
     private static final Map<String, Integer> SCHEMAS = Map.of(
             "Politics", 0,
