@@ -13,14 +13,11 @@
 import {inject, Service} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-
-export interface ClassificationSummary {
-
-}
+import {ClassificationSummary} from "../model/classification-summary";
 
 @Service()
 export class ClassificationService {
-  private httpClient = inject(HttpClient);
+  private readonly httpClient = inject(HttpClient);
 
   public postFile(formData: FormData): Observable<ClassificationSummary> {
     return this.httpClient.post<ClassificationSummary>('/rest/text-classification/classify', formData);

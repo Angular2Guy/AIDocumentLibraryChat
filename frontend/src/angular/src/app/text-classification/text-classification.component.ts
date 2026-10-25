@@ -18,10 +18,11 @@ import {MatButtonModule} from "@angular/material/button";
 import {ReactiveFormsModule} from "@angular/forms";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
-import {ClassificationService, ClassificationSummary} from "../service/classification.service";
+import {ClassificationService} from "../service/classification.service";
 import {tap} from "rxjs";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {JsonPipe} from "@angular/common";
+import {ClassificationSummary} from "../model/classification-summary";
 
 @Component({
   selector: 'app-text-classification',
@@ -37,9 +38,9 @@ import {JsonPipe} from "@angular/common";
   styleUrl: './text-classification.component.scss',
 })
 export class TextClassificationComponent {
-  private router = inject(Router);
-  private destroyRef = inject(DestroyRef);
-  private classificationService = inject(ClassificationService);
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly classificationService = inject(ClassificationService);
   private readonly noFileName = "No file uploaded";
   protected filename = signal(this.noFileName);
   protected importFile = signal<Blob | null>(null);
