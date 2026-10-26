@@ -68,14 +68,17 @@
     </div>
     <div>
       @for(myResult of results(); track myResult?.id){
-        <div>
+        <div class="text-line">
+        <hr/>
+        <div class="text-line">
           <span i18n="@@classificationLabel"> Label: </span> {{myResult.label}} -
           <span i18n="@@classificationProvided"> Provided: </span> {{keyToCategory.get(myResult.provided)}} -
           <span i18n="@@classificationFound"> Found: </span> {{keyToCategory.get(myResult.found)}} -
           <span i18n="@@classificationScore"> Score: </span> {{myResult.score}}
         </div>
-        <div>
+        <div class="text-line">
           {{myResult.text}}
+        </div>
         </div>
       }
     </div>
