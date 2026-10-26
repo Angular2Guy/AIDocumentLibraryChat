@@ -22,8 +22,10 @@ import {ClassificationService} from "../service/classification.service";
 import {tap} from "rxjs";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {JsonPipe} from "@angular/common";
-import {ClassificationSummary} from "../model/classification-summary";
+import {ClassificationResult, ClassificationSummary} from "../model/classification-summary";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import {MatTableModule} from "@angular/material/table";
+
 
 @Component({
   selector: 'app-text-classification',
@@ -35,6 +37,7 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
     ReactiveFormsModule,
     MatFormFieldModule,
     MatProgressSpinnerModule,
+    MatTableModule,
     MatInputModule],
   templateUrl: './text-classification.component.html',
   styleUrl: './text-classification.component.scss',
@@ -48,6 +51,23 @@ export class TextClassificationComponent {
   protected importFile = signal<Blob | null>(null);
   protected working = signal<boolean>(false);
   protected result = signal<ClassificationSummary | null>(null);
+  protected summaries = signal<ClassificationResult[]>([]);
+  protected results = signal<ClassificationResult[]>([]);
+  protected keyToCategory = new Map<number,string>();
+  protected readonly displayedColumns: string[] = ['label', 'provided', 'found', 'score'];
+
+  constructor() {
+    // @ts-ignore
+    this.keyToCategory.set(0, $localize`Politics`);
+    // @ts-ignore
+    this.keyToCategory.set(1, $localize`Sport`);
+    // @ts-ignore
+    this.keyToCategory.set(2, $localize`Technology`);
+    // @ts-ignore
+    this.keyToCategory.set(3, $localize`Entertainment`);
+    // @ts-ignore
+    this.keyToCategory.set(4, $localize`Business`);
+  }
 
   protected docList(): void {
     this.router.navigate(['doclist']);
@@ -65,18 +85,19 @@ export class TextClassificationComponent {
     this.importFile.set(!!files && files.length > 0 ? files[0] : null);
 
   if(!!this.importFile()) {
+    this.working.set(true);
     const formData = new FormData();
     formData.append('file', (this.importFile() as Blob));
     this.classificationService.postFile(formData)
-      .pipe(
-        tap(() => {
-          this.working.set(true);
-        }),
-        takeUntilDestroyed(this.destroyRef),
-      )
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((result) => {
         this.working.set(false);
         this.result.set(result);
+        this.summaries.set(result?.summaries ?? []);
+        this.results.set(result?.results.map((value,i) => {
+          value.id = i;
+          return value;
+        }) ?? []);
       });
   }
 }

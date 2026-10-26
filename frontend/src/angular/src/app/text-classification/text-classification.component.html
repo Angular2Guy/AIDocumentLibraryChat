@@ -40,10 +40,50 @@
     @if(working()){
       <div class="upload-spinner"><mat-spinner></mat-spinner></div>
     } @else if(result()){
+    <div>
+    <table mat-table [dataSource]="summaries()" class="mat-shadow-2">
+      <ng-container matColumnDef="label">
+        <th mat-header-cell *matHeaderCellDef i18n="@@classificationLabel"> Label </th>
+        <td mat-cell *matCellDef="let element"> {{element.label}} </td>
+      </ng-container>
 
+      <ng-container matColumnDef="provided">
+        <th mat-header-cell *matHeaderCellDef i18n="@@classificationProvided"> Provided </th>
+        <td mat-cell *matCellDef="let element"> {{keyToCategory.get(element.provided)}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="found">
+        <th mat-header-cell *matHeaderCellDef i18n="@@classificationFound"> Found </th>
+        <td mat-cell *matCellDef="let element"> {{keyToCategory.get(element.found)}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="score">
+        <th mat-header-cell *matHeaderCellDef i18n="@@classificationScore"> Score </th>
+        <td mat-cell *matCellDef="let element"> {{element.score}} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    </div>
+    <div>
+      @for(myResult of results(); track myResult?.id){
+        <div>
+          <span i18n="@@classificationLabel"> Label: </span> {{myResult.label}} -
+          <span i18n="@@classificationProvided"> Provided: </span> {{keyToCategory.get(myResult.provided)}} -
+          <span i18n="@@classificationFound"> Found: </span> {{keyToCategory.get(myResult.found)}} -
+          <span i18n="@@classificationScore"> Score: </span> {{myResult.score}}
+        </div>
+        <div>
+          {{myResult.text}}
+        </div>
+      }
+    </div>
     }
   </div>
+  <!--
   <div>
     {{ result() | json }}
   </div>
+  -->
 </div>

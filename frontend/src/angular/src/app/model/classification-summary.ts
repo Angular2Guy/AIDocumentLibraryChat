@@ -15,6 +15,7 @@ export interface ClassificationSummary {
   results: ClassificationResult[]
 }
 export interface ClassificationResult {
+  id?: number;
   label: string,
   provided: number,
   found: number,
