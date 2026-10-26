@@ -49,12 +49,12 @@
 
       <ng-container matColumnDef="provided">
         <th mat-header-cell *matHeaderCellDef i18n="@@classificationProvided"> Provided </th>
-        <td mat-cell *matCellDef="let element"> {{keyToCategory.get(element.provided)}} </td>
+        <td mat-cell *matCellDef="let element"> {{element.provided}} </td>
       </ng-container>
 
       <ng-container matColumnDef="found">
         <th mat-header-cell *matHeaderCellDef i18n="@@classificationFound"> Found </th>
-        <td mat-cell *matCellDef="let element"> {{keyToCategory.get(element.found)}} </td>
+        <td mat-cell *matCellDef="let element"> {{element.found}} </td>
       </ng-container>
 
       <ng-container matColumnDef="score">
